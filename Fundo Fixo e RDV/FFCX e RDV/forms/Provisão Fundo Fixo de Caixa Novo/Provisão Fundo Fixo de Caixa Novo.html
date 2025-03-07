@@ -1,325 +1,426 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    
-    <link type="text/css" rel="stylesheet" href="/portal/resources/style-guide/css/fluig-style-guide.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha384-..." crossorigin="anonymous">
-    <link rel="stylesheet" href="Style.css" />
-    <link rel="stylesheet" type="text/css" href="/style-guide/css/fluig-style-guide-filter.min.css" />
-	
-    <script type="text/javascript" src="/portal/resources/js/jquery/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="/portal/resources/js/mustache/mustache-min.js"></script>
-    <script type="text/javascript" src="/portal/resources/style-guide/js/fluig-style-guide.min.js" charset="utf-8"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-    <script src="/style-guide/js/fluig-style-guide-filter.min.js"></script>
-    <script src="/webdesk/vcXMLRPC.js"></script>
-</head>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-<body>
-	<div class="fluig-style-guide">
-		<form name="form" role="form">
-			<div id="divCollapse">
-				<ul id="coltabs" class="nav nav-tabs nav-justified nav-pills" role="tablist">
-					<li class="collapse-tab active tabPrincipal" >
-						<a href="#tabInformacoesIniciais" onclick="ShowTotalValue()" role="tab" id="atabInformacoesIniciais" data-toggle="tab"
-							aria-expanded="true" class="tab">Infos</a>
-					</li>
-					<li class="collapse-tab tabPrincipal" id="liCollapseItens" >
-						<a href="#tabItens" class="collapseItens" onclick="ShowTotalValue()" role="tab" id="atabItens" data-toggle="tab"
-							aria-expanded="true" class="tab">Itens a Faturar</a>
-					</li>
-				</ul>
-				<div class="tab-content">
-					<div class="tab-pane active" id="tabInformacoesIniciais">
+        <link type="text/css" rel="stylesheet" href="/portal/resources/style-guide/css/fluig-style-guide.min.css" />
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            integrity="sha384-..."
+            crossorigin="anonymous"
+        />
+        <link rel="stylesheet" href="Style.css" />
+        <link rel="stylesheet" type="text/css" href="/style-guide/css/fluig-style-guide-filter.min.css" />
 
-						<div class="divTiposModalidade row">
+        <script type="text/javascript" src="/portal/resources/js/jquery/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="/portal/resources/js/mustache/mustache-min.js"></script>
+        <script
+            type="text/javascript"
+            src="/portal/resources/style-guide/js/fluig-style-guide.min.js"
+            charset="utf-8"
+        ></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+        <script src="/style-guide/js/fluig-style-guide-filter.min.js"></script>
+        <script src="/webdesk/vcXMLRPC.js"></script>
+    </head>
 
-							<div class="col-md-4">
-								<label for="coligada" id="titleTipo">Coligada:</label>
-								<select name="coligada" id="coligada" class="form-control" onchange="BuscaFilial(); setaTipoFundoFixo();">
-									<option value=""></option>
-									<option value="1">1 - Construtora Castilho</option>
-									<option value="2">2 - Castilho Mineração</option>
-									<option value="12">12 - Dromos Infraestrutura</option>
-								</select>
-							</div>
+    <body>
+        <div class="fluig-style-guide">
+            <form name="form" role="form">
+                <div id="divCollapse">
+                    <ul id="coltabs" class="nav nav-tabs nav-justified nav-pills" role="tablist">
+                        <li class="collapse-tab active tabPrincipal">
+                            <a
+                                href="#tabInformacoesIniciais"
+                                onclick="ShowTotalValue()"
+                                role="tab"
+                                id="atabInformacoesIniciais"
+                                data-toggle="tab"
+                                aria-expanded="true"
+                                class="tab"
+                                >Infos</a
+                            >
+                        </li>
+                        <li class="collapse-tab tabPrincipal" id="liCollapseItens">
+                            <a
+                                href="#tabItens"
+                                class="collapseItens"
+                                onclick="ShowTotalValue()"
+                                role="tab"
+                                id="atabItens"
+                                data-toggle="tab"
+                                aria-expanded="true"
+                                class="tab"
+                                >Itens a Faturar</a
+                            >
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tabInformacoesIniciais">
+                            <div class="divTiposModalidade row">
+                                <div class="col-md-4">
+                                    <label for="coligada" id="titleTipo">Coligada:</label>
+                                    <select
+                                        name="coligada"
+                                        id="coligada"
+                                        class="form-control"
+                                        onchange="BuscaFilial(); setaTipoFundoFixo();"
+                                    >
+                                        <option value=""></option>
+                                        <option value="1">1 - Construtora Castilho</option>
+                                        <option value="2">2 - Castilho Mineração</option>
+                                        <option value="12">12 - Dromos Infraestrutura</option>
+                                    </select>
+                                </div>
 
-							<div class="divPrimeiroSelect col-md-4">
-								<label for="" id="titleTipo">Tipo:</label>
-								<select class="form-control" name="tipo" id="tipo" onchange="selecionarTipo(); FiltrarFfUsuario(); atualizarOptions();">
-									<option value=""></option>
-									<option value="Fundo Fixo">Fundo Fixo</option>
-									<option value="R.D.O">R.D.O</option>
-								</select>
-							</div>
-							<div class="divSelecionaFilial col-md-4">
-								<label for="labelFilial" id="titleFilial">Filial:</label>
-								<select class="form-control filial" name="selectFilial" id="selectFilial" onchange="BuscaLocalDeEstoque()">
-									<option value=""></option>
-								</select>
-							</div>
-						</div>
-						<br />
-						<div class="divSelecionarFilialeEstoque row">
+                                <div class="divPrimeiroSelect col-md-4">
+                                    <label for="" id="titleTipo">Tipo:</label>
+                                    <select
+                                        class="form-control"
+                                        name="tipo"
+                                        id="tipo"
+                                        onchange="selecionarTipo(); FiltrarFfUsuario(); atualizarOptions();"
+                                    >
+                                        <option value=""></option>
+                                        <option value="Fundo Fixo">Fundo Fixo</option>
+                                        <option value="R.D.O">R.D.O</option>
+                                    </select>
+                                </div>
+                                <div class="divSelecionaFilial col-md-4">
+                                    <label for="labelFilial" id="titleFilial">Filial:</label>
+                                    <select
+                                        class="form-control filial"
+                                        name="selectFilial"
+                                        id="selectFilial"
+                                        onchange="BuscaLocalDeEstoque()"
+                                    >
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="divSelecionarFilialeEstoque row">
+                                <div class="divSelecionaLocalEstoque col-md-4">
+                                    <label for="labelLocalEstoque" id="titleEstoque">Local de Estoque:</label>
+                                    <select
+                                        name="selectLocalEstoque"
+                                        class="form-control"
+                                        id="selectLocalEstoque"
+                                        onchange="verificaLocalDeEstoqueMov()"
+                                    ></select>
+                                </div>
 
-							<div class="divSelecionaLocalEstoque col-md-4">
-								<label for="labelLocalEstoque" id="titleEstoque">Local de Estoque:</label>
-								<select name="selectLocalEstoque" class="form-control" id="selectLocalEstoque" onchange="verificaLocalDeEstoqueMov()"></select>
-							</div>
+                                <div class="divFundoFixo col-md-4" id="divFundoFixo">
+                                    <label for="fundoFixo" id="titleFundo">Selecione um:</label>
+                                    <select
+                                        name="fundoFixo"
+                                        id="fundoFixo"
+                                        class="form-control fundoFixo select2"
+                                        style="width: 100%; height: 32px"
+                                    ></select>
+                                </div>
 
-							<div class="divFundoFixo col-md-4" id="divFundoFixo">
-								<label for="fundoFixo" id="titleFundo">Selecione um:</label>
-								<select name="fundoFixo" id="fundoFixo" class="form-control fundoFixo select2"
-									style="width: 100%; height: 32px;"></select>
-							</div>
+                                <div class="divFundoView col-md-4" id="divFundoView">
+                                    <label for="fundoFixo" id="titleFundo">Selecione um:</label>
+                                    <select
+                                        name="fundoFixoView"
+                                        id="fundoFixoView"
+                                        class="form-control fundoFixoView"
+                                        style="width: 100%; height: 32px"
+                                    ></select>
+                                </div>
 
-							<div class="divFundoView col-md-4" id="divFundoView">
-								<label for="fundoFixo" id="titleFundo">Selecione um:</label>
-								<select name="fundoFixoView" id="fundoFixoView" class="form-control fundoFixoView"
-									style="width: 100%; height: 32px;"></select>
-							</div>
+                                <div class="col-md-4 divSegundoSelect">
+                                    <label for="modalidade" id="titleModalidade">Modalidade:</label>
+                                    <select class="form-control" name="modalidade" id="modalidade">
+                                        <option value=""></option>
+                                        <option value="Provisao">Provisão</option>
+                                        <option value="Recebimento">Recebimento</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="divPagamento row" id="divPagamento">
+                                <div class="col-md-6" id="divFormaPgto">
+                                    <label for="valor" id="titleFormaPagamento">Forma de Pagamento:</label>
+                                    <select
+                                        type="text"
+                                        name="formaPagamento"
+                                        id="formaPagamento"
+                                        class="formaPagamento form-control"
+                                        oninput="clickInTheItens()"
+                                    >
+                                        <option value=""></option>
+                                    </select>
+                                </div>
 
-							<div class="col-md-4 divSegundoSelect">
-								<label for="modalidade" id="titleModalidade">Modalidade:</label>
-								<select class="form-control" name="modalidade" id="modalidade">
-									<option value=""></option>
-									<option value="Provisao">Provisão</option>
-									<option value="Recebimento">Recebimento</option>
-								</select>
-							</div>
-						</div>
-						<br />
-						<div class="divPagamento row" id="divPagamento">
+                                <div class="col-md-6" id="divCondicaoPagamento">
+                                    <label for="valor" id="titleCondicaoPagamento">Condição de Pagamento:</label>
+                                    <select
+                                        type="text"
+                                        name="condicaoPagamento"
+                                        id="condicaoPagamento"
+                                        class="condicaoPagamento form-control"
+                                        oninput="clickInTheItens()"
+                                    >
+                                        <option value=""></option>
+                                        <option value="008cx">3 DIAS - JANELA PGTO DIA 08</option>
+                                        <option value="018cx">3 DIAS - JANELA PGTO DIA 18</option>
+                                        <option value="028cx">3 DIAS - JANELA PGTO DIA 28</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br />
+                        </div>
 
-							<div class="col-md-6" id="divFormaPgto">
-								<label for="valor" id="titleFormaPagamento">Forma de Pagamento:</label>
-								<select type="text" name="formaPagamento" id="formaPagamento"
-									class="formaPagamento form-control" oninput="clickInTheItens()">
-									<option value=""></option>
-								</select>
-							</div>
+                        <div class="tab-pane" id="tabItens">
+                            <div class="motivoDiv">
+                                <h4 id="motivoReembolsoTitulo">Motivo de Reembolso das Despesas:</h4>
+                                <p id="motivoReembolsoValue"></p>
+                            </div>
 
-							<div class="col-md-6" id="divCondicaoPagamento">
-								<label for="valor" id="titleCondicaoPagamento">Condição de Pagamento:</label>
-								<select type="text" name="condicaoPagamento" id="condicaoPagamento"
-									class="condicaoPagamento form-control" oninput="clickInTheItens()">
-									<option value=""></option>
-									<option value='008cx'> 3 DIAS - JANELA PGTO DIA 08 </option>
-									<option value='018cx'> 3 DIAS - JANELA PGTO DIA 18 </option>
-									<option value='028cx'> 3 DIAS - JANELA PGTO DIA 28 </option>
-								</select>
-							</div>
+                            <div class="divbtnAddItens" id="divbtnAddItens" style="width: 100%">
+                                <button class="btn btn-success" onclick="AddItem()" id="addItensBtn">
+                                    Adicionar Item
+                                </button>
+                            </div>
 
-						</div>
-						<br />
-					</div>
+                            <div class="divbtnVoltarAosItens" id="divbtnVoltarAosItens">
+                                <button class="btn btn-primary btnTeste" onclick="AddItem()">Voltar aos Itens</button>
+                            </div>
 
-					<div class="tab-pane" id="tabItens">
-						<div class="motivoDiv">
-							<h4 id="motivoReembolsoTitulo">Motivo de Reembolso das Despesas:</h4>
-							<p id="motivoReembolsoValue"></p>
-						</div>
+                            <div id="faturamentoDecisao">
+                                <div id="labelMotivoReembolso" style="height: 65px">
+                                    <h3>Motivo do Reembolso de Despesa</h3>
+                                    <br />
+                                </div>
 
-						<div class="divbtnAddItens" id="divbtnAddItens" style="width:100%;">
-								<button class="btn btn-success" onclick="AddItem()" id="addItensBtn">Adicionar Item</button>
-						</div>
+                                <div id="divOptionsViagem">
+                                    <div class="divCorporativa">
+                                        <label for="corporativa">Viagem Corporativa</label>
+                                        <input
+                                            type="radio"
+                                            name="corporativa"
+                                            id="corporativa"
+                                            value="nao"
+                                            class="radioInline styled-checkbox"
+                                            onclick="toggleCheckbox(this, 'familiar')"
+                                        />
+                                    </div>
+                                    <div class="divFamiliar" style="display: block; margin: 0 20px">
+                                        <label for="familiar">Visita Familiar</label>
+                                        <input
+                                            type="radio"
+                                            name="familiar"
+                                            id="familiar"
+                                            value="nao"
+                                            class="radioInline styled-checkbox"
+                                            onclick="toggleCheckbox(this, 'corporativa')"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
 
-						<div class="divbtnVoltarAosItens" id="divbtnVoltarAosItens">
-							<button class="btn btn-primary btnTeste" onclick="AddItem()">Voltar aos Itens</button>
-						</div>
+                            <div class="mensagemNenhumaItem" id="mensagemNenhumaItem">
+                                <h2>Nenhum Item Inserido!</h2>
+                            </div>
 
-						<div id="faturamentoDecisao">
-							<div id="labelMotivoReembolso" style="height: 65px;">
-								<h3>Motivo do Reembolso de Despesa</h3><br>
-							</div>
-						
-							<div id="divOptionsViagem">
-								<div class="divCorporativa">
-								  <label for="corporativa">Viagem Corporativa</label>
-								  <input type="radio" name="corporativa" id="corporativa" value="nao" class="radioInline styled-checkbox" onclick="toggleCheckbox(this, 'familiar')">
-								</div>
-								<div class="divFamiliar" style="display: block; margin: 0 20px;">
-								  <label for="familiar">Visita Familiar</label>
-								  <input type="radio" name="familiar" id="familiar" value="nao" class="radioInline styled-checkbox" onclick="toggleCheckbox(this, 'corporativa')">
-								</div>
-							  </div>
-						</div>
+                            <div class="itens" id="tabItens"></div>
 
-						<div class="mensagemNenhumaItem" id="mensagemNenhumaItem">
-							<h2>Nenhum Item Inserido!</h2>
-						</div>
+                            <div class="tudo panel panel-primary" id="painelTabelaDeProdutos">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Produtos</h3>
+                                </div>
+                                <br />
+                                <div class="panel-body divBodyTable">
+                                    <div class="dataTables_wrapper no-footer">
+                                        <table id="tabelaProdutos" class="table table-ridge">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Produto</th>
+                                                    <th>Codigo</th>
+                                                    <th>Unid. Média</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-						<div class="itens" id="tabItens">	
+                        <div class="divTabelaDeRecebimentos" id="divTabelaDeRecebimentos">
+                            <div class="fundofixoDiv" style="display: flex">
+                                <h4 id="titleFundoSelecionado"></h4>
+                                <p id="fundoSelecionado"></p>
+                            </div>
+                            <div id="tabelaMainRecebimento">
+                                <table id="tabelaDeRecebimentos" class="display" style="width: 100%">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Movimento</th>
+                                            <th>Local de Estoque</th>
+                                            <th>Valor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="divAprovar" id="divAprovar">
+                    <h3 class="text-center">Deseja aprovar?</h3>
+                    <div id="divResolucaoChamado" style="text-align: center; margin-top: 20px">
+                        <div id="divDecisaoAprovar" style="display: inline-block; width: 83px">
+                            <label for="decisaoAprovar" style="margin-right: 2%; padding-top: 2px">Aprovar</label>
+                            <div class="switch switch-success">
+                                <input
+                                    class="switch-input"
+                                    type="checkbox"
+                                    name="decisaoAprovar"
+                                    id="decisaoAprovar"
+                                    onclick="atribuiValorCheckbox()"
+                                    value="Aprovar"
+                                />
+                                <label class="switch-button switchRedGreen" for="decisaoAprovar">Toggle</label>
+                            </div>
+                        </div>
+                        <div id="divDecisaoCancelar" style="display: inline-block; width: 83px">
+                            <label for="decisaoCancelar" style="margin-right: 2%; padding-top: 2px">Recusar</label>
+                            <div class="switch switch-danger">
+                                <input
+                                    class="switch-input inputCheckbox"
+                                    type="checkbox"
+                                    name="decisaoCancelar"
+                                    id="decisaoCancelar"
+                                    onclick="atribuiValorCheckbox()"
+                                    value="Cancelar"
+                                />
+                                <label class="switch-button switchRedGreen" for="decisaoCancelar">Toggle</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-						</div>
+                <div class="divFaturamento">
+                    <h3 class="text-center">Alterar Data de Faturamento?</h3>
+                    <div id="divAlterarFaturamento" style="text-align: center; margin-top: 20px">
+                        <div id="divAlterarFaturamentoAprovacao" style="display: inline-block">
+                            <label for="labelAprovar" style="margin-right: 2%; padding-top: 2px">Sim</label>
+                            <div class="switch switch-success">
+                                <input
+                                    class="switch-input"
+                                    type="checkbox"
+                                    name="decisaoFaturamentoSim"
+                                    id="decisaoFaturamentoSim"
+                                    onclick="atribuiValorDataFaturamento()"
+                                    value="Aprovar"
+                                />
+                                <label class="switch-button switchRedGreen" for="decisaoFaturamentoSim">Toggle</label>
+                            </div>
+                        </div>
+                        <div id="divNaoAlterarFaturamento" style="display: inline-block">
+                            <label for="labelNaoAprovar" style="margin-right: 2%; padding-top: 2px">Não</label>
+                            <div class="switch switch-danger">
+                                <input
+                                    class="switch-input inputCheckbox"
+                                    type="checkbox"
+                                    name="decisaoFaturamentoNao"
+                                    id="decisaoFaturamentoNao"
+                                    onclick="atribuiValorDataFaturamento()"
+                                    value="Cancelar"
+                                />
+                                <label class="switch-button switchRedGreen" for="decisaoFaturamentoNao">Toggle</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: center; align-items: center">
+                        <div
+                            id="divResolucaoChamado"
+                            style="
+                                width: 20%;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                text-align: center;
+                                margin-top: 20px;
+                            "
+                        >
+                            <input
+                                type="date"
+                                name="dataFaturamento"
+                                id="dataFaturamento"
+                                value=""
+                                class="form-control"
+                            />
+                        </div>
+                    </div>
+                </div>
 
-						<div class="tudo panel panel-primary" id="painelTabelaDeProdutos">
-							<div class="panel-heading">
-								<h3 class="panel-title">Produtos</h3>
-							</div>
-							<br />
-							<div class="panel-body divBodyTable">
-								<div class="dataTables_wrapper no-footer">
-									<table id="tabelaProdutos" class="table table-ridge">
-										<thead>
-											<tr>
-												<th>ID</th>
-												<th>Produto</th>
-												<th>Codigo</th>
-												<th>Unid. Média</th>
-												<th></th>
-											</tr>
-										</thead>
-										<tbody>
+                <div id="divValorTotal" style="width: 90%; display: flex; justify-content: end; margin-top: 5px">
+                    <p id="titleValorTotal" style="font-size: 18px">Valor Total:</p>
+                    <p id="valorTotalFFCX" style="font-weight: 600; font-size: 18px; margin-left: 3px"></p>
+                </div>
 
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="divTabelaDeRecebimentos" id="divTabelaDeRecebimentos">
-						<div class="fundofixoDiv" style="display: flex;">
-							<h4 id="titleFundoSelecionado"></h4>
-							<p id="fundoSelecionado"></p>
-						</div>
-						<div id="tabelaMainRecebimento">
-							<table id="tabelaDeRecebimentos" class="display" style="width:100%">
-								<thead>
-									<tr>
-										<th></th>
-										<th>Movimento</th>
-										<th>Local de Estoque</th>
-										<th>Valor</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table>
-							
-							  </div>
-						</div>
-					</div>
-				</div>
-
-				<div class="divAprovar" id="divAprovar">
-					<h3 class="text-center">Deseja aprovar?</h3>
-					<div id="divResolucaoChamado" style="text-align: center; margin-top: 20px">
-						<div id="divDecisaoAprovar" style="display: inline-block; width: 83px;">
-							<label for="decisaoAprovar" style="margin-right: 2%; padding-top: 2px">Aprovar</label>
-							<div class="switch switch-success">
-								<input class="switch-input" type="checkbox" name="decisaoAprovar" id="decisaoAprovar" onclick="atribuiValorCheckbox()"
-									value="Aprovar" />
-								<label class="switch-button switchRedGreen" for="decisaoAprovar">Toggle</label>
-							</div>
-						</div>
-						<div id="divDecisaoCancelar" style="display: inline-block; width: 83px;">
-							<label for="decisaoCancelar" style="margin-right: 2%; padding-top: 2px">Recusar</label>
-							<div class="switch switch-danger">
-								<input class="switch-input inputCheckbox" type="checkbox" name="decisaoCancelar" id="decisaoCancelar" onclick="atribuiValorCheckbox()"
-									value="Cancelar" />
-								<label class="switch-button switchRedGreen" for="decisaoCancelar">Toggle</label>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<div class="divFaturamento">
-				<h3 class="text-center">Alterar Data de Faturamento?</h3>
-					<div id="divAlterarFaturamento" style="text-align: center; margin-top: 20px">
-						<div id="divAlterarFaturamentoAprovacao" style="display: inline-block">
-							<label for="labelAprovar" style="margin-right: 2%; padding-top: 2px">Sim</label>
-							<div class="switch switch-success">
-								<input class="switch-input" type="checkbox" name="decisaoFaturamentoSim" id="decisaoFaturamentoSim" onclick="atribuiValorDataFaturamento()"
-									value="Aprovar" />
-								<label class="switch-button switchRedGreen" for="decisaoFaturamentoSim">Toggle</label>
-							</div>
-						</div>
-						<div id="divNaoAlterarFaturamento" style="display: inline-block">
-							<label for="labelNaoAprovar" style="margin-right: 2%; padding-top: 2px">Não</label>
-							<div class="switch switch-danger">
-								<input class="switch-input inputCheckbox" type="checkbox" name="decisaoFaturamentoNao" id="decisaoFaturamentoNao" onclick="atribuiValorDataFaturamento()"
-									value="Cancelar" />
-								<label class="switch-button switchRedGreen" for="decisaoFaturamentoNao">Toggle</label>
-							</div>
-						</div>
-					</div>
-					<div style="display: flex; justify-content: center; align-items: center;">
-						<div id="divResolucaoChamado" style="width: 20%; display: flex; justify-content: center; align-items: center; text-align: center; margin-top: 20px;">
-							<input type="date" name="dataFaturamento" id="dataFaturamento" value="" class="form-control">
-						</div>
-					</div>		
-				</div>		
-
-
-			</div>
-
-			<div id="divValorTotal" style="width: 90%; display: flex; justify-content: end; margin-top: 5px;">
-				<p id="titleValorTotal" style="font-size: 18px;">Valor Total:</p>
-				<p id="valorTotalFFCX" style="font-weight: 600; font-size: 18px; margin-left: 3px;"></p>
-			</div>
-	</div>
-
-	<div style="display: none">
-		<input type="hidden" name="numProces" id="numProces" />
-		<input name="DatadeHoje" id="DatadeHoje" class="DatadeHoje" type="hidden" />
-		<input name="mail" id="mail" class="mail" type="hidden" />
-		<input name="DataEmail" id="DataEmail" class="DataEmail" type="hidden" />
-		<input name="valuesAprov" id="valuesAprov" class="valuesAprov" type="hidden" />
-		<input name="dataAtual" id="dataAtual" class="dataAtual" type="hidden" />
-		<input type="hidden" name="codList" id="codList" />
-		<input type="hidden" name="initialUser" id="initialUser" />
-		<input type="hidden" name="atividade" id="atividade" />
-		<input type="hidden" name="formMode" id="formMode" />
-		<input type="hidden" name="IdMovimento" id="IdMovimento" />
-		<input type="hidden" name="NumeroMovimento" id="NumeroMovimento" />
-		<input type="hidden" name="codLocalEstoqueMov" id="codLocalEstoqueMov" />
-		<input type="hidden" name="ObraFiltro" id="ObraFiltro" />
-		<input type="hidden" name="valorCampoComplemento" value="1" id="valorCampoComplemento" />
-		<input type="hidden" name="campoTipoDto" id="campoTipoDto" />
-		<input type="hidden" name="campoFilialDto" id="campoFilialDto" />
-		<input type="hidden" name="campoFundoFixoDto" id="campoFundoFixoDto" />
-		<input type="hidden" name="campoModalidadeDto" id="campoModalidadeDto" />
-		<input type="hidden" name="campoformaPagamentoDto" id="campoformaPagamentoDto" />
-		<input type="hidden" name="campoCondicaoPagamentoDto" id="campoCondicaoPagamentoDto" />
-		<input type="hidden" name="valuesRecebimento" id="valuesRecebimento">
-		<input type="hidden" name="DataMovFaturado" id="DataMovFaturado"> 
-		<input type="hidden" name="usuarioInicial" id="usuarioInicial" />
-		<input type="hidden" name="aprovacao" id="aprovacao" />
-		<input type="hidden" name="cancelamento" id="cancelamento" />
-		<input type="hidden" name="aprovacaoContabilidade" id="aprovacaoContabilidade" />
-		<input type="hidden" name="cancelamentoContabilidade" id="cancelamentoContabilidade" />
-		<input type="hidden" name="formaDePagamentoPlaceHolder" id="formaDePagamentoPlaceHolder" />
-		<input type="hidden" name="corporativaDto" id="corporativaDto" />
-		<input type="hidden" name="familiarDto" id="familiarDto" />
-		<input type="hidden" name="historicocurtoRdo" id="historicocurtoRdo" />
-		<input type="hidden" name="emailEngenheiro" id="emailEngenheiro" />
-		<input type="hidden" name="engenheiro" id="engenheiro" />
-		<input type="hidden" name="coordenador" id="coordenador" />
-		<input type="hidden" name="motivoReembolsoDto" id="motivoReembolsoDto" />
-	</div>
-
-	</form>
-	</div>
-	<script src="Script.js"></script>
-	<script>
-		var beforeSendValidate = function (numState, nextState) {
-            return validateJsonInfos();
-        };
-
-	</script>
-</body>
-
+                <div style="display: none">
+                    <input type="hidden" name="numProces" id="numProces" />
+                    <input name="DatadeHoje" id="DatadeHoje" class="DatadeHoje" type="hidden" />
+                    <input name="mail" id="mail" class="mail" type="hidden" />
+                    <input name="DataEmail" id="DataEmail" class="DataEmail" type="hidden" />
+                    <input name="valuesAprov" id="valuesAprov" class="valuesAprov" type="hidden" />
+                    <input name="dataAtual" id="dataAtual" class="dataAtual" type="hidden" />
+                    <input type="hidden" name="codList" id="codList" />
+                    <input type="hidden" name="initialUser" id="initialUser" />
+                    <input type="hidden" name="atividade" id="atividade" />
+                    <input type="hidden" name="formMode" id="formMode" />
+                    <input type="hidden" name="IdMovimento" id="IdMovimento" />
+                    <input type="hidden" name="NumeroMovimento" id="NumeroMovimento" />
+                    <input type="hidden" name="codLocalEstoqueMov" id="codLocalEstoqueMov" />
+                    <input type="hidden" name="ObraFiltro" id="ObraFiltro" />
+                    <input type="hidden" name="valorCampoComplemento" value="1" id="valorCampoComplemento" />
+                    <input type="hidden" name="campoTipoDto" id="campoTipoDto" />
+                    <input type="hidden" name="campoFilialDto" id="campoFilialDto" />
+                    <input type="hidden" name="campoFundoFixoDto" id="campoFundoFixoDto" />
+                    <input type="hidden" name="campoModalidadeDto" id="campoModalidadeDto" />
+                    <input type="hidden" name="campoformaPagamentoDto" id="campoformaPagamentoDto" />
+                    <input type="hidden" name="campoCondicaoPagamentoDto" id="campoCondicaoPagamentoDto" />
+                    <input type="hidden" name="valuesRecebimento" id="valuesRecebimento" />
+                    <input type="hidden" name="DataMovFaturado" id="DataMovFaturado" />
+                    <input type="hidden" name="usuarioInicial" id="usuarioInicial" />
+                    <input type="hidden" name="aprovacao" id="aprovacao" />
+                    <input type="hidden" name="cancelamento" id="cancelamento" />
+                    <input type="hidden" name="aprovacaoContabilidade" id="aprovacaoContabilidade" />
+                    <input type="hidden" name="cancelamentoContabilidade" id="cancelamentoContabilidade" />
+                    <input type="hidden" name="formaDePagamentoPlaceHolder" id="formaDePagamentoPlaceHolder" />
+                    <input type="hidden" name="corporativaDto" id="corporativaDto" />
+                    <input type="hidden" name="familiarDto" id="familiarDto" />
+                    <input type="hidden" name="historicocurtoRdo" id="historicocurtoRdo" />
+                    <input type="hidden" name="emailEngenheiro" id="emailEngenheiro" />
+                    <input type="hidden" name="engenheiro" id="engenheiro" />
+                    <input type="hidden" name="coordenador" id="coordenador" />
+                    <input type="hidden" name="motivoReembolsoDto" id="motivoReembolsoDto" />
+                </div>
+            </form>
+        </div>
+        <script src="Script.js"></script>
+        <script>
+            var beforeSendValidate = function (numState, nextState) {
+                return validateJsonInfos();
+            };
+        </script>
+    </body>
 </html>
 
 <!-- deixar só martinopolis na dromos -->
