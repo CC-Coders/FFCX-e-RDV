@@ -1,0 +1,324 @@
+.tudo {
+    height: 230px;
+}
+
+.divBotaoSelecionarLocal {
+    display: flex;
+    flex-direction: column;
+}
+
+.divSelecionaFilial label,
+.divSelecionaLocalEstoque label,
+.divPrimeiroSelect label,
+.divSegundoSelect label {
+    display: flex;
+    justify-content: flex-start;
+}
+
+#titleTipo,
+#titleModalidade,
+#titleFilial,
+#titleEstoque,
+#titleFundo,
+#titleFormaPagamento,
+#titleCondicaoPagamento {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.divBotaoSelecionarLocal label {
+    color: white;
+}
+
+/* .fundoFixo {
+    width: 465px;
+    padding: 5px 13px;
+    display: flex;
+    align-items: center;
+} */
+
+#divCollapse {
+    border: 1px solid black;
+}
+
+#atabInformacoesIniciais,
+#atabItens {
+    border: 1px solid black;
+}
+
+.divCorpoTabela {
+    background-color: #ffffff;
+    padding: 20px;
+    box-sizing: border-box;
+
+}
+
+.icon-green,
+.icon-red {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.icon-green {
+    background-color: #4CAF50;
+    color: #ffffff;
+    border: 2px solid white;
+}
+
+/* .icon-green:hover{
+    transition: 0.1s linear; 
+    width: 23px;
+    height: 23px;
+  }
+
+  .icon-red:hover{
+    transition: 0.1s linear; 
+    width: 23px;
+    height: 23px;
+  } */
+
+.icon-red {
+    background-color: #FF0000;
+    color: #ffffff;
+    border: 2px solid white;
+}
+
+.icon-red span {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 2px;
+}
+
+.detailsShow {
+    display: flex;
+    height: 20px;
+}
+
+#rateiosContainer {
+    padding: 15px;
+}
+
+.divRateioCentroDeCusto {
+
+    display: flex;
+    flex-direction: column;
+}
+
+.divRateioCentroDeCusto label {
+    font-size: 15px;
+}
+
+.divRateioCentroDeCusto select {
+    width: 100%;
+    height: 28px;
+}
+
+.divtabelaRateio {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.divtabelaRateio label {
+    font-size: 15px;
+}
+
+.divTituloEBotao {
+    display: flex;
+    justify-content: space-between;
+}
+
+#tabelaProdutos {
+    width: 100%;
+}
+
+#painelTabelaDeProdutos {
+    margin-top: 20px;
+    height: auto;
+}
+
+.divPagamento,
+.divTiposModalidade {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.divSelecionarFilialeEstoque {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.select2-container {
+    min-width: 200px;
+}
+
+.select2-selection {
+    height: 32px;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+td.details-control {
+    background: url('https://datatables.net/examples/resources/details_open.png') no-repeat center;
+    cursor: pointer;
+}
+
+tr.shown td.details-control {
+    background: url('https://datatables.net/examples/resources/details_close.png') no-repeat center top 10px;
+}
+
+#fundoSelecionado {
+    display: flex;
+    margin-left: 5px;
+    text-align: center;
+    align-items: center;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    align-content: flex-end;
+    font-size: 16px;
+}
+
+#faturamentoDecisao {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+}
+
+#labelMotivoReembolso h2 {
+    margin-bottom: 15px;
+}
+
+#divOptionsViagem {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.radioInline {
+    position: relative;
+    top: 4px;
+    left: 4px;
+}
+
+.styled-label {
+    display: block;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.styled-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #999;
+    border-radius: 4px;
+    appearance: none;
+    cursor: pointer;
+    outline: none;
+    position: relative;
+}
+
+.styled-checkbox:checked {
+    background-color: #007BFF;
+    border-color: #007BFF;
+}
+
+.styled-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.styled-checkbox:hover {
+    border-color: #666;
+}
+
+.divCorporativa {
+    display: block;
+    margin: 0 20px;
+}
+
+.fundofixoDiv {
+    margin: 0px 0px 20px 0px;
+}
+
+.fundoSelecionado {
+    margin-top: 8px;
+}
+
+#titleValorTotal {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.42857143;
+}
+
+#valorTotalFFCX {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.42857143;
+}
+
+.motivoDiv {
+    display: flex;
+}
+
+#motivoReembolsoValue {
+    margin: 10px 0px 0px 5px;
+}
+
+.detailsMov {
+    border-left: 3px solid #58595b;
+    display: flex;
+    font-size: 15px;
+}
+
+.divRatCCusto1207,
+.divDepartamento1207 {
+    display: flex;
+}
+
+.RateioCentroCusto1207,
+.Departamento1207 {
+    border: 0;
+    font-size: 16px;
+    margin-left: 2rem;
+}
+
+.CentroDeCusto1207,
+.Idmov1207,
+.ValorMov1207 {
+    width: 100%;
+    background-color: inherit;
+}
