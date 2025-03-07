@@ -50,7 +50,6 @@
     background-color: #ffffff;
     padding: 20px;
     box-sizing: border-box;
-
 }
 
 .icon-green,
@@ -66,7 +65,7 @@
 }
 
 .icon-green {
-    background-color: #4CAF50;
+    background-color: #4caf50;
     color: #ffffff;
     border: 2px solid white;
 }
@@ -84,7 +83,7 @@
   } */
 
 .icon-red {
-    background-color: #FF0000;
+    background-color: #ff0000;
     color: #ffffff;
     border: 2px solid white;
 }
@@ -105,7 +104,6 @@
 }
 
 .divRateioCentroDeCusto {
-
     display: flex;
     flex-direction: column;
 }
@@ -176,12 +174,12 @@
 }
 
 td.details-control {
-    background: url('https://datatables.net/examples/resources/details_open.png') no-repeat center;
+    background: url("https://datatables.net/examples/resources/details_open.png") no-repeat center;
     cursor: pointer;
 }
 
 tr.shown td.details-control {
-    background: url('https://datatables.net/examples/resources/details_close.png') no-repeat center top 10px;
+    background: url("https://datatables.net/examples/resources/details_close.png") no-repeat center top 10px;
 }
 
 #fundoSelecionado {
@@ -224,7 +222,7 @@ tr.shown td.details-control {
 
 .styled-label {
     display: block;
-    font-family: 'Arial', sans-serif;
+    font-family: "Arial", sans-serif;
     font-size: 16px;
     color: #333;
     margin-bottom: 5px;
@@ -245,12 +243,12 @@ tr.shown td.details-control {
 }
 
 .styled-checkbox:checked {
-    background-color: #007BFF;
-    border-color: #007BFF;
+    background-color: #007bff;
+    border-color: #007bff;
 }
 
 .styled-checkbox:checked::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 2px;
     left: 5px;
@@ -279,13 +277,13 @@ tr.shown td.details-control {
 }
 
 #titleValorTotal {
-    font-family: 'Open Sans', Arial, sans-serif;
+    font-family: "Open Sans", Arial, sans-serif;
     font-size: 15px;
     line-height: 1.42857143;
 }
 
 #valorTotalFFCX {
-    font-family: 'Open Sans', Arial, sans-serif;
+    font-family: "Open Sans", Arial, sans-serif;
     font-size: 15px;
     line-height: 1.42857143;
 }

@@ -12,7 +12,7 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
     var decisaoAprovar = hAPI.getCardValue("aprovacao");
     var processo = parseInt(getValue("WKNumProces"));
     var localDeEstoque = hAPI.getCardValue("selectLocalEstoque");
-    var processoFluig = getValue("WKNumProces")
+    var processoFluig = getValue("WKNumProces");
     var motivoReembolso;
     var viagemCorporativa = hAPI.getCardValue("corporativaDto") == "sim" ? true : false;
     var viagemFamiliar = hAPI.getCardValue("familiarDto") == "sim" ? true : false;
@@ -25,8 +25,7 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
         motivoReembolso = "Viagem Corporativa";
     } else if (viagemFamiliar == "sim") {
         motivoReembolso = "Visita Familiar";
-    }
-    else {
+    } else {
         motivoReembolso = "";
     }
 
@@ -44,7 +43,10 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                     throw "Houve um erro na comunicação com o webservice. Tente novamente!";
                 } else {
                     if (responseData.values[0][0] == "false") {
-                        throw ("Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " + responseData.values[0][1]);
+                        throw (
+                            "Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " +
+                            responseData.values[0][1]
+                        );
                     } else if (responseData.values[0][0] == "true") {
                         responseData.values[0][2];
                     }
@@ -62,7 +64,10 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                     throw "Houve um erro na comunicação com o webservice. Tente novamente!";
                 } else {
                     if (responseData.values[0][0] == "false") {
-                        throw ("Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " + responseData.values[0][1]);
+                        throw (
+                            "Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " +
+                            responseData.values[0][1]
+                        );
                     } else if (responseData.values[0][0] == "true") {
                         responseData.values[0][2];
                     }
@@ -73,9 +78,19 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
             if (attachments.size() > 0) {
                 var c1 = DatasetFactory.createConstraint("IDMOV", IdMovimento, IdMovimento, ConstraintType.MUST);
                 if (tipo == "Fundo Fixo") {
-                    var c2 = DatasetFactory.createConstraint("OPERACAO", "ShowMovAprovacao", "ShowMovAprovacao", ConstraintType.MUST);
+                    var c2 = DatasetFactory.createConstraint(
+                        "OPERACAO",
+                        "ShowMovAprovacao",
+                        "ShowMovAprovacao",
+                        ConstraintType.MUST
+                    );
                 } else if (tipo == "R.D.O") {
-                    var c2 = DatasetFactory.createConstraint("OPERACAO", "ShowMovAprovacaoRDO", "ShowMovAprovacaoRDO", ConstraintType.MUST);
+                    var c2 = DatasetFactory.createConstraint(
+                        "OPERACAO",
+                        "ShowMovAprovacaoRDO",
+                        "ShowMovAprovacaoRDO",
+                        ConstraintType.MUST
+                    );
                 }
                 var dsEnviarEmail = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2], null);
 
@@ -89,19 +104,38 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                 var numeroSerie = dsEnviarEmail.values[0][4];
                 var chaveAcesso = dsEnviarEmail.values[0][5];
 
-                var idMov = DatasetFactory.createConstraint("IDMOV", parametroIdmov, parametroIdmov, ConstraintType.MUST);
-                var codColigada = DatasetFactory.createConstraint("CODCOLIGADA", coligada, coligada, ConstraintType.MUST);
+                var idMov = DatasetFactory.createConstraint(
+                    "IDMOV",
+                    parametroIdmov,
+                    parametroIdmov,
+                    ConstraintType.MUST
+                );
+                var codColigada = DatasetFactory.createConstraint(
+                    "CODCOLIGADA",
+                    coligada,
+                    coligada,
+                    ConstraintType.MUST
+                );
                 var numeroMov = DatasetFactory.createConstraint("NUMEROMOV", numeroMov, numeroMov, ConstraintType.MUST);
-                var numeroSerie = DatasetFactory.createConstraint("SERIE", numeroSerie, numeroSerie, ConstraintType.MUST);
-                var chaveAcesso = DatasetFactory.createConstraint("CHAVEACESSONFE", chaveAcesso, chaveAcesso, ConstraintType.MUST);
+                var numeroSerie = DatasetFactory.createConstraint(
+                    "SERIE",
+                    numeroSerie,
+                    numeroSerie,
+                    ConstraintType.MUST
+                );
+                var chaveAcesso = DatasetFactory.createConstraint(
+                    "CHAVEACESSONFE",
+                    chaveAcesso,
+                    chaveAcesso,
+                    ConstraintType.MUST
+                );
 
                 var constraints = new Array(idMov, codColigada, numeroMov, numeroSerie, chaveAcesso);
 
                 var wsReport;
                 if (tipo == "Fundo Fixo") {
                     wsReport = DatasetFactory.getDataset("GerarRelatorioProvisao", null, constraints, null);
-                }
-                else if (tipo == "R.D.O") {
+                } else if (tipo == "R.D.O") {
                     wsReport = DatasetFactory.getDataset("GerarRelatorioRDO", null, constraints, null);
                 }
 
@@ -109,8 +143,18 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
 
                 if (wsReport.values[0][0] == true) {
                     var resultado = wsReport.values[0][1];
-                    var p1 = DatasetFactory.createConstraint("processo", processoFluig, processoFluig, ConstraintType.MUST);
-                    var p2 = DatasetFactory.createConstraint("idRM", parametroIdmov, parametroIdmov, ConstraintType.MUST);
+                    var p1 = DatasetFactory.createConstraint(
+                        "processo",
+                        processoFluig,
+                        processoFluig,
+                        ConstraintType.MUST
+                    );
+                    var p2 = DatasetFactory.createConstraint(
+                        "idRM",
+                        parametroIdmov,
+                        parametroIdmov,
+                        ConstraintType.MUST
+                    );
                     var p3 = DatasetFactory.createConstraint("conteudo", resultado, resultado, ConstraintType.MUST);
                     var constraints = new Array(p1, p2, p3);
 
@@ -124,7 +168,10 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                         throw "Houve um erro na comunicação com o webservice de criação de documentos. Tente novamente!";
                     } else {
                         if (res.values[0][0] == "false") {
-                            throw ("Erro ao criar arquivo. Favor entrar em contato com o administrador do sistema. Mensagem: " + res.values[0][1]);
+                            throw (
+                                "Erro ao criar arquivo. Favor entrar em contato com o administrador do sistema. Mensagem: " +
+                                res.values[0][1]
+                            );
                         } else {
                             hAPI.attachDocument(res.values[0][1]);
                         }
@@ -145,7 +192,8 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
 
     if (modalidade == "Recebimento" && decisaoAprovar != "sim") {
         var mailAprovado = hAPI.getCardValue("mail");
-        var url = "http://desenvolvimento.castilho.com.br:3232/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID="
+        var url =
+            "http://desenvolvimento.castilho.com.br:3232/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=";
         var processoUrl = url + processo;
         if (atividade == 8) {
             //Recusado Engenheiro
@@ -153,26 +201,42 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                 var htmlTemplateNaoAprovacao =
                     "<p class='DescrMsgForum'>\
     			Provisão Fundo Fixo de Caixa <b>REPROVADO</b> pelo(a) Engenheiro(a),\
-    			Nº <a href='"+ processoUrl + "'target='_blank'>" + processo + "</a>.\
+    			Nº <a href='" +
+                    processoUrl +
+                    "'target='_blank'>" +
+                    processo +
+                    "</a>.\
         		</p>\
         		<div class='DescrMsgForum actions' style='display:block'>\
          		<br />\
     			<b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
 
-                sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Provisão RECUSADA  " + processo, htmlTemplateNaoAprovacao);
-            }
-            else if (tipo == "R.D.O") {
+                sendCustomEmail(
+                    mailAprovado,
+                    userEmail,
+                    "[FLUIG] Provisão RECUSADA  " + processo,
+                    htmlTemplateNaoAprovacao
+                );
+            } else if (tipo == "R.D.O") {
                 var htmlTemplateNaoAprovacao =
                     "<p class='DescrMsgForum'>\
     			Despesas de R.D.O <b>REPROVADO</b> pelo(a) Engenheiro(a),\
-    			Solicitação Nº <a href='"+ processoUrl + "'target='_blank'>" + processo + "</a>.\
+    			Solicitação Nº <a href='" +
+                    processoUrl +
+                    "'target='_blank'>" +
+                    processo +
+                    "</a>.\
         		</p>\
         		<div class='DescrMsgForum actions' style='display:block'>\
          		<br />\
     			<b>Acessar o chamado e verificar as correções a serem efetuadas</b></br><br/></br>";
 
-                sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Despesas de R.D.O RECUSADA " + processo, htmlTemplateNaoAprovacao);
-
+                sendCustomEmail(
+                    mailAprovado,
+                    userEmail,
+                    "[FLUIG] Despesas de R.D.O RECUSADA " + processo,
+                    htmlTemplateNaoAprovacao
+                );
             }
         } else if (atividade == 6) {
             //Recusado Contabilidade
@@ -181,36 +245,63 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                 var htmlTemplateNaoAprovacao =
                     "<p class='DescrMsgForum'>\
 	        			Provisão de Fundo Fixo de Caixa <b>REPROVADO</b> pelo setor Contabilidade,\
-	        			Nº <a href='"+ processoUrl + "'target='_blank'>" + processo + "</a>.\
+	        			Nº <a href='" +
+                    processoUrl +
+                    "'target='_blank'>" +
+                    processo +
+                    "</a>.\
 		        		</p>\
 		        		<div class='DescrMsgForum actions' style='display:block'>\
 	             		<br />\
 	        			<b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
 
-                sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] Provisão RECUSADA  " + processo, htmlTemplateNaoAprovacao);
-                sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Provisão RECUSADA  " + processo, htmlTemplateNaoAprovacao);
-            }
-            else if (tipo == "R.D.O") {
+                sendCustomEmail(
+                    mailAprovado,
+                    engenheiroEmail,
+                    "[FLUIG] Provisão RECUSADA  " + processo,
+                    htmlTemplateNaoAprovacao
+                );
+                sendCustomEmail(
+                    mailAprovado,
+                    userEmail,
+                    "[FLUIG] Provisão RECUSADA  " + processo,
+                    htmlTemplateNaoAprovacao
+                );
+            } else if (tipo == "R.D.O") {
                 log.info("entrou aqui no rdo contabilidade");
 
                 var htmlTemplateNaoAprovacao =
                     "<p class='DescrMsgForum'>\
             			Despesas de R.D.O <b>REPROVADO</b> pelo setor Contabilidade,\
-            			Solicitação Nº <a href='"+ processoUrl + "'target='_blank'>" + processo + "</a>.\
+            			Solicitação Nº <a href='" +
+                    processoUrl +
+                    "'target='_blank'>" +
+                    processo +
+                    "</a>.\
                 		</p>\
                 		<div class='DescrMsgForum actions' style='display:block'>\
                  		<br />\
             			<b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
 
-                sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] Despesas de R.D.O RECUSADA  " + processo, htmlTemplateNaoAprovacao);
-                sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Despesas de R.D.O RECUSADA  " + processo, htmlTemplateNaoAprovacao);
+                sendCustomEmail(
+                    mailAprovado,
+                    engenheiroEmail,
+                    "[FLUIG] Despesas de R.D.O RECUSADA  " + processo,
+                    htmlTemplateNaoAprovacao
+                );
+                sendCustomEmail(
+                    mailAprovado,
+                    userEmail,
+                    "[FLUIG] Despesas de R.D.O RECUSADA  " + processo,
+                    htmlTemplateNaoAprovacao
+                );
             }
         }
     }
 
     if (modalidade == "Recebimento") {
         if (atividade == 6 && decisaoAprovar == "sim") {
-            log.info("ta entrando aqui viu")
+            log.info("ta entrando aqui viu");
             if (tipo == "R.D.O") {
                 codtmv = "1.1.09";
                 codtmvDestiny = "1.2.10";
@@ -220,9 +311,9 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                 codtmvDestiny = "1.2.07";
                 xmlStructure = createReceiptXML(codtmv, codtmvDestiny);
             }
-            var formaPgtoAntigo = '';
-            var formaPgtoAtual = hAPI.getCardValue('formaPagamento');
-            log.error("A forma de pagamento eh: " + formaPgtoAntigo  + "e a atual eh: " + formaPgtoAtual);
+            var formaPgtoAntigo = "";
+            var formaPgtoAtual = hAPI.getCardValue("formaPagamento");
+            log.error("A forma de pagamento eh: " + formaPgtoAntigo + "e a atual eh: " + formaPgtoAtual);
             if (formaPgtoAntigo != formaPgtoAtual) {
                 var RetornoAtualizaMov = atualizaMovimento();
 
@@ -237,14 +328,26 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
 
                 if (!retornoMovimento || retornoMovimento == "" || retornoMovimento == null) {
                     throw "Houve um erro na comunicação com o webservice. Tente novamente!";
-                }
-                else {
+                } else {
                     if (retornoMovimento.values[0][0] == "false" && FundoFixo != "000557") {
-                        throw "Não foi possível atualizar o movimento. Motivo: " + retornoMovimento.values[0][1] + ". Favor verificar as informações ou entrar em contato com o administrador do sistema.";
-                    }
-                    else {
-                        var c1 = DatasetFactory.createConstraint("pCodcoligada", coligada, coligada, ConstraintType.MUST);
-                        var c2 = DatasetFactory.createConstraint("pXML", xmlStructure, xmlStructure, ConstraintType.MUST);
+                        throw (
+                            "Não foi possível atualizar o movimento. Motivo: " +
+                            retornoMovimento.values[0][1] +
+                            ". Favor verificar as informações ou entrar em contato com o administrador do sistema."
+                        );
+                    } else {
+                        var c1 = DatasetFactory.createConstraint(
+                            "pCodcoligada",
+                            coligada,
+                            coligada,
+                            ConstraintType.MUST
+                        );
+                        var c2 = DatasetFactory.createConstraint(
+                            "pXML",
+                            xmlStructure,
+                            xmlStructure,
+                            ConstraintType.MUST
+                        );
                         var constraints = new Array(c1, c2);
                         var retorno = DatasetFactory.getDataset("FaturaMovimento", null, constraints, null);
 
@@ -255,12 +358,17 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                             if (!retorno || retorno == "" || retorno == null) {
                                 throw "Houve um erro na comunicação com o webservice. Tente novamente!";
                             } else if (retorno.values[0][0] == "false") {
-                                throw "Não foi possível baixar a NF. Motivo: " + retorno.values[0][1] + ". Favor verificar as informações ou entrar em contato com o administrador do sistema.";
-                         }
+                                throw (
+                                    "Não foi possível baixar a NF. Motivo: " +
+                                    retorno.values[0][1] +
+                                    ". Favor verificar as informações ou entrar em contato com o administrador do sistema."
+                                );
+                            }
                         }
                     }
                     var mailAprovado = hAPI.getCardValue("mail");
-                    var url = "http://desenvolvimento.castilho.com.br:3232/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID="
+                    var url =
+                        "http://desenvolvimento.castilho.com.br:3232/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=";
                     var processoUrl = url + processo;
 
                     var numSolic = hAPI.getCardValue("numProces");
@@ -280,17 +388,35 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                         var htmlTemplate1 =
                             "<p class='DescrMsgForum'>\
                 			Provisão de Fundo Fixo de Caixa aprovada,\
-                			Nº <a href='"+ processoUrl + "'target='_blank'>" + processo + "</a>.\
+                			Nº <a href='" +
+                            processoUrl +
+                            "'target='_blank'>" +
+                            processo +
+                            "</a>.\
                 		</p>\
                 		<div class='DescrMsgForum actions' style='display:block'>\
                      			<br />\
-                     				<div><b>Tipo:</b> " + tipo + "</div></br></br>\
-                     				<div><b>Valor:</b> " + FormataValor(valor_total) + "</div></br>\
-                     				<div><b>Data:</b> " + dataFormatada + "</div></br></br>\
-                                    <div><b>Local de Estoque:</b> "+ localDeEstoque + "</div></br>\
-                                    <div><b>Filial: </b> "+ filial + "</div></br></br>\
-                                    <div><b>Id Movimento: </b> "+ IdMovimento + "</div></br>\
-                     				<div><b>Nº: </b> " + hAPI.getCardValue("NumeroMovimento") + "</div></br></br>\
+                     				<div><b>Tipo:</b> " +
+                            tipo +
+                            "</div></br></br>\
+                     				<div><b>Valor:</b> " +
+                            FormataValor(valor_total) +
+                            "</div></br>\
+                     				<div><b>Data:</b> " +
+                            dataFormatada +
+                            "</div></br></br>\
+                                    <div><b>Local de Estoque:</b> " +
+                            localDeEstoque +
+                            "</div></br>\
+                                    <div><b>Filial: </b> " +
+                            filial +
+                            "</div></br></br>\
+                                    <div><b>Id Movimento: </b> " +
+                            IdMovimento +
+                            "</div></br>\
+                     				<div><b>Nº: </b> " +
+                            hAPI.getCardValue("NumeroMovimento") +
+                            "</div></br></br>\
                      		</div>\
                 		<br>";
 
@@ -301,33 +427,63 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                                 <p>\
                                     <b>Anexos:</b>\
                                     <ul>\
-                                        " + anexos1 + "<br>\
+                                        " +
+                                anexos1 +
+                                "<br>\
                                     </ul>\
                                 </p>\
                             </div>";
                         }
 
-                        sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
-                        sendCustomEmail(mailAprovado, "contabilidade@castilho.com.br", "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
-
-                    }
-                    else if (tipo == "R.D.O") {
+                        sendCustomEmail(
+                            mailAprovado,
+                            engenheiroEmail,
+                            "[FLUIG] PROVISÃO Aprovada  " + processo,
+                            htmlTemplate1
+                        );
+                        sendCustomEmail(
+                            mailAprovado,
+                            "contabilidade@castilho.com.br",
+                            "[FLUIG] PROVISÃO Aprovada  " + processo,
+                            htmlTemplate1
+                        );
+                    } else if (tipo == "R.D.O") {
                         var motivoreembolso = hAPI.getCardValue("motivoReembolsoDto");
                         var htmlTemplate1 =
                             "<p class='DescrMsgForum'>\
                      			R.D.O aprovada,\
-                     			Nº <a href='"+ processoUrl + "'target='_blank'>" + processo + "</a>.\
+                     			Nº <a href='" +
+                            processoUrl +
+                            "'target='_blank'>" +
+                            processo +
+                            "</a>.\
                      		</p>\
                      		<div class='DescrMsgForum actions' style='display:block'>\
                      			<br />\
-                     				<div><b>Tipo:</b> " + tipo + "</div></br></br>\
-                     				<div><b>Valor:</b> " + FormataValor(valor_total) + "</div></br>\
-                     				<div><b>Data:</b> " + dataFormatada + "</div></br></br>\
-                                    <div><b>Local de Estoque:</b> "+ localDeEstoque + "</div></br>\
-                                    <div><b>Filial: </b> "+ Filial + "</div></br></br>\
-                                    <div><b>Id Movimento: </b> "+ IdMovimento + "</div></br>\
-                     				<div><b>Nº: </b> " + hAPI.getCardValue("NumeroMovimento") + "</div></br></br>\
-                     				<div><b>Motivo do reembolso da despesa: </b> " + motivoreembolso + "</div></br></br>\
+                     				<div><b>Tipo:</b> " +
+                            tipo +
+                            "</div></br></br>\
+                     				<div><b>Valor:</b> " +
+                            FormataValor(valor_total) +
+                            "</div></br>\
+                     				<div><b>Data:</b> " +
+                            dataFormatada +
+                            "</div></br></br>\
+                                    <div><b>Local de Estoque:</b> " +
+                            localDeEstoque +
+                            "</div></br>\
+                                    <div><b>Filial: </b> " +
+                            Filial +
+                            "</div></br></br>\
+                                    <div><b>Id Movimento: </b> " +
+                            IdMovimento +
+                            "</div></br>\
+                     				<div><b>Nº: </b> " +
+                            hAPI.getCardValue("NumeroMovimento") +
+                            "</div></br></br>\
+                     				<div><b>Motivo do reembolso da despesa: </b> " +
+                            motivoreembolso +
+                            "</div></br></br>\
                      		</div>\
                      		<br>";
 
@@ -338,14 +494,26 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                                      <p>\
                                          <b>Anexos:</b>\
                                          <ul>\
-                                             " + anexos1 + "<br>\
+                                             " +
+                                anexos1 +
+                                "<br>\
                                          </ul>\
                                      </p>\
                                  </div>";
                         }
 
-                        sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
-                        sendCustomEmail(mailAprovado, "contabilidade@castilho.com.br", "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
+                        sendCustomEmail(
+                            mailAprovado,
+                            engenheiroEmail,
+                            "[FLUIG] PROVISÃO Aprovada  " + processo,
+                            htmlTemplate1
+                        );
+                        sendCustomEmail(
+                            mailAprovado,
+                            "contabilidade@castilho.com.br",
+                            "[FLUIG] PROVISÃO Aprovada  " + processo,
+                            htmlTemplate1
+                        );
                     }
                 }
             }
@@ -354,7 +522,6 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
 }
 // var codForn = hAPI.getCardValue("campoFundoFixoDto");
 // var numeroMovimento = hAPI.getCardValue("NumeroMovimento");
-
 
 function atualizaMovimento() {
     var formaPgto = hAPI.getCardValue("formaPagamento");
@@ -399,14 +566,18 @@ function atualizaMovimento() {
     return newXml;
 }
 
-
 function BuscaAnexosTemplate2() {
     var retorno = "";
     var docs = hAPI.listAttachments();
 
     for (var i = 0; i < docs.size(); i++) {
         var doc = docs.get(i);
-        retorno += "<li><a href='" + fluigAPI.getDocumentService().getDownloadURL(doc.getDocumentId()) + "'>" + doc.getDocumentDescription() + "</a></li>";
+        retorno +=
+            "<li><a href='" +
+            fluigAPI.getDocumentService().getDownloadURL(doc.getDocumentId()) +
+            "'>" +
+            doc.getDocumentDescription() +
+            "</a></li>";
     }
 
     return retorno;
@@ -428,7 +599,9 @@ function createInsertXML(codtmv, motivoReembolso) {
     var xml =
         "<MovRM>\
             <TMOV>\
-            <CODCOLIGADA>"+ coligadaXML + "</CODCOLIGADA>\
+            <CODCOLIGADA>" +
+        coligadaXML +
+        "</CODCOLIGADA>\
             ";
 
     if (IdMovVerif == "") {
@@ -437,8 +610,12 @@ function createInsertXML(codtmv, motivoReembolso) {
 	            <NUMEROMOV>-1</NUMEROMOV>";
     } else {
         xml +=
-            "<IDMOV>" + IdMovVerif + "</IDMOV>\
-	            <NUMEROMOV>" + NumeroMovVerif + "</NUMEROMOV>";
+            "<IDMOV>" +
+            IdMovVerif +
+            "</IDMOV>\
+	            <NUMEROMOV>" +
+            NumeroMovVerif +
+            "</NUMEROMOV>";
     }
     if (motivoReembolso != "") {
         xml += "<HISTORICOCURTO>" + motivoReembolso + "</HISTORICOCURTO>";
@@ -447,18 +624,32 @@ function createInsertXML(codtmv, motivoReembolso) {
     }
     xml +=
         "\
-                <CODFILIAL>" + Filial + "</CODFILIAL>\
-                <CODCFO>" + FundoFixoVerif + "</CODCFO>\
-                <CODTMV>"+ codtmv + "</CODTMV>\
+                <CODFILIAL>" +
+        Filial +
+        "</CODFILIAL>\
+                <CODCFO>" +
+        FundoFixoVerif +
+        "</CODCFO>\
+                <CODTMV>" +
+        codtmv +
+        "</CODTMV>\
                 <TIPO>A</TIPO>\
                 <STATUS>A</STATUS>\
                 <CODMOEVALORLIQUIDO>R$</CODMOEVALORLIQUIDO>\
-                <CODCFOAUX>" + FundoFixoVerif + "</CODCFOAUX>\
+                <CODCFOAUX>" +
+        FundoFixoVerif +
+        "</CODCFOAUX>\
                 <CODCOLCFO>0</CODCOLCFO>\
                 <INTEGRAAPLICACAO>T</INTEGRAAPLICACAO>\
-                <CODCOLIGADA1>"+ coligadaXML + "</CODCOLIGADA1>\
-                <CODCPG>" + (coligadaXML == 12 && tipo == "R.D.O" ? "009" : (coligadaXML == 2 && tipo == "Fundo Fixo" ? "002" : "001")) + "</CODCPG>\
-                <CODLOC>" + codLocalEstoque + "</CODLOC>\
+                <CODCOLIGADA1>" +
+        coligadaXML +
+        "</CODCOLIGADA1>\
+                <CODCPG>" +
+        (coligadaXML == 12 && tipo == "R.D.O" ? "009" : coligadaXML == 2 && tipo == "Fundo Fixo" ? "002" : "001") +
+        "</CODCPG>\
+                <CODLOC>" +
+        codLocalEstoque +
+        "</CODLOC>\
             </TMOV>\
             ";
 
@@ -471,8 +662,12 @@ function createInsertXML(codtmv, motivoReembolso) {
         xml +=
             "\
             <TITMMOV>\
-	            <CODCOLIGADA>"+ coligadaXML + "</CODCOLIGADA>\
-	            <NSEQITMMOV>" + (i + 1) + "</NSEQITMMOV>";
+	            <CODCOLIGADA>" +
+            coligadaXML +
+            "</CODCOLIGADA>\
+	            <NSEQITMMOV>" +
+            (i + 1) +
+            "</NSEQITMMOV>";
         if (IdMovVerif == "") {
             xml += "<IDMOV>-1</IDMOV>";
         } else {
@@ -480,18 +675,40 @@ function createInsertXML(codtmv, motivoReembolso) {
         }
         xml +=
             "\
-	            <HISTORICOCURTO> "+ Fornecedor + "</HISTORICOCURTO>\
-	            <IDPRD>" + jsonExportarRm[i].codigoProduto + "</IDPRD>\
-	            <CODIGOPRD>" + jsonExportarRm[i].idProduto + "</CODIGOPRD>\
-	            <NOMEFANTASIA>" + jsonExportarRm[i].nomeFantasia + "</NOMEFANTASIA>\
+	            <HISTORICOCURTO> " +
+            Fornecedor +
+            "</HISTORICOCURTO>\
+	            <IDPRD>" +
+            jsonExportarRm[i].codigoProduto +
+            "</IDPRD>\
+	            <CODIGOPRD>" +
+            jsonExportarRm[i].idProduto +
+            "</CODIGOPRD>\
+	            <NOMEFANTASIA>" +
+            jsonExportarRm[i].nomeFantasia +
+            "</NOMEFANTASIA>\
 	            <QUANTIDADE>1</QUANTIDADE>\
-	            <CODTB1FLX>" + hAPI.getCardValue("formaPagamento") + "</CODTB1FLX>\
-	            <PRECOUNITARIO>" + jsonExportarRm[i].valor + "</PRECOUNITARIO>\
-	            <CODUND>" + jsonExportarRm[i].unidade + "</CODUND>\
-	            <CODCCUSTO> " + jsonExportarRm[i].codCC + "</CODCCUSTO>\
-	            <CODLOC>" + codLocalEstoque + "</CODLOC>\
-	            <VALORUNITARIO>" + jsonExportarRm[i].valor + "</VALORUNITARIO>\
-	            <CODTB1FAT>" + jsonExportarRm[i].codTb1Fat + "</CODTB1FAT>\
+	            <CODTB1FLX>" +
+            hAPI.getCardValue("formaPagamento") +
+            "</CODTB1FLX>\
+	            <PRECOUNITARIO>" +
+            jsonExportarRm[i].valor +
+            "</PRECOUNITARIO>\
+	            <CODUND>" +
+            jsonExportarRm[i].unidade +
+            "</CODUND>\
+	            <CODCCUSTO> " +
+            jsonExportarRm[i].codCC +
+            "</CODCCUSTO>\
+	            <CODLOC>" +
+            codLocalEstoque +
+            "</CODLOC>\
+	            <VALORUNITARIO>" +
+            jsonExportarRm[i].valor +
+            "</VALORUNITARIO>\
+	            <CODTB1FAT>" +
+            jsonExportarRm[i].codTb1Fat +
+            "</CODTB1FAT>\
             </TITMMOV>\
             <TITMMOVRATCCU>\
             ";
@@ -501,10 +718,18 @@ function createInsertXML(codtmv, motivoReembolso) {
             xml += "<IDMOV>" + IdMovVerif + "</IDMOV>";
         }
         xml +=
-            "<CODCOLIGADA>" + coligadaXML + "</CODCOLIGADA>\
-	            <NSEQITMMOV>" + (i + 1) + "</NSEQITMMOV>\
-	            <CODCCUSTO>" + jsonExportarRm[i].codCC + "</CODCCUSTO>\
-	            <VALOR>" + jsonExportarRm[i].valor + "</VALOR>\
+            "<CODCOLIGADA>" +
+            coligadaXML +
+            "</CODCOLIGADA>\
+	            <NSEQITMMOV>" +
+            (i + 1) +
+            "</NSEQITMMOV>\
+	            <CODCCUSTO>" +
+            jsonExportarRm[i].codCC +
+            "</CODCCUSTO>\
+	            <VALOR>" +
+            jsonExportarRm[i].valor +
+            "</VALOR>\
 	            <IDMOVRATCCU>-1</IDMOVRATCCU>\
             </TITMMOVRATCCU>\
 	            ";
@@ -512,7 +737,9 @@ function createInsertXML(codtmv, motivoReembolso) {
             xml +=
                 "\
                 <TITMMOVRATDEP>\
-	                <CODCOLIGADA>"+ coligadaXML + "</CODCOLIGADA>";
+	                <CODCOLIGADA>" +
+                coligadaXML +
+                "</CODCOLIGADA>";
             if (IdMovVerif == "") {
                 xml += "<IDMOV>-1</IDMOV>";
             } else {
@@ -520,10 +747,18 @@ function createInsertXML(codtmv, motivoReembolso) {
             }
             xml +=
                 "\
-	                <CODFILIAL>" + Filial + "</CODFILIAL>\
-	                <NSEQITMMOV>" + (i + 1) + "</NSEQITMMOV>\
-	                <CODDEPARTAMENTO>" + jsonExportarRm[i].depart[j].departamento + "</CODDEPARTAMENTO>\
-	                <VALOR>" + jsonExportarRm[i].depart[j].valorDepartamento + "</VALOR>\
+	                <CODFILIAL>" +
+                Filial +
+                "</CODFILIAL>\
+	                <NSEQITMMOV>" +
+                (i + 1) +
+                "</NSEQITMMOV>\
+	                <CODDEPARTAMENTO>" +
+                jsonExportarRm[i].depart[j].departamento +
+                "</CODDEPARTAMENTO>\
+	                <VALOR>" +
+                jsonExportarRm[i].depart[j].valorDepartamento +
+                "</VALOR>\
                 </TITMMOVRATDEP>\
                 ";
         }
@@ -552,34 +787,48 @@ function createReceiptXML(codtmv, codtmvDestiny) {
 
     if (decisaoFaturamentoSim == "sim") {
         var dataAtual = hAPI.getCardValue("dataFaturamento");
-    }
-    else if (aprovacaoContabilidade == "sim") {
+    } else if (aprovacaoContabilidade == "sim") {
         var dataAtual = hAPI.getCardValue("DataMovFaturado");
     }
 
     log.error("a data que ta eh" + dataAtual + "!!");
 
-
     var newXml = "";
     if (jsonExportarRm.length > 0) {
         newXml =
-        "<MovFaturamentoProcParams>\
+            "<MovFaturamentoProcParams>\
             <movCopiaFatPar>\
-            <CodColigada>"+ coligada + "</CodColigada>\
+            <CodColigada>" +
+            coligada +
+            "</CodColigada>\
             <CodSistema>T</CodSistema>\
-            <CodTmvDestino>"+ codtmvDestiny + "</CodTmvDestino>\
-            <CodTmvOrigem>"+ codtmv + "</CodTmvOrigem>\
-            <CodUsuario>" + usuario + "</CodUsuario>\
+            <CodTmvDestino>" +
+            codtmvDestiny +
+            "</CodTmvDestino>\
+            <CodTmvOrigem>" +
+            codtmv +
+            "</CodTmvOrigem>\
+            <CodUsuario>" +
+            usuario +
+            "</CodUsuario>\
             <IdMov>\
-                <int>" + jsonExportarRm[0].values.IDMOV + "</int>\
+                <int>" +
+            jsonExportarRm[0].values.IDMOV +
+            "</int>\
             </IdMov>\
-            <dataBase>" + dataAtual + "</dataBase>\
-            <dataEmissao>" + dataAtual + "</dataEmissao>\
-            <dataExtra1>" + dataAtual + "</dataExtra1>\
+            <dataBase>" +
+            dataAtual +
+            "</dataBase>\
+            <dataEmissao>" +
+            dataAtual +
+            "</dataEmissao>\
+            <dataExtra1>" +
+            dataAtual +
+            "</dataExtra1>\
             <TipoFaturamento>1</TipoFaturamento>\
             <efeitoPedidoFatAutomatico>2</efeitoPedidoFatAutomatico>\
             <listaMovItemFatAutomatico>";
-        }
+    }
 
     for (z = 0; z < jsonExportarRm.length; z++) {
         var idMovimento = jsonExportarRm[z].values.IDMOV;
@@ -587,19 +836,27 @@ function createReceiptXML(codtmv, codtmvDestiny) {
 
         newXml +=
             "<MovItemFatAutomatico>\
-            <CodColigada>"+ coligada + "</CodColigada>\
+            <CodColigada>" +
+            coligada +
+            "</CodColigada>\
             <Checked>1</Checked>\
-            <IdMov>" + idMovimento + "</IdMov>\
-            <NSeqItmMov>" + numSequencia + "</NSeqItmMov>\
+            <IdMov>" +
+            idMovimento +
+            "</IdMov>\
+            <NSeqItmMov>" +
+            numSequencia +
+            "</NSeqItmMov>\
             <Quantidade>1</Quantidade>\
             </MovItemFatAutomatico>";
     }
 
     if (jsonExportarRm.length > 0) {
         newXml +=
-        "</listaMovItemFatAutomatico>\
+            "</listaMovItemFatAutomatico>\
             <serie>1</serie>\
-            <numeroMov>" + jsonExportarRm[0].values.NUMEROMOV + "</numeroMov>\
+            <numeroMov>" +
+            jsonExportarRm[0].values.NUMEROMOV +
+            "</numeroMov>\
             <realizaBaixaPedido>true</realizaBaixaPedido>\
         </movCopiaFatPar>\
         </MovFaturamentoProcParams>";
@@ -607,18 +864,17 @@ function createReceiptXML(codtmv, codtmvDestiny) {
     return newXml;
 }
 
-
 function sendCustomEmail(to, from, subject, htmlBody) {
     var processo = parseInt(getValue("WKNumProces"));
-    var url = 'http://fluig.castilho.com.br:1010';
+    var url = "http://fluig.castilho.com.br:1010";
 
-    log.info("html envio: " + htmlBody)
+    log.info("html envio: " + htmlBody);
     var data = {
         companyId: getValue("WKCompany").toString(),
-        serviceCode: 'ServicoFluig',
-        endpoint: '/api/public/alert/customEmailSender',
-        method: 'post',
-        timeoutService: '100',
+        serviceCode: "ServicoFluig",
+        endpoint: "/api/public/alert/customEmailSender",
+        method: "post",
+        timeoutService: "100",
         params: {
             to: to,
             from: from,
@@ -626,11 +882,11 @@ function sendCustomEmail(to, from, subject, htmlBody) {
             templateId: "TPL_SUPORTE_TI2",
             dialectId: "pt_BR",
             param: {
-                "CORPO_EMAIL": htmlBody,
-                "SERVER_URL": url,
-                "TENANT_ID": "1"
-            }
-        }
+                CORPO_EMAIL: htmlBody,
+                SERVER_URL: url,
+                TENANT_ID: "1",
+            },
+        },
     };
 
     var clientService = fluigAPI.getAuthorizeClientService();
@@ -644,7 +900,12 @@ function sendCustomEmail(to, from, subject, htmlBody) {
 }
 
 function BuscaEmailUsuario(usuario) {
-    var ds = DatasetFactory.getDataset("colleague", null, [DatasetFactory.createConstraint("colleagueId", usuario, usuario, ConstraintType.MUST)], null);
+    var ds = DatasetFactory.getDataset(
+        "colleague",
+        null,
+        [DatasetFactory.createConstraint("colleagueId", usuario, usuario, ConstraintType.MUST)],
+        null
+    );
     if (ds.values.length > 0) {
         var userEmail = ds.getValue(0, "mail");
         return userEmail;
