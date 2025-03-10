@@ -193,7 +193,13 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
         }
     }
 
-    if (FundoFixo == "000557" && atividade == ATIVIDADES.INICIO) {
+
+    var codigoFundoFixoCuritiba = "000557";
+    if (FundoFixo == codigoFundoFixoCuritiba && atividade == ATIVIDADES.INICIO) {
+        /* 
+         * Caso o fundo fixo seja Matriz Curitiba, define as variáveis para que realize a integração com o RM no inicío da solicitação
+         * Sem precisar passar pela aprovação do Engenheiro e da Contabilidade
+         */ 
         atividade = ATIVIDADES.APROVACAO_CONTABILIDADE;
         decisaoAprovar = "sim";
     }
