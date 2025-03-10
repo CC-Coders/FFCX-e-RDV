@@ -6,7 +6,6 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
         APROVACAO_CONTABILIDADE:6, 
     }
 
-
     var atividade = getValue("WKCurrentState");
     var IdMovimento = hAPI.getCardValue("IdMovimento");
     var FundoFixo = hAPI.getCardValue("campoFundoFixoDto");
@@ -15,7 +14,6 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
     var tipo = hAPI.getCardValue("tipo");
     var attachments = hAPI.listAttachments();
     var FormMode = hAPI.getCardValue("formMode");
-    var codtmv;
     var xmlStructure;
     var decisaoAprovar = hAPI.getCardValue("aprovacao");
     var processo = parseInt(getValue("WKNumProces"));
@@ -39,48 +37,7 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
 
     if (atividade == ATIVIDADES.INICIO_0 || atividade == ATIVIDADES.INICIO) {
         if (modalidade == "Provisao") {
-            if (tipo == "R.D.O") {
-                codtmv = "1.1.09";
-                xmlStructure = createInsertXML(codtmv, motivoReembolso);
-                var xmlParam = DatasetFactory.createConstraint("xmlMov", xmlStructure, null, ConstraintType.MUST);
-                var coligadaParam = DatasetFactory.createConstraint("codColigada", coligada, null, ConstraintType.MUST);
-                var vetor = new Array(xmlParam, coligadaParam);
-                var responseData = DatasetFactory.getDataset("ImportaMovRM", null, vetor, null);
-
-                if (!responseData || responseData == "" || responseData == null) {
-                    throw "Houve um erro na comunicação com o webservice. Tente novamente!";
-                } else {
-                    if (responseData.values[0][0] == "false") {
-                        throw (
-                            "Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " +
-                            responseData.values[0][1]
-                        );
-                    } else if (responseData.values[0][0] == "true") {
-                        responseData.values[0][2];
-                    }
-                }
-            } else if (tipo == "Fundo Fixo") {
-                codtmv = "1.1.03";
-                xmlStructure = createInsertXML(codtmv, motivoReembolso);
-
-                var xmlParam = DatasetFactory.createConstraint("xmlMov", xmlStructure, null, ConstraintType.MUST);
-                var coligadaParam = DatasetFactory.createConstraint("codColigada", coligada, null, ConstraintType.MUST);
-                var vetor = new Array(xmlParam, coligadaParam);
-                var responseData = DatasetFactory.getDataset("ImportaMovRM", null, vetor, null);
-
-                if (!responseData || responseData == "" || responseData == null) {
-                    throw "Houve um erro na comunicação com o webservice. Tente novamente!";
-                } else {
-                    if (responseData.values[0][0] == "false") {
-                        throw (
-                            "Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " +
-                            responseData.values[0][1]
-                        );
-                    } else if (responseData.values[0][0] == "true") {
-                        responseData.values[0][2];
-                    }
-                }
-            }
+            insereProvisao();
         }
         if (modalidade == "Recebimento") {
             if (attachments.size() > 0) {
@@ -933,4 +890,58 @@ function FormataValor(valor_total) {
     numero = numero.toFixed(2).split(".");
     numero[0] = "R$" + numero[0].split(/(?=(?:...)*$)/).join(".");
     return numero.join(",");
+}
+
+
+
+
+function insereProvisao(){
+    var tipo = hAPI.getCardValue("tipo");
+    var codtmv = null;
+    var xmlStructure = null;
+
+
+    if (tipo == "R.D.O") {
+        codtmv = "1.1.09";
+        xmlStructure = createInsertXML(codtmv, motivoReembolso);
+        var xmlParam = DatasetFactory.createConstraint("xmlMov", xmlStructure, null, ConstraintType.MUST);
+        var coligadaParam = DatasetFactory.createConstraint("codColigada", coligada, null, ConstraintType.MUST);
+        var vetor = new Array(xmlParam, coligadaParam);
+        var responseData = DatasetFactory.getDataset("ImportaMovRM", null, vetor, null);
+
+        if (!responseData || responseData == "" || responseData == null) {
+            throw "Houve um erro na comunicação com o webservice. Tente novamente!";
+        } else {
+            if (responseData.values[0][0] == "false") {
+                throw (
+                    "Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " +
+                    responseData.values[0][1]
+                );
+            } else if (responseData.values[0][0] == "true") {
+                responseData.values[0][2];
+            }
+        }
+    } else if (tipo == "Fundo Fixo") {
+        codtmv = "1.1.03";
+        xmlStructure = createInsertXML(codtmv, motivoReembolso);
+
+        var xmlParam = DatasetFactory.createConstraint("xmlMov", xmlStructure, null, ConstraintType.MUST);
+        var coligadaParam = DatasetFactory.createConstraint("codColigada", coligada, null, ConstraintType.MUST);
+        var vetor = new Array(xmlParam, coligadaParam);
+        var responseData = DatasetFactory.getDataset("ImportaMovRM", null, vetor, null);
+
+        if (!responseData || responseData == "" || responseData == null) {
+            throw "Houve um erro na comunicação com o webservice. Tente novamente!";
+        } else {
+            if (responseData.values[0][0] == "false") {
+                throw (
+                    "Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " +
+                    responseData.values[0][1]
+                );
+            } else if (responseData.values[0][0] == "true") {
+                responseData.values[0][2];
+            }
+        }
+    }
+
 }
