@@ -48,43 +48,32 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                 throw "<b>Favor anexar Notas Fiscais</b>";
             }
 
-            var OPERACAO = tipo == "Fundo Fixo" ? "ShowMovAprovacao" : "ShowMovAprovacaoRDO";
-            var dsEnviarEmail = DatasetFactory.getDataset("DatasetFFCXprod", null, [
-                DatasetFactory.createConstraint("IDMOV", IdMovimento, IdMovimento, ConstraintType.MUST),
-                DatasetFactory.createConstraint("OPERACAO",OPERACAO,OPERACAO,ConstraintType.MUST)
-            ], null);
-
-            log.info("olha isso2: " + dsEnviarEmail.values); //java lang
-            log.info("olha isso3: " + dsEnviarEmail.values[0][0]); //id rm
-            log.info("olha isso4: " + dsEnviarEmail.values[0][1]); //valor
-            log.info("olha isso5: " + dsEnviarEmail.values[0][2]); // nome Obra
-            log.info("olha isso6: " + dsEnviarEmail.values[0][3]); //numero mov
-
-            var parametroIdmov = dsEnviarEmail.values[0][0];
-            var numeroSerie = dsEnviarEmail.values[0][4];
-            var chaveAcesso = dsEnviarEmail.values[0][5];
-
+            var obj = buscaIdmovNumeroSerieChaveAcessoDoMovimento(tipo);
 
             var datasetReport = tipo == "Fundo Fixo" ? "GerarRelatorioProvisao" : "GerarRelatorioRDO";
-            var wsReport = DatasetFactory.getDataset(datasetReport, null, [
-                DatasetFactory.createConstraint("IDMOV", parametroIdmov, parametroIdmov, ConstraintType.MUST),
-                DatasetFactory.createConstraint("CODCOLIGADA", coligada, coligada, ConstraintType.MUST),
-                DatasetFactory.createConstraint("NUMEROMOV", numeroMov, numeroMov, ConstraintType.MUST),
-                DatasetFactory.createConstraint("SERIE", numeroSerie, numeroSerie, ConstraintType.MUST),
-                DatasetFactory.createConstraint("CHAVEACESSONFE",chaveAcesso,chaveAcesso,ConstraintType.MUST),
-            ], null);
-        
+            var wsReport = DatasetFactory.getDataset(
+                datasetReport,
+                null,
+                [
+                    DatasetFactory.createConstraint("IDMOV", obj.IDMOV, obj.IDMOV, ConstraintType.MUST),
+                    DatasetFactory.createConstraint("CODCOLIGADA", coligada, coligada, ConstraintType.MUST),
+                    DatasetFactory.createConstraint("NUMEROMOV", numeroMov, numeroMov, ConstraintType.MUST),
+                    DatasetFactory.createConstraint("SERIE", obj.NUMEROSERIE, obj.NUMEROSERIE, ConstraintType.MUST),
+                    DatasetFactory.createConstraint("CHAVEACESSONFE", obj.CHAVEACESSO, obj.CHAVEACESSO, ConstraintType.MUST),
+                ],
+                null
+            );
 
             log.warn(wsReport.values[0][0]); // boolean
 
             if (wsReport.values[0][0] == true) {
                 var resultado = wsReport.values[0][1];
 
-                var dataset = DatasetFactory.getDataset("CriacaoDocumentosFluig", null, [
-                    DatasetFactory.createConstraint("processo", processoFluig, processoFluig, ConstraintType.MUST),
-                    DatasetFactory.createConstraint("idRM", parametroIdmov, parametroIdmov, ConstraintType.MUST),
-                    DatasetFactory.createConstraint("conteudo", resultado, resultado, ConstraintType.MUST),
-                ], null);
+                var dataset = DatasetFactory.getDataset("CriacaoDocumentosFluig",null,[
+                        DatasetFactory.createConstraint("processo", processoFluig, processoFluig, ConstraintType.MUST),
+                        DatasetFactory.createConstraint("idRM", parametroIdmov, parametroIdmov, ConstraintType.MUST),
+                        DatasetFactory.createConstraint("conteudo", resultado, resultado, ConstraintType.MUST),
+                    ],null);
                 var res = dataset;
 
                 log.warn(res.values[0][0]); // boolean
@@ -903,6 +892,40 @@ function insereProvisao() {
                 }
             }
         }
+    } catch (error) {
+        throw error;
+    }
+}
+
+function buscaIdmovNumeroSerieChaveAcessoDoMovimento(tipo) {
+    try {
+        var OPERACAO = tipo == "Fundo Fixo" ? "ShowMovAprovacao" : "ShowMovAprovacaoRDO";
+
+        var dsInformacoesDoMovimento = DatasetFactory.getDataset(
+            "DatasetFFCXprod",
+            null,
+            [
+                DatasetFactory.createConstraint("IDMOV", IdMovimento, IdMovimento, ConstraintType.MUST),
+                DatasetFactory.createConstraint("OPERACAO", OPERACAO, OPERACAO, ConstraintType.MUST),
+            ],
+            null
+        );
+
+        log.info("olha isso2: " + dsInformacoesDoMovimento.values); //java lang
+        log.info("olha isso3: " + dsInformacoesDoMovimento.values[0][0]); //id rm
+        log.info("olha isso4: " + dsInformacoesDoMovimento.values[0][1]); //valor
+        log.info("olha isso5: " + dsInformacoesDoMovimento.values[0][2]); // nome Obra
+        log.info("olha isso6: " + dsInformacoesDoMovimento.values[0][3]); //numero mov
+
+        var parametroIdmov = dsInformacoesDoMovimento.values[0][0];
+        var numeroSerie = dsInformacoesDoMovimento.values[0][4];
+        var chaveAcesso = dsInformacoesDoMovimento.values[0][5];
+
+        return {
+            IDMOV:parametroIdmov,
+            NUMEROSERIE:numeroSerie,
+            CHAVEACESSO:chaveAcesso,
+        };
     } catch (error) {
         throw error;
     }
