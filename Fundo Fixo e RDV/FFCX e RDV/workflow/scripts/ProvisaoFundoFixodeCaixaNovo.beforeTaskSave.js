@@ -26,6 +26,7 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
     var userEmail = hAPI.getCardValue("mail");
     var engenheiroEmail = hAPI.getCardValue("emailEngenheiro");
     var coligada = hAPI.getCardValue("coligada");
+    var codigoFFCXCuritiba = "000557";
 
     if (viagemCorporativa == "sim") {
         motivoReembolso = "Viagem Corporativa";
@@ -40,118 +41,93 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
             insereProvisao();
         }
         if (modalidade == "Recebimento") {
-            if (attachments.size() > 0) {
-                var c1 = DatasetFactory.createConstraint("IDMOV", IdMovimento, IdMovimento, ConstraintType.MUST);
-                if (tipo == "Fundo Fixo") {
-                    var c2 = DatasetFactory.createConstraint(
-                        "OPERACAO",
-                        "ShowMovAprovacao",
-                        "ShowMovAprovacao",
-                        ConstraintType.MUST
-                    );
-                } else if (tipo == "R.D.O") {
-                    var c2 = DatasetFactory.createConstraint(
-                        "OPERACAO",
-                        "ShowMovAprovacaoRDO",
-                        "ShowMovAprovacaoRDO",
-                        ConstraintType.MUST
-                    );
-                }
-                var dsEnviarEmail = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2], null);
+            if (attachments.size() < 1 && FundoFixo != codigoFFCXCuritiba) {
+                /*
+                 * Para a Modalidade Recebimento, é necessário anexar a NF na aba Anexos para os casos que o FFCX não seja a Matriz
+                 */
+                throw "<b>Favor anexar Notas Fiscais</b>";
+            }
 
-                log.info("olha isso2: " + dsEnviarEmail.values); //java lang
-                log.info("olha isso3: " + dsEnviarEmail.values[0][0]); //id rm
-                log.info("olha isso4: " + dsEnviarEmail.values[0][1]); //valor
-                log.info("olha isso5: " + dsEnviarEmail.values[0][2]); // nome Obra
-                log.info("olha isso6: " + dsEnviarEmail.values[0][3]); //numero mov
-
-                var parametroIdmov = dsEnviarEmail.values[0][0];
-                var numeroSerie = dsEnviarEmail.values[0][4];
-                var chaveAcesso = dsEnviarEmail.values[0][5];
-
-                var idMov = DatasetFactory.createConstraint(
-                    "IDMOV",
-                    parametroIdmov,
-                    parametroIdmov,
+            var c1 = DatasetFactory.createConstraint("IDMOV", IdMovimento, IdMovimento, ConstraintType.MUST);
+            if (tipo == "Fundo Fixo") {
+                var c2 = DatasetFactory.createConstraint(
+                    "OPERACAO",
+                    "ShowMovAprovacao",
+                    "ShowMovAprovacao",
                     ConstraintType.MUST
                 );
-                var codColigada = DatasetFactory.createConstraint(
-                    "CODCOLIGADA",
-                    coligada,
-                    coligada,
+            } else if (tipo == "R.D.O") {
+                var c2 = DatasetFactory.createConstraint(
+                    "OPERACAO",
+                    "ShowMovAprovacaoRDO",
+                    "ShowMovAprovacaoRDO",
                     ConstraintType.MUST
                 );
-                var numeroMov = DatasetFactory.createConstraint("NUMEROMOV", numeroMov, numeroMov, ConstraintType.MUST);
-                var numeroSerie = DatasetFactory.createConstraint(
-                    "SERIE",
-                    numeroSerie,
-                    numeroSerie,
-                    ConstraintType.MUST
-                );
-                var chaveAcesso = DatasetFactory.createConstraint(
-                    "CHAVEACESSONFE",
-                    chaveAcesso,
-                    chaveAcesso,
-                    ConstraintType.MUST
-                );
+            }
+            var dsEnviarEmail = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2], null);
 
-                var constraints = new Array(idMov, codColigada, numeroMov, numeroSerie, chaveAcesso);
+            log.info("olha isso2: " + dsEnviarEmail.values); //java lang
+            log.info("olha isso3: " + dsEnviarEmail.values[0][0]); //id rm
+            log.info("olha isso4: " + dsEnviarEmail.values[0][1]); //valor
+            log.info("olha isso5: " + dsEnviarEmail.values[0][2]); // nome Obra
+            log.info("olha isso6: " + dsEnviarEmail.values[0][3]); //numero mov
 
-                var wsReport;
-                if (tipo == "Fundo Fixo") {
-                    wsReport = DatasetFactory.getDataset("GerarRelatorioProvisao", null, constraints, null);
-                } else if (tipo == "R.D.O") {
-                    wsReport = DatasetFactory.getDataset("GerarRelatorioRDO", null, constraints, null);
-                }
+            var parametroIdmov = dsEnviarEmail.values[0][0];
+            var numeroSerie = dsEnviarEmail.values[0][4];
+            var chaveAcesso = dsEnviarEmail.values[0][5];
 
-                log.warn(wsReport.values[0][0]); // boolean
+            var idMov = DatasetFactory.createConstraint("IDMOV", parametroIdmov, parametroIdmov, ConstraintType.MUST);
+            var codColigada = DatasetFactory.createConstraint("CODCOLIGADA", coligada, coligada, ConstraintType.MUST);
+            var numeroMov = DatasetFactory.createConstraint("NUMEROMOV", numeroMov, numeroMov, ConstraintType.MUST);
+            var numeroSerie = DatasetFactory.createConstraint("SERIE", numeroSerie, numeroSerie, ConstraintType.MUST);
+            var chaveAcesso = DatasetFactory.createConstraint(
+                "CHAVEACESSONFE",
+                chaveAcesso,
+                chaveAcesso,
+                ConstraintType.MUST
+            );
 
-                if (wsReport.values[0][0] == true) {
-                    var resultado = wsReport.values[0][1];
-                    var p1 = DatasetFactory.createConstraint(
-                        "processo",
-                        processoFluig,
-                        processoFluig,
-                        ConstraintType.MUST
-                    );
-                    var p2 = DatasetFactory.createConstraint(
-                        "idRM",
-                        parametroIdmov,
-                        parametroIdmov,
-                        ConstraintType.MUST
-                    );
-                    var p3 = DatasetFactory.createConstraint("conteudo", resultado, resultado, ConstraintType.MUST);
-                    var constraints = new Array(p1, p2, p3);
+            var constraints = new Array(idMov, codColigada, numeroMov, numeroSerie, chaveAcesso);
 
-                    var dataset = DatasetFactory.getDataset("CriacaoDocumentosFluig", null, constraints, null);
-                    var res = dataset;
+            var wsReport;
+            if (tipo == "Fundo Fixo") {
+                wsReport = DatasetFactory.getDataset("GerarRelatorioProvisao", null, constraints, null);
+            } else if (tipo == "R.D.O") {
+                wsReport = DatasetFactory.getDataset("GerarRelatorioRDO", null, constraints, null);
+            }
 
-                    log.warn(res.values[0][0]); // boolean
-                    log.warn(res.values[0][1]); // nº documento
+            log.warn(wsReport.values[0][0]); // boolean
 
-                    if (!res || res == "" || res == null) {
-                        throw "Houve um erro na comunicação com o webservice de criação de documentos. Tente novamente!";
+            if (wsReport.values[0][0] == true) {
+                var resultado = wsReport.values[0][1];
+                var p1 = DatasetFactory.createConstraint("processo", processoFluig, processoFluig, ConstraintType.MUST);
+                var p2 = DatasetFactory.createConstraint("idRM", parametroIdmov, parametroIdmov, ConstraintType.MUST);
+                var p3 = DatasetFactory.createConstraint("conteudo", resultado, resultado, ConstraintType.MUST);
+                var constraints = new Array(p1, p2, p3);
+
+                var dataset = DatasetFactory.getDataset("CriacaoDocumentosFluig", null, constraints, null);
+                var res = dataset;
+
+                log.warn(res.values[0][0]); // boolean
+                log.warn(res.values[0][1]); // nº documento
+
+                if (!res || res == "" || res == null) {
+                    throw "Houve um erro na comunicação com o webservice de criação de documentos. Tente novamente!";
+                } else {
+                    if (res.values[0][0] == "false") {
+                        throw (
+                            "Erro ao criar arquivo. Favor entrar em contato com o administrador do sistema. Mensagem: " +
+                            res.values[0][1]
+                        );
                     } else {
-                        if (res.values[0][0] == "false") {
-                            throw (
-                                "Erro ao criar arquivo. Favor entrar em contato com o administrador do sistema. Mensagem: " +
-                                res.values[0][1]
-                            );
-                        } else {
-                            hAPI.attachDocument(res.values[0][1]);
-                        }
+                        hAPI.attachDocument(res.values[0][1]);
                     }
-                }
-            } else {
-                if (FundoFixo != "000557") {
-                    throw "<b>Favor anexar Notas Fiscais</b>";
                 }
             }
         }
     }
 
-    var codigoFundoFixoCuritiba = "000557";
-    if (FundoFixo == codigoFundoFixoCuritiba && atividade == ATIVIDADES.INICIO) {
+    if (FundoFixo == codigoFFCXCuritiba && atividade == ATIVIDADES.INICIO) {
         /*
          * Caso o fundo fixo seja Matriz Curitiba, define as variáveis para que realize a integração com o RM no inicío da solicitação
          * Sem precisar passar pela aprovação do Engenheiro e da Contabilidade
