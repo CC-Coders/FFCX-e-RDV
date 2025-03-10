@@ -49,48 +49,13 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
             }
 
             var obj = buscaIdmovNumeroSerieChaveAcessoDoMovimento(tipo);
-
-            var datasetReport = tipo == "Fundo Fixo" ? "GerarRelatorioProvisao" : "GerarRelatorioRDO";
-            var wsReport = DatasetFactory.getDataset(
-                datasetReport,
-                null,
-                [
-                    DatasetFactory.createConstraint("IDMOV", obj.IDMOV, obj.IDMOV, ConstraintType.MUST),
-                    DatasetFactory.createConstraint("CODCOLIGADA", coligada, coligada, ConstraintType.MUST),
-                    DatasetFactory.createConstraint("NUMEROMOV", numeroMov, numeroMov, ConstraintType.MUST),
-                    DatasetFactory.createConstraint("SERIE", obj.NUMEROSERIE, obj.NUMEROSERIE, ConstraintType.MUST),
-                    DatasetFactory.createConstraint("CHAVEACESSONFE", obj.CHAVEACESSO, obj.CHAVEACESSO, ConstraintType.MUST),
-                ],
-                null
-            );
+            var wsReport = geraRelatorioNoRM(obj);
 
             log.warn(wsReport.values[0][0]); // boolean
 
             if (wsReport.values[0][0] == true) {
                 var resultado = wsReport.values[0][1];
-
-                var dataset = DatasetFactory.getDataset("CriacaoDocumentosFluig",null,[
-                        DatasetFactory.createConstraint("processo", processoFluig, processoFluig, ConstraintType.MUST),
-                        DatasetFactory.createConstraint("idRM", parametroIdmov, parametroIdmov, ConstraintType.MUST),
-                        DatasetFactory.createConstraint("conteudo", resultado, resultado, ConstraintType.MUST),
-                    ],null);
-                var res = dataset;
-
-                log.warn(res.values[0][0]); // boolean
-                log.warn(res.values[0][1]); // nº documento
-
-                if (!res || res == "" || res == null) {
-                    throw "Houve um erro na comunicação com o webservice de criação de documentos. Tente novamente!";
-                } else {
-                    if (res.values[0][0] == "false") {
-                        throw (
-                            "Erro ao criar arquivo. Favor entrar em contato com o administrador do sistema. Mensagem: " +
-                            res.values[0][1]
-                        );
-                    } else {
-                        hAPI.attachDocument(res.values[0][1]);
-                    }
-                }
+                CriaDocumentoNoGED_AnexaDocumentoDoGEDnoProcesso(resultado, obj.IDMOV);
             }
         }
     }
@@ -105,112 +70,7 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
     }
 
     if (modalidade == "Recebimento" && decisaoAprovar != "sim") {
-        var mailAprovado = hAPI.getCardValue("mail");
-        var url =
-            "http://desenvolvimento.castilho.com.br:3232/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=";
-        var processoUrl = url + processo;
-        if (atividade == ATIVIDADES.APROVACAO_ENGENHEIRO) {
-            //Recusado Engenheiro
-            if (tipo == "Fundo Fixo") {
-                var htmlTemplateNaoAprovacao =
-                    "<p class='DescrMsgForum'>\
-    			Provisão Fundo Fixo de Caixa <b>REPROVADO</b> pelo(a) Engenheiro(a),\
-    			Nº <a href='" +
-                    processoUrl +
-                    "'target='_blank'>" +
-                    processo +
-                    "</a>.\
-        		</p>\
-        		<div class='DescrMsgForum actions' style='display:block'>\
-         		<br />\
-    			<b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
-
-                sendCustomEmail(
-                    mailAprovado,
-                    userEmail,
-                    "[FLUIG] Provisão RECUSADA  " + processo,
-                    htmlTemplateNaoAprovacao
-                );
-            } else if (tipo == "R.D.O") {
-                var htmlTemplateNaoAprovacao =
-                    "<p class='DescrMsgForum'>\
-    			Despesas de R.D.O <b>REPROVADO</b> pelo(a) Engenheiro(a),\
-    			Solicitação Nº <a href='" +
-                    processoUrl +
-                    "'target='_blank'>" +
-                    processo +
-                    "</a>.\
-        		</p>\
-        		<div class='DescrMsgForum actions' style='display:block'>\
-         		<br />\
-    			<b>Acessar o chamado e verificar as correções a serem efetuadas</b></br><br/></br>";
-
-                sendCustomEmail(
-                    mailAprovado,
-                    userEmail,
-                    "[FLUIG] Despesas de R.D.O RECUSADA " + processo,
-                    htmlTemplateNaoAprovacao
-                );
-            }
-        } else if (atividade == ATIVIDADES.APROVACAO_CONTABILIDADE) {
-            //Recusado Contabilidade
-            if (tipo == "Fundo Fixo") {
-                log.info("entrou aqui no fundo fixo contabilidade");
-                var htmlTemplateNaoAprovacao =
-                    "<p class='DescrMsgForum'>\
-	        			Provisão de Fundo Fixo de Caixa <b>REPROVADO</b> pelo setor Contabilidade,\
-	        			Nº <a href='" +
-                    processoUrl +
-                    "'target='_blank'>" +
-                    processo +
-                    "</a>.\
-		        		</p>\
-		        		<div class='DescrMsgForum actions' style='display:block'>\
-	             		<br />\
-	        			<b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
-
-                sendCustomEmail(
-                    mailAprovado,
-                    engenheiroEmail,
-                    "[FLUIG] Provisão RECUSADA  " + processo,
-                    htmlTemplateNaoAprovacao
-                );
-                sendCustomEmail(
-                    mailAprovado,
-                    userEmail,
-                    "[FLUIG] Provisão RECUSADA  " + processo,
-                    htmlTemplateNaoAprovacao
-                );
-            } else if (tipo == "R.D.O") {
-                log.info("entrou aqui no rdo contabilidade");
-
-                var htmlTemplateNaoAprovacao =
-                    "<p class='DescrMsgForum'>\
-            			Despesas de R.D.O <b>REPROVADO</b> pelo setor Contabilidade,\
-            			Solicitação Nº <a href='" +
-                    processoUrl +
-                    "'target='_blank'>" +
-                    processo +
-                    "</a>.\
-                		</p>\
-                		<div class='DescrMsgForum actions' style='display:block'>\
-                 		<br />\
-            			<b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
-
-                sendCustomEmail(
-                    mailAprovado,
-                    engenheiroEmail,
-                    "[FLUIG] Despesas de R.D.O RECUSADA  " + processo,
-                    htmlTemplateNaoAprovacao
-                );
-                sendCustomEmail(
-                    mailAprovado,
-                    userEmail,
-                    "[FLUIG] Despesas de R.D.O RECUSADA  " + processo,
-                    htmlTemplateNaoAprovacao
-                );
-            }
-        }
+        enviaEmailReprovacao();
     }
 
     if (modalidade == "Recebimento") {
@@ -250,18 +110,8 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                             ". Favor verificar as informações ou entrar em contato com o administrador do sistema."
                         );
                     } else {
-                        var c1 = DatasetFactory.createConstraint(
-                            "pCodcoligada",
-                            coligada,
-                            coligada,
-                            ConstraintType.MUST
-                        );
-                        var c2 = DatasetFactory.createConstraint(
-                            "pXML",
-                            xmlStructure,
-                            xmlStructure,
-                            ConstraintType.MUST
-                        );
+                        var c1 = DatasetFactory.createConstraint("pCodcoligada", coligada, coligada, ConstraintType.MUST);
+                        var c2 = DatasetFactory.createConstraint("pXML", xmlStructure, xmlStructure, ConstraintType.MUST);
                         var constraints = new Array(c1, c2);
                         var retorno = DatasetFactory.getDataset("FaturaMovimento", null, constraints, null);
 
@@ -281,8 +131,7 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                         }
                     }
                     var mailAprovado = hAPI.getCardValue("mail");
-                    var url =
-                        "http://desenvolvimento.castilho.com.br:3232/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=";
+                    var url = "http://desenvolvimento.castilho.com.br:3232/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=";
                     var processoUrl = url + processo;
 
                     var numSolic = hAPI.getCardValue("numProces");
@@ -349,18 +198,8 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                             </div>";
                         }
 
-                        sendCustomEmail(
-                            mailAprovado,
-                            engenheiroEmail,
-                            "[FLUIG] PROVISÃO Aprovada  " + processo,
-                            htmlTemplate1
-                        );
-                        sendCustomEmail(
-                            mailAprovado,
-                            "contabilidade@castilho.com.br",
-                            "[FLUIG] PROVISÃO Aprovada  " + processo,
-                            htmlTemplate1
-                        );
+                        sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
+                        sendCustomEmail(mailAprovado, "contabilidade@castilho.com.br", "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
                     } else if (tipo == "R.D.O") {
                         var motivoreembolso = hAPI.getCardValue("motivoReembolsoDto");
                         var htmlTemplate1 =
@@ -416,18 +255,8 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                                  </div>";
                         }
 
-                        sendCustomEmail(
-                            mailAprovado,
-                            engenheiroEmail,
-                            "[FLUIG] PROVISÃO Aprovada  " + processo,
-                            htmlTemplate1
-                        );
-                        sendCustomEmail(
-                            mailAprovado,
-                            "contabilidade@castilho.com.br",
-                            "[FLUIG] PROVISÃO Aprovada  " + processo,
-                            htmlTemplate1
-                        );
+                        sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
+                        sendCustomEmail(mailAprovado, "contabilidade@castilho.com.br", "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
                     }
                 }
             }
@@ -486,12 +315,7 @@ function BuscaAnexosTemplate2() {
 
     for (var i = 0; i < docs.size(); i++) {
         var doc = docs.get(i);
-        retorno +=
-            "<li><a href='" +
-            fluigAPI.getDocumentService().getDownloadURL(doc.getDocumentId()) +
-            "'>" +
-            doc.getDocumentDescription() +
-            "</a></li>";
+        retorno += "<li><a href='" + fluigAPI.getDocumentService().getDownloadURL(doc.getDocumentId()) + "'>" + doc.getDocumentDescription() + "</a></li>";
     }
 
     return retorno;
@@ -814,12 +638,7 @@ function sendCustomEmail(to, from, subject, htmlBody) {
 }
 
 function BuscaEmailUsuario(usuario) {
-    var ds = DatasetFactory.getDataset(
-        "colleague",
-        null,
-        [DatasetFactory.createConstraint("colleagueId", usuario, usuario, ConstraintType.MUST)],
-        null
-    );
+    var ds = DatasetFactory.getDataset("colleague", null, [DatasetFactory.createConstraint("colleagueId", usuario, usuario, ConstraintType.MUST)], null);
     if (ds.values.length > 0) {
         var userEmail = ds.getValue(0, "mail");
         return userEmail;
@@ -857,10 +676,7 @@ function insereProvisao() {
                 throw "Houve um erro na comunicação com o webservice. Tente novamente!";
             } else {
                 if (responseData.values[0][0] == "false") {
-                    throw (
-                        "Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " +
-                        responseData.values[0][1]
-                    );
+                    throw "Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " + responseData.values[0][1];
                 } else if (responseData.values[0][0] == "true") {
                     responseData.values[0][2];
                 }
@@ -883,10 +699,7 @@ function insereProvisao() {
                 throw "Houve um erro na comunicação com o webservice. Tente novamente!";
             } else {
                 if (responseData.values[0][0] == "false") {
-                    throw (
-                        "Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " +
-                        responseData.values[0][1]
-                    );
+                    throw "Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " + responseData.values[0][1];
                 } else if (responseData.values[0][0] == "true") {
                     responseData.values[0][2];
                 }
@@ -922,11 +735,148 @@ function buscaIdmovNumeroSerieChaveAcessoDoMovimento(tipo) {
         var chaveAcesso = dsInformacoesDoMovimento.values[0][5];
 
         return {
-            IDMOV:parametroIdmov,
-            NUMEROSERIE:numeroSerie,
-            CHAVEACESSO:chaveAcesso,
+            IDMOV: parametroIdmov,
+            NUMEROSERIE: numeroSerie,
+            CHAVEACESSO: chaveAcesso,
         };
     } catch (error) {
         throw error;
+    }
+}
+
+function geraRelatorioNoRM(obj) {
+    try {
+        var coligada = hAPI.getCardValue("coligada");
+
+        // TODO - Verificar como está buscando e o uso do numeroMov
+        // Não encontrei no código original a definição da variável
+
+        var datasetReport = tipo == "Fundo Fixo" ? "GerarRelatorioProvisao" : "GerarRelatorioRDO";
+        var wsReport = DatasetFactory.getDataset(
+            datasetReport,
+            null,
+            [
+                DatasetFactory.createConstraint("IDMOV", obj.IDMOV, obj.IDMOV, ConstraintType.MUST),
+                DatasetFactory.createConstraint("CODCOLIGADA", coligada, coligada, ConstraintType.MUST),
+                DatasetFactory.createConstraint("NUMEROMOV", numeroMov, numeroMov, ConstraintType.MUST),
+                DatasetFactory.createConstraint("SERIE", obj.NUMEROSERIE, obj.NUMEROSERIE, ConstraintType.MUST),
+                DatasetFactory.createConstraint("CHAVEACESSONFE", obj.CHAVEACESSO, obj.CHAVEACESSO, ConstraintType.MUST),
+            ],
+            null
+        );
+
+        return wsReport;
+    } catch (error) {
+        throw error;
+    }
+}
+
+function CriaDocumentoNoGED_AnexaDocumentoDoGEDnoProcesso(conteudo, IDMOV) {
+    try {
+        var processo = parseInt(getValue("WKNumProces"));
+
+        var dataset = DatasetFactory.getDataset(
+            "CriacaoDocumentosFluig",
+            null,
+            [
+                DatasetFactory.createConstraint("processo", processo, processo, ConstraintType.MUST),
+                DatasetFactory.createConstraint("idRM", IDMOV, IDMOV, ConstraintType.MUST),
+                DatasetFactory.createConstraint("conteudo", conteudo, conteudo, ConstraintType.MUST),
+            ],
+            null
+        );
+
+        log.warn(dataset.values[0][0]); // boolean
+        log.warn(dataset.values[0][1]); // nº documento
+
+        if (!dataset || dataset == "" || dataset == null) {
+            throw "Houve um erro na comunicação com o webservice de criação de documentos. Tente novamente!";
+        } else {
+            if (dataset.values[0][0] == "false") {
+                throw "Erro ao criar arquivo. Favor entrar em contato com o administrador do sistema. Mensagem: " + dataset.values[0][1];
+            } else {
+                hAPI.attachDocument(dataset.values[0][1]);
+            }
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+function enviaEmailReprovacao() {
+    var mailAprovado = hAPI.getCardValue("mail");
+    var url = "http://desenvolvimento.castilho.com.br:3232/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=";
+    var processoUrl = url + processo;
+    if (atividade == ATIVIDADES.APROVACAO_ENGENHEIRO) {
+        //Recusado Engenheiro
+        if (tipo == "Fundo Fixo") {
+            var htmlTemplateNaoAprovacao =
+                "<p class='DescrMsgForum'>\
+            Provisão Fundo Fixo de Caixa <b>REPROVADO</b> pelo(a) Engenheiro(a),\
+            Nº <a href='" +
+                processoUrl +
+                "'target='_blank'>" +
+                processo +
+                "</a>.\
+            </p>\
+            <div class='DescrMsgForum actions' style='display:block'>\
+             <br />\
+            <b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
+
+            sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Provisão RECUSADA  " + processo, htmlTemplateNaoAprovacao);
+        } else if (tipo == "R.D.O") {
+            var htmlTemplateNaoAprovacao =
+                "<p class='DescrMsgForum'>\
+            Despesas de R.D.O <b>REPROVADO</b> pelo(a) Engenheiro(a),\
+            Solicitação Nº <a href='" +
+                processoUrl +
+                "'target='_blank'>" +
+                processo +
+                "</a>.\
+            </p>\
+            <div class='DescrMsgForum actions' style='display:block'>\
+             <br />\
+            <b>Acessar o chamado e verificar as correções a serem efetuadas</b></br><br/></br>";
+
+            sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Despesas de R.D.O RECUSADA " + processo, htmlTemplateNaoAprovacao);
+        }
+    } else if (atividade == ATIVIDADES.APROVACAO_CONTABILIDADE) {
+        //Recusado Contabilidade
+        if (tipo == "Fundo Fixo") {
+            log.info("entrou aqui no fundo fixo contabilidade");
+            var htmlTemplateNaoAprovacao =
+                "<p class='DescrMsgForum'>\
+                    Provisão de Fundo Fixo de Caixa <b>REPROVADO</b> pelo setor Contabilidade,\
+                    Nº <a href='" +
+                processoUrl +
+                "'target='_blank'>" +
+                processo +
+                "</a>.\
+                    </p>\
+                    <div class='DescrMsgForum actions' style='display:block'>\
+                     <br />\
+                    <b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
+
+            sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] Provisão RECUSADA  " + processo, htmlTemplateNaoAprovacao);
+            sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Provisão RECUSADA  " + processo, htmlTemplateNaoAprovacao);
+        } else if (tipo == "R.D.O") {
+            log.info("entrou aqui no rdo contabilidade");
+
+            var htmlTemplateNaoAprovacao =
+                "<p class='DescrMsgForum'>\
+                    Despesas de R.D.O <b>REPROVADO</b> pelo setor Contabilidade,\
+                    Solicitação Nº <a href='" +
+                processoUrl +
+                "'target='_blank'>" +
+                processo +
+                "</a>.\
+                    </p>\
+                    <div class='DescrMsgForum actions' style='display:block'>\
+                     <br />\
+                    <b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
+
+            sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] Despesas de R.D.O RECUSADA  " + processo, htmlTemplateNaoAprovacao);
+            sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Despesas de R.D.O RECUSADA  " + processo, htmlTemplateNaoAprovacao);
+        }
     }
 }
