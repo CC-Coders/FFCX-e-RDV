@@ -131,8 +131,8 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                         }
                     }
                     var mailAprovado = hAPI.getCardValue("mail");
-                    var url = "http://desenvolvimento.castilho.com.br:3232/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=";
-                    var processoUrl = url + processo;
+                    var processoUrl =  getServerURL() + "/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=" + processo;
+                    
 
                     var numSolic = hAPI.getCardValue("numProces");
                     var dataFormatada = hAPI.getCardValue("DataEmail");
@@ -604,7 +604,7 @@ function createReceiptXML(codtmv, codtmvDestiny) {
 
 function sendCustomEmail(to, from, subject, htmlBody) {
     var processo = parseInt(getValue("WKNumProces"));
-    var url = "http://fluig.castilho.com.br:1010";
+    var url = getServerURL();
 
     log.info("html envio: " + htmlBody);
     var data = {
@@ -805,8 +805,7 @@ function CriaDocumentoNoGED_AnexaDocumentoDoGEDnoProcesso(conteudo, IDMOV) {
 
 function enviaEmailReprovacao() {
     var mailAprovado = hAPI.getCardValue("mail");
-    var url = "http://desenvolvimento.castilho.com.br:3232/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=";
-    var processoUrl = url + processo;
+    var processoUrl = getServerURL() + "/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=" + processoUrl;
     if (atividade == ATIVIDADES.APROVACAO_ENGENHEIRO) {
         //Recusado Engenheiro
         if (tipo == "Fundo Fixo") {
@@ -879,4 +878,8 @@ function enviaEmailReprovacao() {
             sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Despesas de R.D.O RECUSADA  " + processo, htmlTemplateNaoAprovacao);
         }
     }
+}
+
+function getServerURL(){
+    return fluigAPI.getPageService();
 }
