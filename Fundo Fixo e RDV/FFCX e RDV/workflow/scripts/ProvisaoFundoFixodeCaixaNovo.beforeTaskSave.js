@@ -48,23 +48,11 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                 throw "<b>Favor anexar Notas Fiscais</b>";
             }
 
-            var c1 = DatasetFactory.createConstraint("IDMOV", IdMovimento, IdMovimento, ConstraintType.MUST);
-            if (tipo == "Fundo Fixo") {
-                var c2 = DatasetFactory.createConstraint(
-                    "OPERACAO",
-                    "ShowMovAprovacao",
-                    "ShowMovAprovacao",
-                    ConstraintType.MUST
-                );
-            } else if (tipo == "R.D.O") {
-                var c2 = DatasetFactory.createConstraint(
-                    "OPERACAO",
-                    "ShowMovAprovacaoRDO",
-                    "ShowMovAprovacaoRDO",
-                    ConstraintType.MUST
-                );
-            }
-            var dsEnviarEmail = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2], null);
+            var OPERACAO = tipo == "Fundo Fixo" ? "ShowMovAprovacao" : "ShowMovAprovacaoRDO";
+            var dsEnviarEmail = DatasetFactory.getDataset("DatasetFFCXprod", null, [
+                DatasetFactory.createConstraint("IDMOV", IdMovimento, IdMovimento, ConstraintType.MUST),
+                DatasetFactory.createConstraint("OPERACAO",OPERACAO,OPERACAO,ConstraintType.MUST)
+            ], null);
 
             log.info("olha isso2: " + dsEnviarEmail.values); //java lang
             log.info("olha isso3: " + dsEnviarEmail.values[0][0]); //id rm
@@ -76,36 +64,27 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
             var numeroSerie = dsEnviarEmail.values[0][4];
             var chaveAcesso = dsEnviarEmail.values[0][5];
 
-            var idMov = DatasetFactory.createConstraint("IDMOV", parametroIdmov, parametroIdmov, ConstraintType.MUST);
-            var codColigada = DatasetFactory.createConstraint("CODCOLIGADA", coligada, coligada, ConstraintType.MUST);
-            var numeroMov = DatasetFactory.createConstraint("NUMEROMOV", numeroMov, numeroMov, ConstraintType.MUST);
-            var numeroSerie = DatasetFactory.createConstraint("SERIE", numeroSerie, numeroSerie, ConstraintType.MUST);
-            var chaveAcesso = DatasetFactory.createConstraint(
-                "CHAVEACESSONFE",
-                chaveAcesso,
-                chaveAcesso,
-                ConstraintType.MUST
-            );
 
-            var constraints = new Array(idMov, codColigada, numeroMov, numeroSerie, chaveAcesso);
-
-            var wsReport;
-            if (tipo == "Fundo Fixo") {
-                wsReport = DatasetFactory.getDataset("GerarRelatorioProvisao", null, constraints, null);
-            } else if (tipo == "R.D.O") {
-                wsReport = DatasetFactory.getDataset("GerarRelatorioRDO", null, constraints, null);
-            }
+            var datasetReport = tipo == "Fundo Fixo" ? "GerarRelatorioProvisao" : "GerarRelatorioRDO";
+            var wsReport = DatasetFactory.getDataset(datasetReport, null, [
+                DatasetFactory.createConstraint("IDMOV", parametroIdmov, parametroIdmov, ConstraintType.MUST),
+                DatasetFactory.createConstraint("CODCOLIGADA", coligada, coligada, ConstraintType.MUST),
+                DatasetFactory.createConstraint("NUMEROMOV", numeroMov, numeroMov, ConstraintType.MUST),
+                DatasetFactory.createConstraint("SERIE", numeroSerie, numeroSerie, ConstraintType.MUST),
+                DatasetFactory.createConstraint("CHAVEACESSONFE",chaveAcesso,chaveAcesso,ConstraintType.MUST),
+            ], null);
+        
 
             log.warn(wsReport.values[0][0]); // boolean
 
             if (wsReport.values[0][0] == true) {
                 var resultado = wsReport.values[0][1];
-                var p1 = DatasetFactory.createConstraint("processo", processoFluig, processoFluig, ConstraintType.MUST);
-                var p2 = DatasetFactory.createConstraint("idRM", parametroIdmov, parametroIdmov, ConstraintType.MUST);
-                var p3 = DatasetFactory.createConstraint("conteudo", resultado, resultado, ConstraintType.MUST);
-                var constraints = new Array(p1, p2, p3);
 
-                var dataset = DatasetFactory.getDataset("CriacaoDocumentosFluig", null, constraints, null);
+                var dataset = DatasetFactory.getDataset("CriacaoDocumentosFluig", null, [
+                    DatasetFactory.createConstraint("processo", processoFluig, processoFluig, ConstraintType.MUST),
+                    DatasetFactory.createConstraint("idRM", parametroIdmov, parametroIdmov, ConstraintType.MUST),
+                    DatasetFactory.createConstraint("conteudo", resultado, resultado, ConstraintType.MUST),
+                ], null);
                 var res = dataset;
 
                 log.warn(res.values[0][0]); // boolean
