@@ -131,8 +131,7 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                         }
                     }
                     var mailAprovado = hAPI.getCardValue("mail");
-                    var processoUrl =  getServerURL() + "/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=" + processo;
-                    
+                    var processoUrl = getServerURL() + "/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=" + processo;
 
                     var numSolic = hAPI.getCardValue("numProces");
                     var dataFormatada = hAPI.getCardValue("DataEmail");
@@ -804,38 +803,42 @@ function CriaDocumentoNoGED_AnexaDocumentoDoGEDnoProcesso(conteudo, IDMOV) {
 }
 
 function enviaEmailReprovacao() {
+    var userEmail = hAPI.getCardValue("mail");
     var mailAprovado = hAPI.getCardValue("mail");
-    var processoUrl = getServerURL() + "/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=" + processoUrl;
+    var engenheiroEmail = hAPI.getCardValue("emailEngenheiro");
+    var processo = parseInt(getValue("WKNumProces"));
+    var processoUrl = getServerURL() + "/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=" + processo;
+
     if (atividade == ATIVIDADES.APROVACAO_ENGENHEIRO) {
         //Recusado Engenheiro
         if (tipo == "Fundo Fixo") {
             var htmlTemplateNaoAprovacao =
-                "<p class='DescrMsgForum'>\
-            Provisão Fundo Fixo de Caixa <b>REPROVADO</b> pelo(a) Engenheiro(a),\
-            Nº <a href='" +
+                "<p class='DescrMsgForum'>" +
+                "Provisão Fundo Fixo de Caixa <b>REPROVADO</b> pelo(a) Engenheiro(a), " +
+                "Nº <a href='" +
                 processoUrl +
                 "'target='_blank'>" +
                 processo +
-                "</a>.\
-            </p>\
-            <div class='DescrMsgForum actions' style='display:block'>\
-             <br />\
-            <b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
+                "</a>." +
+                "</p>" +
+                "<div class='DescrMsgForum actions' style='display:block'>" +
+                "<br />" +
+                "<b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
 
             sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Provisão RECUSADA  " + processo, htmlTemplateNaoAprovacao);
         } else if (tipo == "R.D.O") {
             var htmlTemplateNaoAprovacao =
-                "<p class='DescrMsgForum'>\
-            Despesas de R.D.O <b>REPROVADO</b> pelo(a) Engenheiro(a),\
-            Solicitação Nº <a href='" +
+                "<p class='DescrMsgForum'>" +
+                "Despesas de R.D.O <b>REPROVADO</b> pelo(a) Engenheiro(a)," +
+                "Solicitação Nº <a href='" +
                 processoUrl +
                 "'target='_blank'>" +
                 processo +
-                "</a>.\
-            </p>\
-            <div class='DescrMsgForum actions' style='display:block'>\
-             <br />\
-            <b>Acessar o chamado e verificar as correções a serem efetuadas</b></br><br/></br>";
+                "</a>." +
+                "</p>" +
+                "<div class='DescrMsgForum actions' style='display:block'>" +
+                "<br />" +
+                "<b>Acessar o chamado e verificar as correções a serem efetuadas</b></br><br/></br>";
 
             sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Despesas de R.D.O RECUSADA " + processo, htmlTemplateNaoAprovacao);
         }
@@ -844,17 +847,17 @@ function enviaEmailReprovacao() {
         if (tipo == "Fundo Fixo") {
             log.info("entrou aqui no fundo fixo contabilidade");
             var htmlTemplateNaoAprovacao =
-                "<p class='DescrMsgForum'>\
-                    Provisão de Fundo Fixo de Caixa <b>REPROVADO</b> pelo setor Contabilidade,\
-                    Nº <a href='" +
+                "<p class='DescrMsgForum'>" +
+                "Provisão de Fundo Fixo de Caixa <b>REPROVADO</b> pelo setor Contabilidade," +
+                "Nº <a href='" +
                 processoUrl +
                 "'target='_blank'>" +
                 processo +
-                "</a>.\
-                    </p>\
-                    <div class='DescrMsgForum actions' style='display:block'>\
-                     <br />\
-                    <b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
+                "</a>." +
+                "</p>" +
+                "<div class='DescrMsgForum actions' style='display:block'>" +
+                "<br />" +
+                "<b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
 
             sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] Provisão RECUSADA  " + processo, htmlTemplateNaoAprovacao);
             sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Provisão RECUSADA  " + processo, htmlTemplateNaoAprovacao);
@@ -862,17 +865,17 @@ function enviaEmailReprovacao() {
             log.info("entrou aqui no rdo contabilidade");
 
             var htmlTemplateNaoAprovacao =
-                "<p class='DescrMsgForum'>\
-                    Despesas de R.D.O <b>REPROVADO</b> pelo setor Contabilidade,\
-                    Solicitação Nº <a href='" +
+                "<p class='DescrMsgForum'>" +
+                "Despesas de R.D.O <b>REPROVADO</b> pelo setor Contabilidade," +
+                "Solicitação Nº <a href='" +
                 processoUrl +
                 "'target='_blank'>" +
                 processo +
-                "</a>.\
-                    </p>\
-                    <div class='DescrMsgForum actions' style='display:block'>\
-                     <br />\
-                    <b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
+                "</a>." +
+                "</p>" +
+                "<div class='DescrMsgForum actions' style='display:block'>" +
+                "<br />" +
+                "<b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
 
             sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] Despesas de R.D.O RECUSADA  " + processo, htmlTemplateNaoAprovacao);
             sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Despesas de R.D.O RECUSADA  " + processo, htmlTemplateNaoAprovacao);
@@ -880,6 +883,6 @@ function enviaEmailReprovacao() {
     }
 }
 
-function getServerURL(){
+function getServerURL() {
     return fluigAPI.getPageService();
 }
