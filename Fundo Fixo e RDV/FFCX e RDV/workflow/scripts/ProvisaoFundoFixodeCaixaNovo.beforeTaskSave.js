@@ -1,4 +1,12 @@
 function beforeTaskSave(colleagueId, nextSequenceId, userList) {
+    var ATIVIDADES = {
+        INICIO:7,
+        INICIO_0:0,
+        APROVACAO_ENGENHEIRO:8, 
+        APROVACAO_CONTABILIDADE:6, 
+    }
+
+
     var atividade = getValue("WKCurrentState");
     var IdMovimento = hAPI.getCardValue("IdMovimento");
     var FundoFixo = hAPI.getCardValue("campoFundoFixoDto");
@@ -29,7 +37,7 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
         motivoReembolso = "";
     }
 
-    if (atividade == 0 || atividade == 7) {
+    if (atividade == ATIVIDADES.INICIO_0 || atividade == ATIVIDADES.INICIO) {
         if (modalidade == "Provisao") {
             if (tipo == "R.D.O") {
                 codtmv = "1.1.09";
@@ -185,8 +193,8 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
         }
     }
 
-    if (FundoFixo == "000557" && atividade == 7) {
-        atividade = 6;
+    if (FundoFixo == "000557" && atividade == ATIVIDADES.INICIO) {
+        atividade = ATIVIDADES.APROVACAO_CONTABILIDADE;
         decisaoAprovar = "sim";
     }
 
@@ -195,7 +203,7 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
         var url =
             "http://desenvolvimento.castilho.com.br:3232/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=";
         var processoUrl = url + processo;
-        if (atividade == 8) {
+        if (atividade == ATIVIDADES.APROVACAO_ENGENHEIRO) {
             //Recusado Engenheiro
             if (tipo == "Fundo Fixo") {
                 var htmlTemplateNaoAprovacao =
@@ -238,7 +246,7 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                     htmlTemplateNaoAprovacao
                 );
             }
-        } else if (atividade == 6) {
+        } else if (atividade == ATIVIDADES.APROVACAO_CONTABILIDADE) {
             //Recusado Contabilidade
             if (tipo == "Fundo Fixo") {
                 log.info("entrou aqui no fundo fixo contabilidade");
@@ -300,7 +308,7 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
     }
 
     if (modalidade == "Recebimento") {
-        if (atividade == 6 && decisaoAprovar == "sim") {
+        if (atividade == ATIVIDADES.APROVACAO_CONTABILIDADE && decisaoAprovar == "sim") {
             log.info("ta entrando aqui viu");
             if (tipo == "R.D.O") {
                 codtmv = "1.1.09";
