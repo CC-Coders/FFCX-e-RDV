@@ -1,4 +1,13 @@
+var ATIVIDADES = {
+    INICIO: 7,
+    INICIO_0: 0,
+    APROVACAO_ENGENHEIRO: 8,
+    APROVACAO_CONTABILIDADE: 6,
+};
+
 function beforeTaskSave(colleagueId, nextSequenceId, userList) {
+
+
     var atividade = getValue("WKCurrentState");
     var IdMovimento = hAPI.getCardValue("IdMovimento");
     var FundoFixo = hAPI.getCardValue("campoFundoFixoDto");
@@ -7,7 +16,6 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
     var tipo = hAPI.getCardValue("tipo");
     var attachments = hAPI.listAttachments();
     var FormMode = hAPI.getCardValue("formMode");
-    var codtmv;
     var xmlStructure;
     var decisaoAprovar = hAPI.getCardValue("aprovacao");
     var processo = parseInt(getValue("WKNumProces"));
@@ -20,6 +28,7 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
     var userEmail = hAPI.getCardValue("mail");
     var engenheiroEmail = hAPI.getCardValue("emailEngenheiro");
     var coligada = hAPI.getCardValue("coligada");
+    var codigoFFCXCuritiba = "000557";
 
     if (viagemCorporativa == "sim") {
         motivoReembolso = "Viagem Corporativa";
@@ -29,278 +38,45 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
         motivoReembolso = "";
     }
 
-    if (atividade == 0 || atividade == 7) {
+    if (atividade == ATIVIDADES.INICIO_0 || atividade == ATIVIDADES.INICIO) {
         if (modalidade == "Provisao") {
-            if (tipo == "R.D.O") {
-                codtmv = "1.1.09";
-                xmlStructure = createInsertXML(codtmv, motivoReembolso);
-                var xmlParam = DatasetFactory.createConstraint("xmlMov", xmlStructure, null, ConstraintType.MUST);
-                var coligadaParam = DatasetFactory.createConstraint("codColigada", coligada, null, ConstraintType.MUST);
-                var vetor = new Array(xmlParam, coligadaParam);
-                var responseData = DatasetFactory.getDataset("ImportaMovRM", null, vetor, null);
-
-                if (!responseData || responseData == "" || responseData == null) {
-                    throw "Houve um erro na comunicação com o webservice. Tente novamente!";
-                } else {
-                    if (responseData.values[0][0] == "false") {
-                        throw (
-                            "Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " +
-                            responseData.values[0][1]
-                        );
-                    } else if (responseData.values[0][0] == "true") {
-                        responseData.values[0][2];
-                    }
-                }
-            } else if (tipo == "Fundo Fixo") {
-                codtmv = "1.1.03";
-                xmlStructure = createInsertXML(codtmv, motivoReembolso);
-
-                var xmlParam = DatasetFactory.createConstraint("xmlMov", xmlStructure, null, ConstraintType.MUST);
-                var coligadaParam = DatasetFactory.createConstraint("codColigada", coligada, null, ConstraintType.MUST);
-                var vetor = new Array(xmlParam, coligadaParam);
-                var responseData = DatasetFactory.getDataset("ImportaMovRM", null, vetor, null);
-
-                if (!responseData || responseData == "" || responseData == null) {
-                    throw "Houve um erro na comunicação com o webservice. Tente novamente!";
-                } else {
-                    if (responseData.values[0][0] == "false") {
-                        throw (
-                            "Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " +
-                            responseData.values[0][1]
-                        );
-                    } else if (responseData.values[0][0] == "true") {
-                        responseData.values[0][2];
-                    }
-                }
-            }
+            insereProvisao(motivoReembolso);
         }
         if (modalidade == "Recebimento") {
-            if (attachments.size() > 0) {
-                var c1 = DatasetFactory.createConstraint("IDMOV", IdMovimento, IdMovimento, ConstraintType.MUST);
-                if (tipo == "Fundo Fixo") {
-                    var c2 = DatasetFactory.createConstraint(
-                        "OPERACAO",
-                        "ShowMovAprovacao",
-                        "ShowMovAprovacao",
-                        ConstraintType.MUST
-                    );
-                } else if (tipo == "R.D.O") {
-                    var c2 = DatasetFactory.createConstraint(
-                        "OPERACAO",
-                        "ShowMovAprovacaoRDO",
-                        "ShowMovAprovacaoRDO",
-                        ConstraintType.MUST
-                    );
-                }
-                var dsEnviarEmail = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2], null);
+            if (attachments.size() < 1 && FundoFixo != codigoFFCXCuritiba) {
+                /*
+                 * Para a Modalidade Recebimento, é necessário anexar a NF na aba Anexos para os casos que o FFCX não seja a Matriz
+                 */
+                throw "<b>Favor anexar Notas Fiscais</b>";
+            }
 
-                log.info("olha isso2: " + dsEnviarEmail.values); //java lang
-                log.info("olha isso3: " + dsEnviarEmail.values[0][0]); //id rm
-                log.info("olha isso4: " + dsEnviarEmail.values[0][1]); //valor
-                log.info("olha isso5: " + dsEnviarEmail.values[0][2]); // nome Obra
-                log.info("olha isso6: " + dsEnviarEmail.values[0][3]); //numero mov
+            var obj = buscaIdmovNumeroSerieChaveAcessoDoMovimento(tipo);
+            var wsReport = geraRelatorioNoRM(obj);
 
-                var parametroIdmov = dsEnviarEmail.values[0][0];
-                var numeroSerie = dsEnviarEmail.values[0][4];
-                var chaveAcesso = dsEnviarEmail.values[0][5];
+            log.warn(wsReport.values[0][0]); // boolean
 
-                var idMov = DatasetFactory.createConstraint(
-                    "IDMOV",
-                    parametroIdmov,
-                    parametroIdmov,
-                    ConstraintType.MUST
-                );
-                var codColigada = DatasetFactory.createConstraint(
-                    "CODCOLIGADA",
-                    coligada,
-                    coligada,
-                    ConstraintType.MUST
-                );
-                var numeroMov = DatasetFactory.createConstraint("NUMEROMOV", numeroMov, numeroMov, ConstraintType.MUST);
-                var numeroSerie = DatasetFactory.createConstraint(
-                    "SERIE",
-                    numeroSerie,
-                    numeroSerie,
-                    ConstraintType.MUST
-                );
-                var chaveAcesso = DatasetFactory.createConstraint(
-                    "CHAVEACESSONFE",
-                    chaveAcesso,
-                    chaveAcesso,
-                    ConstraintType.MUST
-                );
-
-                var constraints = new Array(idMov, codColigada, numeroMov, numeroSerie, chaveAcesso);
-
-                var wsReport;
-                if (tipo == "Fundo Fixo") {
-                    wsReport = DatasetFactory.getDataset("GerarRelatorioProvisao", null, constraints, null);
-                } else if (tipo == "R.D.O") {
-                    wsReport = DatasetFactory.getDataset("GerarRelatorioRDO", null, constraints, null);
-                }
-
-                log.warn(wsReport.values[0][0]); // boolean
-
-                if (wsReport.values[0][0] == true) {
-                    var resultado = wsReport.values[0][1];
-                    var p1 = DatasetFactory.createConstraint(
-                        "processo",
-                        processoFluig,
-                        processoFluig,
-                        ConstraintType.MUST
-                    );
-                    var p2 = DatasetFactory.createConstraint(
-                        "idRM",
-                        parametroIdmov,
-                        parametroIdmov,
-                        ConstraintType.MUST
-                    );
-                    var p3 = DatasetFactory.createConstraint("conteudo", resultado, resultado, ConstraintType.MUST);
-                    var constraints = new Array(p1, p2, p3);
-
-                    var dataset = DatasetFactory.getDataset("CriacaoDocumentosFluig", null, constraints, null);
-                    var res = dataset;
-
-                    log.warn(res.values[0][0]); // boolean
-                    log.warn(res.values[0][1]); // nº documento
-
-                    if (!res || res == "" || res == null) {
-                        throw "Houve um erro na comunicação com o webservice de criação de documentos. Tente novamente!";
-                    } else {
-                        if (res.values[0][0] == "false") {
-                            throw (
-                                "Erro ao criar arquivo. Favor entrar em contato com o administrador do sistema. Mensagem: " +
-                                res.values[0][1]
-                            );
-                        } else {
-                            hAPI.attachDocument(res.values[0][1]);
-                        }
-                    }
-                }
-            } else {
-                if (FundoFixo != "000557") {
-                    throw "<b>Favor anexar Notas Fiscais</b>";
-                }
+            if (wsReport.values[0][0] == true) {
+                var resultado = wsReport.values[0][1];
+                CriaDocumentoNoGED_AnexaDocumentoDoGEDnoProcesso(resultado, obj.IDMOV);
             }
         }
     }
 
-    if (FundoFixo == "000557" && atividade == 7) {
-        atividade = 6;
+    if (FundoFixo == codigoFFCXCuritiba && atividade == ATIVIDADES.INICIO) {
+        /*
+         * Caso o fundo fixo seja Matriz Curitiba, define as variáveis para que realize a integração com o RM no inicío da solicitação
+         * Sem precisar passar pela aprovação do Engenheiro e da Contabilidade
+         */
+        atividade = ATIVIDADES.APROVACAO_CONTABILIDADE;
         decisaoAprovar = "sim";
     }
 
     if (modalidade == "Recebimento" && decisaoAprovar != "sim") {
-        var mailAprovado = hAPI.getCardValue("mail");
-        var url =
-            "http://desenvolvimento.castilho.com.br:3232/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=";
-        var processoUrl = url + processo;
-        if (atividade == 8) {
-            //Recusado Engenheiro
-            if (tipo == "Fundo Fixo") {
-                var htmlTemplateNaoAprovacao =
-                    "<p class='DescrMsgForum'>\
-    			Provisão Fundo Fixo de Caixa <b>REPROVADO</b> pelo(a) Engenheiro(a),\
-    			Nº <a href='" +
-                    processoUrl +
-                    "'target='_blank'>" +
-                    processo +
-                    "</a>.\
-        		</p>\
-        		<div class='DescrMsgForum actions' style='display:block'>\
-         		<br />\
-    			<b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
-
-                sendCustomEmail(
-                    mailAprovado,
-                    userEmail,
-                    "[FLUIG] Provisão RECUSADA  " + processo,
-                    htmlTemplateNaoAprovacao
-                );
-            } else if (tipo == "R.D.O") {
-                var htmlTemplateNaoAprovacao =
-                    "<p class='DescrMsgForum'>\
-    			Despesas de R.D.O <b>REPROVADO</b> pelo(a) Engenheiro(a),\
-    			Solicitação Nº <a href='" +
-                    processoUrl +
-                    "'target='_blank'>" +
-                    processo +
-                    "</a>.\
-        		</p>\
-        		<div class='DescrMsgForum actions' style='display:block'>\
-         		<br />\
-    			<b>Acessar o chamado e verificar as correções a serem efetuadas</b></br><br/></br>";
-
-                sendCustomEmail(
-                    mailAprovado,
-                    userEmail,
-                    "[FLUIG] Despesas de R.D.O RECUSADA " + processo,
-                    htmlTemplateNaoAprovacao
-                );
-            }
-        } else if (atividade == 6) {
-            //Recusado Contabilidade
-            if (tipo == "Fundo Fixo") {
-                log.info("entrou aqui no fundo fixo contabilidade");
-                var htmlTemplateNaoAprovacao =
-                    "<p class='DescrMsgForum'>\
-	        			Provisão de Fundo Fixo de Caixa <b>REPROVADO</b> pelo setor Contabilidade,\
-	        			Nº <a href='" +
-                    processoUrl +
-                    "'target='_blank'>" +
-                    processo +
-                    "</a>.\
-		        		</p>\
-		        		<div class='DescrMsgForum actions' style='display:block'>\
-	             		<br />\
-	        			<b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
-
-                sendCustomEmail(
-                    mailAprovado,
-                    engenheiroEmail,
-                    "[FLUIG] Provisão RECUSADA  " + processo,
-                    htmlTemplateNaoAprovacao
-                );
-                sendCustomEmail(
-                    mailAprovado,
-                    userEmail,
-                    "[FLUIG] Provisão RECUSADA  " + processo,
-                    htmlTemplateNaoAprovacao
-                );
-            } else if (tipo == "R.D.O") {
-                log.info("entrou aqui no rdo contabilidade");
-
-                var htmlTemplateNaoAprovacao =
-                    "<p class='DescrMsgForum'>\
-            			Despesas de R.D.O <b>REPROVADO</b> pelo setor Contabilidade,\
-            			Solicitação Nº <a href='" +
-                    processoUrl +
-                    "'target='_blank'>" +
-                    processo +
-                    "</a>.\
-                		</p>\
-                		<div class='DescrMsgForum actions' style='display:block'>\
-                 		<br />\
-            			<b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
-
-                sendCustomEmail(
-                    mailAprovado,
-                    engenheiroEmail,
-                    "[FLUIG] Despesas de R.D.O RECUSADA  " + processo,
-                    htmlTemplateNaoAprovacao
-                );
-                sendCustomEmail(
-                    mailAprovado,
-                    userEmail,
-                    "[FLUIG] Despesas de R.D.O RECUSADA  " + processo,
-                    htmlTemplateNaoAprovacao
-                );
-            }
-        }
+        enviaEmailReprovacao();
     }
 
     if (modalidade == "Recebimento") {
-        if (atividade == 6 && decisaoAprovar == "sim") {
+        if (atividade == ATIVIDADES.APROVACAO_CONTABILIDADE && decisaoAprovar == "sim") {
             log.info("ta entrando aqui viu");
             if (tipo == "R.D.O") {
                 codtmv = "1.1.09";
@@ -336,18 +112,8 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                             ". Favor verificar as informações ou entrar em contato com o administrador do sistema."
                         );
                     } else {
-                        var c1 = DatasetFactory.createConstraint(
-                            "pCodcoligada",
-                            coligada,
-                            coligada,
-                            ConstraintType.MUST
-                        );
-                        var c2 = DatasetFactory.createConstraint(
-                            "pXML",
-                            xmlStructure,
-                            xmlStructure,
-                            ConstraintType.MUST
-                        );
+                        var c1 = DatasetFactory.createConstraint("pCodcoligada", coligada, coligada, ConstraintType.MUST);
+                        var c2 = DatasetFactory.createConstraint("pXML", xmlStructure, xmlStructure, ConstraintType.MUST);
                         var constraints = new Array(c1, c2);
                         var retorno = DatasetFactory.getDataset("FaturaMovimento", null, constraints, null);
 
@@ -367,9 +133,7 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                         }
                     }
                     var mailAprovado = hAPI.getCardValue("mail");
-                    var url =
-                        "http://desenvolvimento.castilho.com.br:3232/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=";
-                    var processoUrl = url + processo;
+                    var processoUrl = getServerURL() + "/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=" + processo;
 
                     var numSolic = hAPI.getCardValue("numProces");
                     var dataFormatada = hAPI.getCardValue("DataEmail");
@@ -435,18 +199,8 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                             </div>";
                         }
 
-                        sendCustomEmail(
-                            mailAprovado,
-                            engenheiroEmail,
-                            "[FLUIG] PROVISÃO Aprovada  " + processo,
-                            htmlTemplate1
-                        );
-                        sendCustomEmail(
-                            mailAprovado,
-                            "contabilidade@castilho.com.br",
-                            "[FLUIG] PROVISÃO Aprovada  " + processo,
-                            htmlTemplate1
-                        );
+                        sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
+                        sendCustomEmail(mailAprovado, "contabilidade@castilho.com.br", "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
                     } else if (tipo == "R.D.O") {
                         var motivoreembolso = hAPI.getCardValue("motivoReembolsoDto");
                         var htmlTemplate1 =
@@ -502,18 +256,8 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                                  </div>";
                         }
 
-                        sendCustomEmail(
-                            mailAprovado,
-                            engenheiroEmail,
-                            "[FLUIG] PROVISÃO Aprovada  " + processo,
-                            htmlTemplate1
-                        );
-                        sendCustomEmail(
-                            mailAprovado,
-                            "contabilidade@castilho.com.br",
-                            "[FLUIG] PROVISÃO Aprovada  " + processo,
-                            htmlTemplate1
-                        );
+                        sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
+                        sendCustomEmail(mailAprovado, "contabilidade@castilho.com.br", "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
                     }
                 }
             }
@@ -572,12 +316,7 @@ function BuscaAnexosTemplate2() {
 
     for (var i = 0; i < docs.size(); i++) {
         var doc = docs.get(i);
-        retorno +=
-            "<li><a href='" +
-            fluigAPI.getDocumentService().getDownloadURL(doc.getDocumentId()) +
-            "'>" +
-            doc.getDocumentDescription() +
-            "</a></li>";
+        retorno += "<li><a href='" + fluigAPI.getDocumentService().getDownloadURL(doc.getDocumentId()) + "'>" + doc.getDocumentDescription() + "</a></li>";
     }
 
     return retorno;
@@ -866,7 +605,7 @@ function createReceiptXML(codtmv, codtmvDestiny) {
 
 function sendCustomEmail(to, from, subject, htmlBody) {
     var processo = parseInt(getValue("WKNumProces"));
-    var url = "http://fluig.castilho.com.br:1010";
+    var url = getServerURL();
 
     log.info("html envio: " + htmlBody);
     var data = {
@@ -900,12 +639,7 @@ function sendCustomEmail(to, from, subject, htmlBody) {
 }
 
 function BuscaEmailUsuario(usuario) {
-    var ds = DatasetFactory.getDataset(
-        "colleague",
-        null,
-        [DatasetFactory.createConstraint("colleagueId", usuario, usuario, ConstraintType.MUST)],
-        null
-    );
+    var ds = DatasetFactory.getDataset("colleague", null, [DatasetFactory.createConstraint("colleagueId", usuario, usuario, ConstraintType.MUST)], null);
     if (ds.values.length > 0) {
         var userEmail = ds.getValue(0, "mail");
         return userEmail;
@@ -919,4 +653,245 @@ function FormataValor(valor_total) {
     numero = numero.toFixed(2).split(".");
     numero[0] = "R$" + numero[0].split(/(?=(?:...)*$)/).join(".");
     return numero.join(",");
+}
+
+function insereProvisao(motivoReembolso) {
+    try {
+        var tipo = hAPI.getCardValue("tipo");
+        var coligada = hAPI.getCardValue("coligada");
+
+
+        if (tipo == "R.D.O") {
+            var codtmv = "1.1.09";
+            var xmlStructure = createInsertXML(codtmv, motivoReembolso);
+
+            var responseData = DatasetFactory.getDataset(
+                "ImportaMovRM",
+                null,
+                [
+                    DatasetFactory.createConstraint("xmlMov", xmlStructure, null, ConstraintType.MUST),
+                    DatasetFactory.createConstraint("codColigada", coligada, null, ConstraintType.MUST),
+                ],
+                null
+            );
+
+            if (!responseData || responseData == "" || responseData == null) {
+                throw "Houve um erro na comunicação com o webservice. Tente novamente!";
+            } else {
+                if (responseData.values[0][0] == "false") {
+                    throw "Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " + responseData.values[0][1];
+                } else if (responseData.values[0][0] == "true") {
+                    responseData.values[0][2];
+                }
+            }
+        } else if (tipo == "Fundo Fixo") {
+            var codtmv = "1.1.03";
+            var xmlStructure = createInsertXML(codtmv, motivoReembolso);
+
+            var responseData = DatasetFactory.getDataset(
+                "ImportaMovRM",
+                null,
+                [
+                    DatasetFactory.createConstraint("xmlMov", xmlStructure, null, ConstraintType.MUST),
+                    DatasetFactory.createConstraint("codColigada", coligada, null, ConstraintType.MUST),
+                ],
+                null
+            );
+
+            if (!responseData || responseData == "" || responseData == null) {
+                throw "Houve um erro na comunicação com o webservice. Tente novamente!";
+            } else {
+                if (responseData.values[0][0] == "false") {
+                    throw "Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: " + responseData.values[0][1];
+                } else if (responseData.values[0][0] == "true") {
+                    responseData.values[0][2];
+                }
+            }
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+function buscaIdmovNumeroSerieChaveAcessoDoMovimento(tipo) {
+    try {
+        var OPERACAO = tipo == "Fundo Fixo" ? "ShowMovAprovacao" : "ShowMovAprovacaoRDO";
+        var IdMovimento = hAPI.getCardValue("IdMovimento");
+
+        var dsInformacoesDoMovimento = DatasetFactory.getDataset(
+            "DatasetFFCXprod",
+            null,
+            [
+                DatasetFactory.createConstraint("IDMOV", IdMovimento, IdMovimento, ConstraintType.MUST),
+                DatasetFactory.createConstraint("OPERACAO", OPERACAO, OPERACAO, ConstraintType.MUST),
+            ],
+            null
+        );
+
+        log.info("olha isso2: " + dsInformacoesDoMovimento.values); //java lang
+        log.info("olha isso3: " + dsInformacoesDoMovimento.values[0][0]); //id rm
+        log.info("olha isso4: " + dsInformacoesDoMovimento.values[0][1]); //valor
+        log.info("olha isso5: " + dsInformacoesDoMovimento.values[0][2]); // nome Obra
+        log.info("olha isso6: " + dsInformacoesDoMovimento.values[0][3]); //numero mov
+
+        var parametroIdmov = dsInformacoesDoMovimento.values[0][0];
+        var numeroSerie = dsInformacoesDoMovimento.values[0][4];
+        var chaveAcesso = dsInformacoesDoMovimento.values[0][5];
+
+        return {
+            IDMOV: parametroIdmov,
+            NUMEROSERIE: numeroSerie,
+            CHAVEACESSO: chaveAcesso,
+        };
+    } catch (error) {
+        throw error;
+    }
+}
+
+function geraRelatorioNoRM(obj) {
+    try {
+        var coligada = hAPI.getCardValue("coligada");
+        var tipo = hAPI.getCardValue("tipo");
+
+        // TODO - Verificar como está buscando e o uso do numeroMov
+        // Não encontrei no código original a definição da variável
+        var numeroMov;
+
+        var datasetReport = tipo == "Fundo Fixo" ? "GerarRelatorioProvisao" : "GerarRelatorioRDO";
+        var wsReport = DatasetFactory.getDataset(
+            datasetReport,
+            null,
+            [
+                DatasetFactory.createConstraint("IDMOV", obj.IDMOV, obj.IDMOV, ConstraintType.MUST),
+                DatasetFactory.createConstraint("CODCOLIGADA", coligada, coligada, ConstraintType.MUST),
+                DatasetFactory.createConstraint("NUMEROMOV", numeroMov, numeroMov, ConstraintType.MUST),
+                DatasetFactory.createConstraint("SERIE", obj.NUMEROSERIE, obj.NUMEROSERIE, ConstraintType.MUST),
+                DatasetFactory.createConstraint("CHAVEACESSONFE", obj.CHAVEACESSO, obj.CHAVEACESSO, ConstraintType.MUST),
+            ],
+            null
+        );
+
+        return wsReport;
+    } catch (error) {
+        throw error;
+    }
+}
+
+function CriaDocumentoNoGED_AnexaDocumentoDoGEDnoProcesso(conteudo, IDMOV) {
+    try {
+        var processo = parseInt(getValue("WKNumProces"));
+
+        var dataset = DatasetFactory.getDataset(
+            "CriacaoDocumentosFluig",
+            null,
+            [
+                DatasetFactory.createConstraint("processo", processo, processo, ConstraintType.MUST),
+                DatasetFactory.createConstraint("idRM", IDMOV, IDMOV, ConstraintType.MUST),
+                DatasetFactory.createConstraint("conteudo", conteudo, conteudo, ConstraintType.MUST),
+            ],
+            null
+        );
+
+        log.warn(dataset.values[0][0]); // boolean
+        log.warn(dataset.values[0][1]); // nº documento
+
+        if (!dataset || dataset == "" || dataset == null) {
+            throw "Houve um erro na comunicação com o webservice de criação de documentos. Tente novamente!";
+        } else {
+            if (dataset.values[0][0] == "false") {
+                throw "Erro ao criar arquivo. Favor entrar em contato com o administrador do sistema. Mensagem: " + dataset.values[0][1];
+            } else {
+                hAPI.attachDocument(dataset.values[0][1]);
+            }
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+function enviaEmailReprovacao() {
+    var atividade = getValue("WKCurrentState");
+    var tipo = hAPI.getCardValue("tipo");
+    var userEmail = hAPI.getCardValue("mail");
+    var mailAprovado = hAPI.getCardValue("mail");
+    var engenheiroEmail = hAPI.getCardValue("emailEngenheiro");
+    var processo = parseInt(getValue("WKNumProces"));
+    var processoUrl = getServerURL() + "/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=" + processo;
+
+    if (atividade == ATIVIDADES.APROVACAO_ENGENHEIRO) {
+        //Recusado Engenheiro
+        if (tipo == "Fundo Fixo") {
+            var htmlTemplateNaoAprovacao =
+                "<p class='DescrMsgForum'>" +
+                "Provisão Fundo Fixo de Caixa <b>REPROVADO</b> pelo(a) Engenheiro(a), " +
+                "Nº <a href='" +
+                processoUrl +
+                "'target='_blank'>" +
+                processo +
+                "</a>." +
+                "</p>" +
+                "<div class='DescrMsgForum actions' style='display:block'>" +
+                "<br />" +
+                "<b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
+
+            sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Provisão RECUSADA  " + processo, htmlTemplateNaoAprovacao);
+        } else if (tipo == "R.D.O") {
+            var htmlTemplateNaoAprovacao =
+                "<p class='DescrMsgForum'>" +
+                "Despesas de R.D.O <b>REPROVADO</b> pelo(a) Engenheiro(a)," +
+                "Solicitação Nº <a href='" +
+                processoUrl +
+                "'target='_blank'>" +
+                processo +
+                "</a>." +
+                "</p>" +
+                "<div class='DescrMsgForum actions' style='display:block'>" +
+                "<br />" +
+                "<b>Acessar o chamado e verificar as correções a serem efetuadas</b></br><br/></br>";
+
+            sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Despesas de R.D.O RECUSADA " + processo, htmlTemplateNaoAprovacao);
+        }
+    } else if (atividade == ATIVIDADES.APROVACAO_CONTABILIDADE) {
+        //Recusado Contabilidade
+        if (tipo == "Fundo Fixo") {
+            log.info("entrou aqui no fundo fixo contabilidade");
+            var htmlTemplateNaoAprovacao =
+                "<p class='DescrMsgForum'>" +
+                "Provisão de Fundo Fixo de Caixa <b>REPROVADO</b> pelo setor Contabilidade," +
+                "Nº <a href='" +
+                processoUrl +
+                "'target='_blank'>" +
+                processo +
+                "</a>." +
+                "</p>" +
+                "<div class='DescrMsgForum actions' style='display:block'>" +
+                "<br />" +
+                "<b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
+
+            sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] Provisão RECUSADA  " + processo, htmlTemplateNaoAprovacao);
+            sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Provisão RECUSADA  " + processo, htmlTemplateNaoAprovacao);
+        } else if (tipo == "R.D.O") {
+            log.info("entrou aqui no rdo contabilidade");
+
+            var htmlTemplateNaoAprovacao =
+                "<p class='DescrMsgForum'>" +
+                "Despesas de R.D.O <b>REPROVADO</b> pelo setor Contabilidade," +
+                "Solicitação Nº <a href='" +
+                processoUrl +
+                "'target='_blank'>" +
+                processo +
+                "</a>." +
+                "</p>" +
+                "<div class='DescrMsgForum actions' style='display:block'>" +
+                "<br />" +
+                "<b>Acessar o chamado e verificar as correções a serem efetuados</b></br></br>";
+
+            sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] Despesas de R.D.O RECUSADA  " + processo, htmlTemplateNaoAprovacao);
+            sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Despesas de R.D.O RECUSADA  " + processo, htmlTemplateNaoAprovacao);
+        }
+    }
+}
+
+function getServerURL() {
+    return fluigAPI.getPageService();
 }
