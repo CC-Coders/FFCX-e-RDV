@@ -42,7 +42,6 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
             var obj = buscaIdmovNumeroSerieChaveAcessoDoMovimento(tipo);
             var wsReport = geraRelatorioNoRM(obj);
 
-            log.warn(wsReport.values[0][0]); // boolean
 
             if (wsReport.values[0][0] == true) {
                 var resultado = wsReport.values[0][1];
@@ -65,7 +64,6 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
     }
 
     if (modalidade == "Recebimento" && atividade == ATIVIDADES.APROVACAO_CONTABILIDADE && decisaoAprovar == "sim") {
-        log.info("ta entrando aqui viu");
         if (tipo == "R.D.O") {
             codtmv = "1.1.09";
             codtmvDestiny = "1.2.10";
@@ -91,10 +89,6 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                 null
             );
 
-            log.warn("o movimento eh:" + retornoMovimento.values[0][0]); // boolean
-            log.warn("o movimento eh2:" + retornoMovimento.values[0][1]); // mensagem
-            log.warn("o movimento eh3:" + retornoMovimento.values[0][2]); // idmov
-
             if (!retornoMovimento || retornoMovimento == "" || retornoMovimento == null) {
                 throw "Houve um erro na comunicação com o webservice. Tente novamente!";
             } else {
@@ -114,9 +108,6 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                         ],
                         null
                     );
-
-                    log.warn("olha aqui:" + retorno.values[0][0]); //boolean
-                    log.warn("olha aqui2:" + retorno.values[0][1]); // mensagem
 
                     if (FundoFixo != "000557") {
                         if (!retorno || retorno == "" || retorno == null) {
@@ -598,12 +589,6 @@ function buscaIdmovNumeroSerieChaveAcessoDoMovimento(tipo) {
             null
         );
 
-        log.info("olha isso2: " + dsInformacoesDoMovimento.values); //java lang
-        log.info("olha isso3: " + dsInformacoesDoMovimento.values[0][0]); //id rm
-        log.info("olha isso4: " + dsInformacoesDoMovimento.values[0][1]); //valor
-        log.info("olha isso5: " + dsInformacoesDoMovimento.values[0][2]); // nome Obra
-        log.info("olha isso6: " + dsInformacoesDoMovimento.values[0][3]); //numero mov
-
         var parametroIdmov = dsInformacoesDoMovimento.values[0][0];
         var numeroSerie = dsInformacoesDoMovimento.values[0][4];
         var chaveAcesso = dsInformacoesDoMovimento.values[0][5];
@@ -661,9 +646,6 @@ function CriaDocumentoNoGED_AnexaDocumentoDoGEDnoProcesso(conteudo, IDMOV) {
             ],
             null
         );
-
-        log.warn(dataset.values[0][0]); // boolean
-        log.warn(dataset.values[0][1]); // nº documento
 
         if (!dataset || dataset == "" || dataset == null) {
             throw "Houve um erro na comunicação com o webservice de criação de documentos. Tente novamente!";
@@ -724,7 +706,6 @@ function enviaEmailReprovacao() {
     } else if (atividade == ATIVIDADES.APROVACAO_CONTABILIDADE) {
         //Recusado Contabilidade
         if (tipo == "Fundo Fixo") {
-            log.info("entrou aqui no fundo fixo contabilidade");
             var htmlTemplateNaoAprovacao =
                 "<p class='DescrMsgForum'>" +
                 "Provisão de Fundo Fixo de Caixa <b>REPROVADO</b> pelo setor Contabilidade," +
@@ -741,8 +722,6 @@ function enviaEmailReprovacao() {
             sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] Provisão RECUSADA  " + processo, htmlTemplateNaoAprovacao);
             sendCustomEmail(mailAprovado, userEmail, "[FLUIG] Provisão RECUSADA  " + processo, htmlTemplateNaoAprovacao);
         } else if (tipo == "R.D.O") {
-            log.info("entrou aqui no rdo contabilidade");
-
             var htmlTemplateNaoAprovacao =
                 "<p class='DescrMsgForum'>" +
                 "Despesas de R.D.O <b>REPROVADO</b> pelo setor Contabilidade," +
