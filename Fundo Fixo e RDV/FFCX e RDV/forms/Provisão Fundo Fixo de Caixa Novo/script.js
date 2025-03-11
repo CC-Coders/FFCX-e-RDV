@@ -2569,7 +2569,7 @@ function validateJsonInfos() {
                 const selectedOption = select.options[select.selectedIndex];
                 const textoSelecionado = selectedOption.text;
                 $("#formaDePagamentoPlaceHolder").val(textoSelecionado);
-                handleProvisao();
+                handleRecebimento();
                 return true;
             }
         }
