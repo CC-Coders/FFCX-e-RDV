@@ -7,24 +7,15 @@ var ATIVIDADES = {
 
 function beforeTaskSave(colleagueId, nextSequenceId, userList) {
     var atividade = getValue("WKCurrentState");
-    var IdMovimento = hAPI.getCardValue("IdMovimento");
     var FundoFixo = hAPI.getCardValue("campoFundoFixoDto");
-    var Filial = hAPI.getCardValue("campoFilialDto");
     var modalidade = hAPI.getCardValue("modalidade");
     var tipo = hAPI.getCardValue("tipo");
     var attachments = hAPI.listAttachments();
-    var FormMode = hAPI.getCardValue("formMode");
     var xmlStructure;
     var decisaoAprovar = hAPI.getCardValue("aprovacao");
-    var processo = parseInt(getValue("WKNumProces"));
-    var localDeEstoque = hAPI.getCardValue("selectLocalEstoque");
-    var processoFluig = getValue("WKNumProces");
     var motivoReembolso;
     var viagemCorporativa = hAPI.getCardValue("corporativaDto") == "sim" ? true : false;
     var viagemFamiliar = hAPI.getCardValue("familiarDto") == "sim" ? true : false;
-    var numeroSerie;
-    var userEmail = hAPI.getCardValue("mail");
-    var engenheiroEmail = hAPI.getCardValue("emailEngenheiro");
     var coligada = hAPI.getCardValue("coligada");
     var codigoFFCXCuritiba = "000557";
 
