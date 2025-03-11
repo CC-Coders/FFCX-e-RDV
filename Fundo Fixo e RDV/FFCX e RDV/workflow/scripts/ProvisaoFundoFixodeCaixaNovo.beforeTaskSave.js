@@ -38,7 +38,7 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
 
     if (atividade == ATIVIDADES.INICIO_0 || atividade == ATIVIDADES.INICIO) {
         if (modalidade == "Provisao") {
-            insereProvisao();
+            insereProvisao(motivoReembolso);
         }
         if (modalidade == "Recebimento") {
             if (attachments.size() < 1 && FundoFixo != codigoFFCXCuritiba) {
@@ -653,9 +653,11 @@ function FormataValor(valor_total) {
     return numero.join(",");
 }
 
-function insereProvisao() {
+function insereProvisao(motivoReembolso) {
     try {
         var tipo = hAPI.getCardValue("tipo");
+        var coligada = hAPI.getCardValue("coligada");
+
 
         if (tipo == "R.D.O") {
             var codtmv = "1.1.09";
@@ -712,6 +714,7 @@ function insereProvisao() {
 function buscaIdmovNumeroSerieChaveAcessoDoMovimento(tipo) {
     try {
         var OPERACAO = tipo == "Fundo Fixo" ? "ShowMovAprovacao" : "ShowMovAprovacaoRDO";
+        var IdMovimento = hAPI.getCardValue("IdMovimento");
 
         var dsInformacoesDoMovimento = DatasetFactory.getDataset(
             "DatasetFFCXprod",
