@@ -1,10 +1,12 @@
+var ATIVIDADES = {
+    INICIO: 7,
+    INICIO_0: 0,
+    APROVACAO_ENGENHEIRO: 8,
+    APROVACAO_CONTABILIDADE: 6,
+};
+
 function beforeTaskSave(colleagueId, nextSequenceId, userList) {
-    var ATIVIDADES = {
-        INICIO: 7,
-        INICIO_0: 0,
-        APROVACAO_ENGENHEIRO: 8,
-        APROVACAO_CONTABILIDADE: 6,
-    };
+
 
     var atividade = getValue("WKCurrentState");
     var IdMovimento = hAPI.getCardValue("IdMovimento");
@@ -749,9 +751,11 @@ function buscaIdmovNumeroSerieChaveAcessoDoMovimento(tipo) {
 function geraRelatorioNoRM(obj) {
     try {
         var coligada = hAPI.getCardValue("coligada");
+        var tipo = hAPI.getCardValue("tipo");
 
         // TODO - Verificar como está buscando e o uso do numeroMov
         // Não encontrei no código original a definição da variável
+        var numeroMov;
 
         var datasetReport = tipo == "Fundo Fixo" ? "GerarRelatorioProvisao" : "GerarRelatorioRDO";
         var wsReport = DatasetFactory.getDataset(
@@ -806,6 +810,8 @@ function CriaDocumentoNoGED_AnexaDocumentoDoGEDnoProcesso(conteudo, IDMOV) {
 }
 
 function enviaEmailReprovacao() {
+    var atividade = getValue("WKCurrentState");
+    var tipo = hAPI.getCardValue("tipo");
     var userEmail = hAPI.getCardValue("mail");
     var mailAprovado = hAPI.getCardValue("mail");
     var engenheiroEmail = hAPI.getCardValue("emailEngenheiro");
