@@ -768,137 +768,91 @@ function getServerURL() {
 }
 
 function enviaEmailAprovacao() {
-    var processo = parseInt(getValue("WKNumProces"));
+    try {
+        var processo = parseInt(getValue("WKNumProces"));
+        var processoUrl = getServerURL() + "/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=" + processo;
 
-    var mailAprovado = hAPI.getCardValue("mail");
-    var processoUrl = getServerURL() + "/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=" + processo;
+        var mailAprovado = hAPI.getCardValue("mail");
+        var engenheiroEmail = hAPI.getCardValue("emailEngenheiro");
 
-    var dataFormatada = hAPI.getCardValue("DataEmail");
+        var filial = hAPI.getCardValue("campoFilialDto");
+        var dataFormatada = hAPI.getCardValue("DataEmail");
+        var tipo = hAPI.getCardValue("tipo");
+        var localDeEstoque = hAPI.getCardValue("selectLocalEstoque");
+        var IdMovimento = hAPI.getCardValue("IdMovimento");
 
-    var jsonExportarRm1207 = hAPI.getCardValue("valuesRecebimento");
-    jsonExportarRm1207 = JSON.parse(jsonExportarRm1207);
-    var valor_total = 0;
-    var z = 0;
+        var jsonExportarRm1207 = hAPI.getCardValue("valuesRecebimento");
+        jsonExportarRm1207 = JSON.parse(jsonExportarRm1207);
+        var valor_total = parseFloat(jsonExportarRm1207[0].values.VALORBRUTO);
 
-    var floatValorBruto = parseFloat(jsonExportarRm1207[z].values.VALORBRUTO);
-    valor_total = floatValorBruto;
+        if (tipo == "Fundo Fixo") {
+            var htmlTemplate1 = "";
+            htmlTemplate1 += "<p class='DescrMsgForum'>";
+            htmlTemplate1 += "   Provisão de Fundo Fixo de Caixa aprovada, Nº <a href='" + processoUrl + "'target='_blank'>" + processo + "</a>.";
+            htmlTemplate1 += "</p>";
+            htmlTemplate1 += "<div class='DescrMsgForum actions' style='display:block'>";
+            htmlTemplate1 += "   <br />";
+            htmlTemplate1 += "   <div><b>Tipo:</b> " + tipo + "</div></br></br>";
+            htmlTemplate1 += "   <div><b>Valor:</b> " + FormataValor(valor_total) +"</div></br>";
+            htmlTemplate1 += "   <div><b>Data:</b> " + dataFormatada + "</div></br></br>";
+            htmlTemplate1 += "   <div><b>Local de Estoque:</b> " + localDeEstoque + "</div></br>";
+            htmlTemplate1 += "   <div><b>Filial: </b> " + filial + "</div> </br></br>";
+            htmlTemplate1 += "   <div><b>Id Movimento: </b> " + IdMovimento + "</div></br>";
+            htmlTemplate1 += "   <div><b>Nº: </b> " + hAPI.getCardValue("NumeroMovimento") + "</div></br></br>";
+            htmlTemplate1 += "</div>";
+            htmlTemplate1 += "<br>";
 
-    var filial = hAPI.getCardValue("campoFilialDto");
+            var anexos1 = BuscaAnexosTemplate2();
+            if (anexos1 != false && anexos1 != "") {
+                htmlTemplate1 += "<div>";
+                htmlTemplate1 += "  <p>";
+                htmlTemplate1 += "    <b>Anexos:</b>";
+                htmlTemplate1 += "    <ul>";
+                htmlTemplate1 += "      " + anexos1;
+                htmlTemplate1 += "      <br>";
+                htmlTemplate1 += "    </ul>";
+                htmlTemplate1 += "  </p>";
+                htmlTemplate1 += "</div>";
+            }
 
-    var tipo = hAPI.getCardValue("tipo");
-    var localDeEstoque = hAPI.getCardValue("selectLocalEstoque");
-    var IdMovimento = hAPI.getCardValue("IdMovimento");
-    var engenheiroEmail = hAPI.getCardValue("emailEngenheiro");
+            sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
+            sendCustomEmail(mailAprovado, "contabilidade@castilho.com.br", "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
+        } else if (tipo == "R.D.O") {
+            var motivoreembolso = hAPI.getCardValue("motivoReembolsoDto");
+            var htmlTemplate1 = "";
+            htmlTemplate1 += "<p class='DescrMsgForum'>";
+            htmlTemplate1 += "   R.D.O aprovada, Nº <a href='" + processoUrl + "'target='_blank'>" + processo + "</a>.";
+            htmlTemplate1 += "</p>";
+            htmlTemplate1 += "<div class='DescrMsgForum actions' style='display:block'>";
+            htmlTemplate1 += "  <br />";
+            htmlTemplate1 += "  <div><b>Tipo:</b> " + tipo + "</div></br></br>";
+            htmlTemplate1 += "  <div><b>Valor:</b> " + FormataValor(valor_total) + "</div></br>";
+            htmlTemplate1 += "  <div><b>Data:</b> " + dataFormatada + "</div></br></br>";
+            htmlTemplate1 += "  <div><b>Local de Estoque:</b> " + localDeEstoque + "</div></br>";
+            htmlTemplate1 += "  <div><b>Filial: </b> " + Filial + "</div></br></br>";
+            htmlTemplate1 += "  <div><b>Id Movimento: </b> " + IdMovimento + "</div></br>";
+            htmlTemplate1 += "  <div><b>Nº: </b> " + hAPI.getCardValue("NumeroMovimento") + "</div></br></br>";
+            htmlTemplate1 += "  <div><b>Motivo do reembolso da despesa: </b> " + motivoreembolso + "</div></br></br>";
+            htmlTemplate1 += "</div>";
+            htmlTemplate1 += "<br>";
 
-    if (tipo == "Fundo Fixo") {
-        var htmlTemplate1 =
-            "<p class='DescrMsgForum'>\
-            Provisão de Fundo Fixo de Caixa aprovada,\
-            Nº <a href='" +
-            processoUrl +
-            "'target='_blank'>" +
-            processo +
-            "</a>.\
-        </p>\
-        <div class='DescrMsgForum actions' style='display:block'>\
-                 <br />\
-                     <div><b>Tipo:</b> " +
-            tipo +
-            "</div></br></br>\
-                     <div><b>Valor:</b> " +
-            FormataValor(valor_total) +
-            "</div></br>\
-                     <div><b>Data:</b> " +
-            dataFormatada +
-            "</div></br></br>\
-                    <div><b>Local de Estoque:</b> " +
-            localDeEstoque +
-            "</div></br>\
-                    <div><b>Filial: </b> " +
-            filial +
-            "</div></br></br>\
-                    <div><b>Id Movimento: </b> " +
-            IdMovimento +
-            "</div></br>\
-                     <div><b>Nº: </b> " +
-            hAPI.getCardValue("NumeroMovimento") +
-            "</div></br></br>\
-             </div>\
-        <br>";
+            var anexos1 = BuscaAnexosTemplate2();
+            if (anexos1 != false && anexos1 != "") {
+                htmlTemplate1 += "<div>";
+                htmlTemplate1 += "  <p>";
+                htmlTemplate1 += "      <b>Anexos:</b>";
+                htmlTemplate1 += "      <ul>";
+                htmlTemplate1 += "          " + anexos1;
+                htmlTemplate1 += "          <br>";
+                htmlTemplate1 += "      </ul>";
+                htmlTemplate1 += "  </p>";
+                htmlTemplate1 += "</div>";
+            }
 
-        var anexos1 = BuscaAnexosTemplate2();
-        if (anexos1 != false && anexos1 != "") {
-            htmlTemplate1 +=
-                "<div>\
-                <p>\
-                    <b>Anexos:</b>\
-                    <ul>\
-                        " +
-                anexos1 +
-                "<br>\
-                    </ul>\
-                </p>\
-            </div>";
+            sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
+            sendCustomEmail(mailAprovado, "contabilidade@castilho.com.br", "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
         }
-
-        sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
-        sendCustomEmail(mailAprovado, "contabilidade@castilho.com.br", "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
-    } else if (tipo == "R.D.O") {
-        var motivoreembolso = hAPI.getCardValue("motivoReembolsoDto");
-        var htmlTemplate1 =
-            "<p class='DescrMsgForum'>\
-                 R.D.O aprovada,\
-                 Nº <a href='" +
-            processoUrl +
-            "'target='_blank'>" +
-            processo +
-            "</a>.\
-             </p>\
-             <div class='DescrMsgForum actions' style='display:block'>\
-                 <br />\
-                     <div><b>Tipo:</b> " +
-            tipo +
-            "</div></br></br>\
-                     <div><b>Valor:</b> " +
-            FormataValor(valor_total) +
-            "</div></br>\
-                     <div><b>Data:</b> " +
-            dataFormatada +
-            "</div></br></br>\
-                    <div><b>Local de Estoque:</b> " +
-            localDeEstoque +
-            "</div></br>\
-                    <div><b>Filial: </b> " +
-            Filial +
-            "</div></br></br>\
-                    <div><b>Id Movimento: </b> " +
-            IdMovimento +
-            "</div></br>\
-                     <div><b>Nº: </b> " +
-            hAPI.getCardValue("NumeroMovimento") +
-            "</div></br></br>\
-                     <div><b>Motivo do reembolso da despesa: </b> " +
-            motivoreembolso +
-            "</div></br></br>\
-             </div>\
-             <br>";
-
-        var anexos1 = BuscaAnexosTemplate2();
-        if (anexos1 != false && anexos1 != "") {
-            htmlTemplate1 +=
-                "<div>\
-                     <p>\
-                         <b>Anexos:</b>\
-                         <ul>\
-                             " +
-                anexos1 +
-                "<br>\
-                         </ul>\
-                     </p>\
-                 </div>";
-        }
-
-        sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
-        sendCustomEmail(mailAprovado, "contabilidade@castilho.com.br", "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
+    } catch (error) {
+        throw error;
     }
 }
