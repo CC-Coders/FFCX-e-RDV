@@ -20,7 +20,8 @@ $(".DatadeHoje").val(getDataHoje("DD/MM/AAAA"));
 var activityValue = document.getElementById("atividade").value;
 var activity = parseInt(activityValue);
 
-SelecionarData();
+$("#dataAtual").val(getDataHoje("AAAA-MM-DD") + "T00:00:00.000");
+
 
 $("#divFundoView, #divValorTotal, #titleValorTotal, #valorTotalFFCX").hide();
 
@@ -266,8 +267,6 @@ function bindings(){
 
 var itensArmazenados = [];
 
-
-
 function ChecaBotoes() {
     if ($("#motivoReembolsoDto").val() == "Viagem Familiar") {
         $("#familiar").prop("checked", true);
@@ -340,17 +339,6 @@ function toggleCheckbox(currentCheckbox, otherCheckboxId) {
 
     currentCheckbox.value = currentCheckbox.checked ? "sim" : "nao";
 }
-
-function SelecionarData() {
-    var data = new Date();
-    var dia = String(data.getDate()).padStart(2, "0");
-    var mes = String(data.getMonth() + 1).padStart(2, "0");
-    var ano = data.getFullYear();
-    dataAtual = dia + "-" + mes + "-" + ano + "T00:00:00.000";
-    $("#dataAtual").val(dataAtual);
-}
-
-
 
 var contadorItens = 0;
 
@@ -3017,7 +3005,7 @@ function getDataHoje(format){
     }else if(format.toUpperCase() == "AAAA-MM-DD"){
         return [year,month,day].join("-");
     }else{
-        console.error("Fomato da Data inválido ("+format.toUpperCase()+")");
-        throw "Fomato da Data inválido ("+format.toUpperCase()+")";
+        console.error("Formato da Data inválido ("+format.toUpperCase()+")");
+        throw "Formato da Data inválido ("+format.toUpperCase()+")";
     }
 }
