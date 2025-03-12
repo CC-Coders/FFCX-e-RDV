@@ -76,54 +76,32 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
         var formaPgtoAtual = hAPI.getCardValue("formaPagamento");
         log.error("A forma de pagamento eh: " + formaPgtoAntigo + "e a atual eh: " + formaPgtoAtual);
         if (formaPgtoAntigo != formaPgtoAtual) {
-            var xmlAtualizaMov = montaXMLatualizaMovimento();
+            alteraFormaDePagamento();
+        }
 
-            var retornoAtualizaMovimento = DatasetFactory.getDataset(
-                "AtualizaMovimento",
-                null,
-                [
-                    DatasetFactory.createConstraint("pCodcoligada", coligada, coligada, ConstraintType.MUST),
-                    DatasetFactory.createConstraint("pXML", xmlAtualizaMov, null, ConstraintType.MUST),
-                ],
-                null
-            );
+        var retorno = DatasetFactory.getDataset(
+            "FaturaMovimento",
+            null,
+            [
+                DatasetFactory.createConstraint("pCodcoligada", coligada, coligada, ConstraintType.MUST),
+                DatasetFactory.createConstraint("pXML", xmlStructure, xmlStructure, ConstraintType.MUST),
+            ],
+            null
+        );
 
-            if (!retornoAtualizaMovimento || retornoAtualizaMovimento == "" || retornoAtualizaMovimento == null) {
+        if (FundoFixo != "000557") {
+            if (!retorno || retorno == "" || retorno == null) {
                 throw "Houve um erro na comunicação com o webservice. Tente novamente!";
-            }
-            if (retornoAtualizaMovimento.values[0][0] == "false" && FundoFixo != "000557") {
+            } else if (retorno.values[0][0] == "false") {
                 throw (
-                    "Não foi possível atualizar o movimento. Motivo: " +
-                    retornoAtualizaMovimento.values[0][1] +
+                    "Não foi possível baixar a NF. Motivo: " +
+                    retorno.values[0][1] +
                     ". Favor verificar as informações ou entrar em contato com o administrador do sistema."
                 );
             }
         }
 
-
-            var retorno = DatasetFactory.getDataset(
-                "FaturaMovimento",
-                null,
-                [
-                    DatasetFactory.createConstraint("pCodcoligada", coligada, coligada, ConstraintType.MUST),
-                    DatasetFactory.createConstraint("pXML", xmlStructure, xmlStructure, ConstraintType.MUST),
-                ],
-                null
-            );
-
-            if (FundoFixo != "000557") {
-                if (!retorno || retorno == "" || retorno == null) {
-                    throw "Houve um erro na comunicação com o webservice. Tente novamente!";
-                } else if (retorno.values[0][0] == "false") {
-                    throw (
-                        "Não foi possível baixar a NF. Motivo: " +
-                        retorno.values[0][1] +
-                        ". Favor verificar as informações ou entrar em contato com o administrador do sistema."
-                    );
-                }
-            }
-
-            enviaEmailAprovacao();
+        enviaEmailAprovacao();
     }
 }
 // var codForn = hAPI.getCardValue("campoFundoFixoDto");
@@ -830,6 +808,35 @@ function enviaEmailAprovacao() {
             sendCustomEmail(mailAprovado, engenheiroEmail, "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
             sendCustomEmail(mailAprovado, "contabilidade@castilho.com.br", "[FLUIG] PROVISÃO Aprovada  " + processo, htmlTemplate1);
         }
+    } catch (error) {
+        throw error;
+    }
+}
+
+function alteraFormaDePagamento() {
+    try {
+        var coligada = hAPI.getCardValue("coligada");
+
+        var xmlAtualizaMov = montaXMLatualizaMovimento();
+
+        var retornoAtualizaMovimento = DatasetFactory.getDataset("AtualizaMovimento",null,
+            [
+                DatasetFactory.createConstraint("pCodcoligada", coligada, coligada, ConstraintType.MUST),
+                DatasetFactory.createConstraint("pXML", xmlAtualizaMov, null, ConstraintType.MUST),
+            ],null);
+
+        if (!retornoAtualizaMovimento || retornoAtualizaMovimento == "" || retornoAtualizaMovimento == null) {
+            throw "Houve um erro na comunicação com o webservice. Tente novamente!";
+        }
+        if (retornoAtualizaMovimento.values[0][0] == "false" && FundoFixo != "000557") {
+            throw (
+                "Não foi possível atualizar o movimento. Motivo: " +
+                retornoAtualizaMovimento.values[0][1] +
+                ". Favor verificar as informações ou entrar em contato com o administrador do sistema."
+            );
+        }
+
+        return true;
     } catch (error) {
         throw error;
     }
