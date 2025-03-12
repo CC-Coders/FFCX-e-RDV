@@ -12,22 +12,12 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
     var tipo = hAPI.getCardValue("tipo");
     var attachments = hAPI.listAttachments();
     var decisaoAprovar = hAPI.getCardValue("aprovacao");
-    var motivoReembolso;
-    var viagemCorporativa = hAPI.getCardValue("corporativaDto") == "sim" ? true : false;
-    var viagemFamiliar = hAPI.getCardValue("familiarDto") == "sim" ? true : false;
     var codigoFFCXCuritiba = "000557";
 
-    if (viagemCorporativa == "sim") {
-        motivoReembolso = "Viagem Corporativa";
-    } else if (viagemFamiliar == "sim") {
-        motivoReembolso = "Visita Familiar";
-    } else {
-        motivoReembolso = "";
-    }
 
     if (atividade == ATIVIDADES.INICIO_0 || atividade == ATIVIDADES.INICIO) {
         if (modalidade == "Provisao") {
-            insereProvisao(motivoReembolso);
+            insereProvisao();
         }
         if (modalidade == "Recebimento") {
             if (attachments.size() < 1 && FundoFixo != codigoFFCXCuritiba) {
@@ -464,8 +454,20 @@ function FormataValor(valor_total) {
     return numero.join(",");
 }
 
-function insereProvisao(motivoReembolso) {
+function insereProvisao() {
     try {
+        var motivoReembolso;
+        var viagemCorporativa = hAPI.getCardValue("corporativaDto") == "sim" ? true : false;
+        var viagemFamiliar = hAPI.getCardValue("familiarDto") == "sim" ? true : false;
+        
+        if (viagemCorporativa == "sim") {
+            motivoReembolso = "Viagem Corporativa";
+        } else if (viagemFamiliar == "sim") {
+            motivoReembolso = "Visita Familiar";
+        } else {
+            motivoReembolso = "";
+        }
+
         var tipo = hAPI.getCardValue("tipo");
         var coligada = hAPI.getCardValue("coligada");
 
