@@ -98,6 +98,8 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
                     ". Favor verificar as informações ou entrar em contato com o administrador do sistema."
                 );
             }
+        }
+
 
             var retorno = DatasetFactory.getDataset(
                 "FaturaMovimento",
@@ -122,7 +124,6 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
             }
 
             enviaEmailAprovacao();
-        }
     }
 }
 // var codForn = hAPI.getCardValue("campoFundoFixoDto");
