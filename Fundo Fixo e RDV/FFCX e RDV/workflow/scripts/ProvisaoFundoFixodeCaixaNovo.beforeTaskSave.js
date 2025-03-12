@@ -11,12 +11,10 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
     var modalidade = hAPI.getCardValue("modalidade");
     var tipo = hAPI.getCardValue("tipo");
     var attachments = hAPI.listAttachments();
-    var xmlStructure;
     var decisaoAprovar = hAPI.getCardValue("aprovacao");
     var motivoReembolso;
     var viagemCorporativa = hAPI.getCardValue("corporativaDto") == "sim" ? true : false;
     var viagemFamiliar = hAPI.getCardValue("familiarDto") == "sim" ? true : false;
-    var coligada = hAPI.getCardValue("coligada");
     var codigoFFCXCuritiba = "000557";
 
     if (viagemCorporativa == "sim") {
@@ -822,36 +820,38 @@ function faturaMovimento() {
         var tipo = hAPI.getCardValue("tipo");
         var coligada = hAPI.getCardValue("coligada");
 
-        if (tipo == "R.D.O") {
-            codtmv = "1.1.09";
-            codtmvDestiny = "1.2.10";
-            xmlStructure = createReceiptXML(codtmv, codtmvDestiny);
-        } else if (tipo == "Fundo Fixo") {
-            codtmv = "1.1.03";
-            codtmvDestiny = "1.2.07";
-            xmlStructure = createReceiptXML(codtmv, codtmvDestiny);
+        var tiposDeMovimento = {
+            "R.D.O":{
+                codigoTipoMovimentoOrigem:"1.1.09",
+                codigoTipoMovimentoDestino:"1.2.10",
+            },
+            "Fundo Fixo":{
+                codigoTipoMovimentoOrigem:"1.1.03",
+                codigoTipoMovimentoDestino:"1.2.07",
+            },
         }
 
-        var retorno = DatasetFactory.getDataset(
-            "FaturaMovimento",
-            null,
-            [
-                DatasetFactory.createConstraint("pCodcoligada", coligada, coligada, ConstraintType.MUST),
-                DatasetFactory.createConstraint("pXML", xmlStructure, xmlStructure, ConstraintType.MUST),
-            ],
-            null
-        );
+        var codigoTipoMovimentoOrigem = tiposDeMovimento[tipo].codigoTipoMovimentoOrigem;
+        var codigoTipoMovimentoDestino = tiposDeMovimento[tipo].codigoTipoMovimentoDestino;
+        var xmlFaturaMovimento = createReceiptXML(codigoTipoMovimentoOrigem, codigoTipoMovimentoDestino);
 
-        if (FundoFixo != "000557") {
-            if (!retorno || retorno == "" || retorno == null) {
-                throw "Houve um erro na comunicação com o webservice. Tente novamente!";
-            } else if (retorno.values[0][0] == "false") {
-                throw (
-                    "Não foi possível baixar a NF. Motivo: " +
-                    retorno.values[0][1] +
-                    ". Favor verificar as informações ou entrar em contato com o administrador do sistema."
-                );
-            }
+        var retorno = DatasetFactory.getDataset("FaturaMovimento",null,[
+                DatasetFactory.createConstraint("pCodcoligada", coligada, coligada, ConstraintType.MUST),
+                DatasetFactory.createConstraint("pXML", xmlFaturaMovimento, xmlFaturaMovimento, ConstraintType.MUST),
+            ],null);
+
+        if (FundoFixo == "000557") {
+            // Se o FFCX for Matriz, não verifica o retorno do faturamento
+            // Necessário verificar a regra de negocio
+            return true;
+        }
+
+        if (!retorno || retorno == "" || retorno == null) {
+            throw "Houve um erro na comunicação com o webservice. Tente novamente!";
+        } else if (retorno.values[0][0] == "false") {
+            throw (
+                "Não foi possível baixar a NF. Motivo: " + retorno.values[0][1] + ". Favor verificar as informações ou entrar em contato com o administrador do sistema."
+            );
         }
     } catch (error) {
         throw error;
