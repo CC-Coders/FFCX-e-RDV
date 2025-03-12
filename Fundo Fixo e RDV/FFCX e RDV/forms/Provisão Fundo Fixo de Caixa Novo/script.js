@@ -510,32 +510,6 @@ function AddSelectSubEmpreiteiro(identificador) {
     }
 }
 
-function FormataValorParaMoeda(element, decimais, reais = true) {
-    let valor = $(element)
-        .val()
-        .replace(/[^0-9,.]/g, "");
-
-    if (isNaN(valor)) {
-        return " - ";
-    }
-
-    if (valor) {
-        valor = parseFloat(valor.replace(",", "."));
-    }
-
-    if (isNaN(decimais)) {
-        decimais = 6;
-    }
-
-    $(element).val(
-        (reais ? "R$ " : "") +
-            valor.toLocaleString("pt-br", {
-                minimumFractionDigits: decimais,
-                maximumFractionDigits: decimais,
-            })
-    );
-}
-
 function FormataNumeros(element) {
     let valor = element.value;
 
@@ -855,20 +829,6 @@ document.querySelectorAll("ul.nav.nav-tabs.nav-justified.nav-pills a.collapseIte
     }
     atualizarValorTotalFFCX();
 });
-
-function removeDivsByClass(className) {
-    const divs = document.querySelectorAll("div." + className);
-    for (let i = 0; i < divs.length; i++) {
-        divs[i].parentNode.removeChild(divs[i]);
-    }
-}
-
-function FormataValor(valor) {
-    var numero = parseFloat(valor);
-    numero = numero.toFixed(2).split(".");
-    numero[0] = "R$" + numero[0].split(/(?=(?:...)*$)/).join(".");
-    return numero.join(",");
-}
 
 $("#fundoFixo").on("change", function () {
     var fundoFixo = $("#fundoFixo").val();
@@ -2630,14 +2590,6 @@ function validateJsonInfos() {
     }
 }
 
-function showErrorMessage(fieldName, itemNumber) {
-    FLUIGC.toast({
-        title: "",
-        message: `Preencha o campo "${fieldName}" do ${itemNumber}`,
-        type: "warning",
-    });
-}
-
 function validateCamposProvisao() {
     let isValid = true;
 
@@ -3022,4 +2974,51 @@ function atribuicaoEngCoord() {
             },
         }
     );
+}
+
+
+// Utils
+function showErrorMessage(fieldName, itemNumber) {
+    FLUIGC.toast({
+        title: "",
+        message: `Preencha o campo "${fieldName}" do ${itemNumber}`,
+        type: "warning",
+    });
+}
+function FormataValor(valor) {
+    var numero = parseFloat(valor);
+    numero = numero.toFixed(2).split(".");
+    numero[0] = "R$" + numero[0].split(/(?=(?:...)*$)/).join(".");
+    return numero.join(",");
+}
+function FormataValorParaMoeda(element, decimais, reais = true) {
+    let valor = $(element)
+        .val()
+        .replace(/[^0-9,.]/g, "");
+
+    if (isNaN(valor)) {
+        return " - ";
+    }
+
+    if (valor) {
+        valor = parseFloat(valor.replace(",", "."));
+    }
+
+    if (isNaN(decimais)) {
+        decimais = 6;
+    }
+
+    $(element).val(
+        (reais ? "R$ " : "") +
+            valor.toLocaleString("pt-br", {
+                minimumFractionDigits: decimais,
+                maximumFractionDigits: decimais,
+            })
+    );
+}
+function removeDivsByClass(className) {
+    const divs = document.querySelectorAll("div." + className);
+    for (let i = 0; i < divs.length; i++) {
+        divs[i].parentNode.removeChild(divs[i]);
+    }
 }
