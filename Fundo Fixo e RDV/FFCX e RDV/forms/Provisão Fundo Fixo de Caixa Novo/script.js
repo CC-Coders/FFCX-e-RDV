@@ -31,27 +31,11 @@ var ListProdutos = null;
 var fundoFixoVerificacao = null;
 var filialVerificacao = null;
 
-$('input[type="radio"]').click(function () {
-    if ($(this).prop("checked")) {
-        var value = $(this).val();
-    } else {
-        $(this).removeAttr("value");
-    }
-});
+
 
 $(document).ready(function () {
     bindings();
-    $("#divbtnVoltarAosItens").hide();
-    $("#dropaTable").hide();
-    $("#rateiosContainer").hide();
-    $("#painelTabelaDeProdutos").hide();
-    $("#divAprovar").hide();
-    $("#divFormaPgto").hide();
-    $("#divCondicaoPagamento").hide();
-    $("#divPagamento").hide();
-    $("#divTabelaDeRecebimentos").hide();
-    $("#faturamentoDecisao").hide();
-    $("#motivoReembolsoTitulo").hide();
+    escondeDivs();
 
     $("#fundoFixo").select2().addClass("form-control");
     $("#fundoFixo").next(".select2-container").find(".select2-selection--single").css("height", "32px");
@@ -159,6 +143,20 @@ $(document).ready(function () {
     });
 
     AddCentroDeCusto();
+
+    function escondeDivs(){
+        $("#divbtnVoltarAosItens").hide();
+        $("#dropaTable").hide();
+        $("#rateiosContainer").hide();
+        $("#painelTabelaDeProdutos").hide();
+        $("#divAprovar").hide();
+        $("#divFormaPgto").hide();
+        $("#divCondicaoPagamento").hide();
+        $("#divPagamento").hide();
+        $("#divTabelaDeRecebimentos").hide();
+        $("#faturamentoDecisao").hide();
+        $("#motivoReembolsoTitulo").hide();
+    }
 });
 
 function bindings(){
@@ -183,14 +181,12 @@ function bindings(){
         $(this).toggleClass("active");
         $(this).style.display = "flex";
     });
-    
     $("[id^=atabInformacoesProduto]").click(function () {
         $("[id^=tabItensProduto]").removeClass("active");
     
         $(this).toggleClass("active");
         $(this).style.display = "flex";
     });
-
     $("#fundoFixo").on("change", function () {
         var fundoFixo = $("#fundoFixo").val();
         $("#campoFundoFixoDto").val(fundoFixo);
@@ -198,22 +194,18 @@ function bindings(){
         $("#formaPagamento").empty().trigger("change");
         puxaFormaPgto();
     });
-    
     $("#modalidade").on("change", function () {
         var modalidade = $("#modalidade").val();
         $("#campoModalidadeDto").val(modalidade);
     });
-    
     $("#formaPagamento").on("change", function () {
         var formaPagamento = $("#formaPagamento").val();
         $("#campoformaPagamentoDto").val(formaPagamento);
     });
-    
     $("#condicaoPagamento").on("change", function () {
         var condicaoPagamento = $("#condicaoPagamento").val();
         $("#campoCondicaoPagamentoDto").val(condicaoPagamento);
     });
-    
     $("#tipo").on("change", function () {
         var tipo = $("#tipo").val();
         $("#campoTipoDto").val(tipo);
@@ -226,22 +218,18 @@ function bindings(){
             linkElementPrincipal.textContent = "Informações do R.D.O";
         }
     });
-    
     $("#selectFilial").on("change", function () {
         var selectedFilial = $("#selectFilial").val();
         $("#campoFilialDto").val(selectedFilial);
     });
-    
     $("#selectLocalEstoque").on("change", function () {
         $("#ObraFiltro").val($("#selectLocalEstoque").val());
     });
-
     $('ul.nav.nav-tabs.nav-justified.nav-pills a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
         if ($("#coltabs li:first").hasClass("active")) {
             $("#divTabelaDeRecebimentos").hide();
         }
-    });
-    
+    }); 
     $("#modalidade").on("change", function () {
         var firstOption = true;
         if (activity == 7) {
@@ -271,7 +259,13 @@ function bindings(){
             $("#divCondicaoPagamento").hide();
         }
     });
-    
+    $('input[type="radio"]').click(function () {
+        if ($(this).prop("checked")) {
+            var value = $(this).val();
+        } else {
+            $(this).removeAttr("value");
+        }
+    });
 }
 
 var itensArmazenados = [];
