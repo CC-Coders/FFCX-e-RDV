@@ -559,6 +559,8 @@ function alteraFormaDePagamento() {
         if (!retornoAtualizaMovimento || retornoAtualizaMovimento == "" || retornoAtualizaMovimento == null) {
             throw "Houve um erro na comunicação com o webservice. Tente novamente!";
         }
+
+        var FundoFixo = hAPI.getCardValue("campoFundoFixoDto");
         if (retornoAtualizaMovimento.values[0][0] == "false" && FundoFixo != "000557") {
             throw (
                 "Não foi possível atualizar o movimento. Motivo: " +
@@ -598,6 +600,7 @@ function faturaMovimento() {
                 DatasetFactory.createConstraint("pXML", xmlFaturaMovimento, xmlFaturaMovimento, ConstraintType.MUST),
             ],null);
 
+        var FundoFixo = hAPI.getCardValue("campoFundoFixoDto");
         if (FundoFixo == "000557") {
             // Se o FFCX for Matriz, não verifica o retorno do faturamento
             // Necessário verificar a regra de negocio
@@ -679,7 +682,7 @@ function enviaEmailAprovacao() {
             htmlTemplate1 += "  <div><b>Valor:</b> " + FormataValor(valor_total) + "</div></br>";
             htmlTemplate1 += "  <div><b>Data:</b> " + dataFormatada + "</div></br></br>";
             htmlTemplate1 += "  <div><b>Local de Estoque:</b> " + localDeEstoque + "</div></br>";
-            htmlTemplate1 += "  <div><b>Filial: </b> " + Filial + "</div></br></br>";
+            htmlTemplate1 += "  <div><b>Filial: </b> " + filial + "</div></br></br>";
             htmlTemplate1 += "  <div><b>Id Movimento: </b> " + IdMovimento + "</div></br>";
             htmlTemplate1 += "  <div><b>Nº: </b> " + hAPI.getCardValue("NumeroMovimento") + "</div></br></br>";
             htmlTemplate1 += "  <div><b>Motivo do reembolso da despesa: </b> " + motivoreembolso + "</div></br></br>";
