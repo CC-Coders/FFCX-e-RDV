@@ -15,10 +15,7 @@ var atividade = WKNumState;
 var formMode = $("#formMode").val();
 
 $(".divFaturamento").hide();
-
-let dataEmail = new Date();
-let dataFormatadaEmail = dataEmail.getDate() + "/" + (dataEmail.getMonth() + 1) + "/" + dataEmail.getFullYear();
-$(".DatadeHoje").val(dataFormatadaEmail);
+$(".DatadeHoje").val(getDataHoje("DD/MM/AAAA"));
 
 var activityValue = document.getElementById("atividade").value;
 var activity = parseInt(activityValue);
@@ -30,7 +27,6 @@ $("#divFundoView, #divValorTotal, #titleValorTotal, #valorTotalFFCX").hide();
 var ListProdutos = null;
 var fundoFixoVerificacao = null;
 var filialVerificacao = null;
-
 
 
 $(document).ready(function () {
@@ -2299,9 +2295,7 @@ function handleRecebimento() {
             }
         });
 
-        var dataEmail = new Date();
-        var dataFormatadaEmail = dataEmail.getDate() + "/" + (dataEmail.getMonth() + 1) + "/" + dataEmail.getFullYear();
-        $("#DataEmail").val(dataFormatadaEmail);
+        $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
         $("#valuesRecebimento").val(JSON.stringify(listJsonAprov));
     } else {
         $(".divItensProdutos").each(function () {
@@ -2345,20 +2339,16 @@ function handleAprovEngenheiro() {
                 listJson1207.push(convertido1207);
             }
         });
-        let dataEmail = new Date();
-        let dataFormatadaEmail = dataEmail.getDate() + "/" + (dataEmail.getMonth() + 1) + "/" + dataEmail.getFullYear();
 
-        $("#DataEmail").val(dataFormatadaEmail);
+        $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
         $("#valuesRecebimento").val(JSON.stringify(listJson1207));
     } else {
         // var qtdAnexos = parent.ECM.attachmentTable.getData().length;
         // for (d = 0; d < qtdAnexos; d++) {
         //   parent.WKFViewAttachment.removeAttach([0]);
         // }
-        let DataEmailRetorno = new Date();
-        let dataFormatadaEmailRetorno =
-            DataEmailRetorno.getDate() + "/" + (DataEmailRetorno.getMonth() + 1) + "/" + DataEmailRetorno.getFullYear();
-        $("#DataEmail").val(dataFormatadaEmailRetorno);
+
+        $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
     }
 }
 
@@ -2389,9 +2379,8 @@ function handleAprovContabilidade() {
                 listJson1207.push(convertido1207);
             }
         });
-        let dataEmail = new Date();
-        let dataFormatadaEmail = dataEmail.getDate() + "/" + (dataEmail.getMonth() + 1) + "/" + dataEmail.getFullYear();
-        $("#DataEmail").val(dataFormatadaEmail);
+       
+        $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
         $("#valuesRecebimento").val(JSON.stringify(listJson1207));
     } else {
         // var qtdAnexos = parent.ECM.attachmentTable.getData().length;
@@ -2399,11 +2388,8 @@ function handleAprovContabilidade() {
         // for (d = 0; d < qtdAnexos; d++) {
         //   parent.WKFViewAttachment.removeAttach([0]);
         // }
-
-        let DataEmailRetorno = new Date();
-        let dataFormatadaEmailRetorno =
-            DataEmailRetorno.getDate() + "/" + (DataEmailRetorno.getMonth() + 1) + "/" + DataEmailRetorno.getFullYear();
-        $("#DataEmail").val(dataFormatadaEmailRetorno);
+      
+        $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
     }
 }
 
@@ -2453,10 +2439,7 @@ function validateJsonInfos() {
                     }
                 });
 
-                let dataEmail = new Date();
-                let dataFormatadaEmail =
-                    dataEmail.getDate() + "/" + (dataEmail.getMonth() + 1) + "/" + dataEmail.getFullYear();
-                $("#DataEmail").val(dataFormatadaEmail);
+                $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
                 handleProvisao();
                 $("#valuesRecebimento").val(JSON.stringify(listJson1207));
 
@@ -2481,14 +2464,7 @@ function validateJsonInfos() {
                 //   parent.WKFViewAttachment.removeAttach([0]);
                 // }
 
-                let DataEmailRetorno = new Date();
-                let dataFormatadaEmailRetorno =
-                    DataEmailRetorno.getDate() +
-                    "/" +
-                    (DataEmailRetorno.getMonth() + 1) +
-                    "/" +
-                    DataEmailRetorno.getFullYear();
-                $("#DataEmailRetorno").val(dataFormatadaEmailRetorno);
+                $("#DataEmailRetorno").val(getDataHoje("DD/MM/AAAA"));
             }
         }
 
@@ -3021,4 +2997,27 @@ function FormataValorInserir(valor) {
     if (isNaN(numero)) numero = 0;
 
     return numero.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function getDataHoje(format){
+    var date = new Date();
+
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+
+    if (day < 10) {
+        day = "0"+day;
+    }
+    if (month < 10) {
+        month = "0"+month;
+    }
+
+    if (format.toUpperCase() == "DD/MM/AAAA") {
+        return [day,month,year].join("/");
+    }else if(format.toUpperCase() == "AAAA-MM-DD"){
+        return [year,month,day].join("-");
+    }else{
+        console.error("Fomato da Data inválido ("+format.toUpperCase()+")");
+        throw "Fomato da Data inválido ("+format.toUpperCase()+")";
+    }
 }
