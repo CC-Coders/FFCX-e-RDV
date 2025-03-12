@@ -40,6 +40,7 @@ $('input[type="radio"]').click(function () {
 });
 
 $(document).ready(function () {
+    bindings();
     $("#divbtnVoltarAosItens").hide();
     $("#dropaTable").hide();
     $("#rateiosContainer").hide();
@@ -160,24 +161,122 @@ $(document).ready(function () {
     AddCentroDeCusto();
 });
 
+function bindings(){
+    $(".btnSelecionaProduto").on("click", function () {
+        var selectedRow = dataTableNovoItem.row($(this).closest("tr")).data();
+        try {
+            adicionarEstruturaAoArray(selectedRow);
+            FLUIGC.toast({
+                message: "Item incluido!",
+                type: "success",
+            });
+        } catch {
+            FLUIGC.toast({
+                message: "Ocorreu um erro ao adicionar o item!",
+                type: "danger",
+            });
+        }
+    });
+    $("[id^=tabItensProduto]").click(function () {
+        $("[id^=atabInformacoesProduto]").removeClass("active");
+    
+        $(this).toggleClass("active");
+        $(this).style.display = "flex";
+    });
+    
+    $("[id^=atabInformacoesProduto]").click(function () {
+        $("[id^=tabItensProduto]").removeClass("active");
+    
+        $(this).toggleClass("active");
+        $(this).style.display = "flex";
+    });
+
+    $("#fundoFixo").on("change", function () {
+        var fundoFixo = $("#fundoFixo").val();
+        $("#campoFundoFixoDto").val(fundoFixo);
+        $("#fundoFixo").val($("#campoFundoFixoDto").val());
+        $("#formaPagamento").empty().trigger("change");
+        puxaFormaPgto();
+    });
+    
+    $("#modalidade").on("change", function () {
+        var modalidade = $("#modalidade").val();
+        $("#campoModalidadeDto").val(modalidade);
+    });
+    
+    $("#formaPagamento").on("change", function () {
+        var formaPagamento = $("#formaPagamento").val();
+        $("#campoformaPagamentoDto").val(formaPagamento);
+    });
+    
+    $("#condicaoPagamento").on("change", function () {
+        var condicaoPagamento = $("#condicaoPagamento").val();
+        $("#campoCondicaoPagamentoDto").val(condicaoPagamento);
+    });
+    
+    $("#tipo").on("change", function () {
+        var tipo = $("#tipo").val();
+        $("#campoTipoDto").val(tipo);
+        var linkElement = document.getElementById("atabItens");
+        var linkElementPrincipal = document.getElementById("atabInformacoesIniciais");
+    
+        if (tipo == "Fundo Fixo") {
+            linkElementPrincipal.textContent = "Informações do Fundo Fixo";
+        } else if (tipo == "R.D.O") {
+            linkElementPrincipal.textContent = "Informações do R.D.O";
+        }
+    });
+    
+    $("#selectFilial").on("change", function () {
+        var selectedFilial = $("#selectFilial").val();
+        $("#campoFilialDto").val(selectedFilial);
+    });
+    
+    $("#selectLocalEstoque").on("change", function () {
+        $("#ObraFiltro").val($("#selectLocalEstoque").val());
+    });
+
+    $('ul.nav.nav-tabs.nav-justified.nav-pills a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
+        if ($("#coltabs li:first").hasClass("active")) {
+            $("#divTabelaDeRecebimentos").hide();
+        }
+    });
+    
+    $("#modalidade").on("change", function () {
+        var firstOption = true;
+        if (activity == 7) {
+            $("#formaPagamento").empty();
+            puxaFormaPgto();
+            if (firstOption) {
+                $("#fundoFixo option")
+                    .filter(function () {
+                        return $(this).text() === "001";
+                    })
+                    .remove();
+                firstOption = false;
+            }
+        }
+        if ($("#modalidade").val() == "Recebimento") {
+            $("#divPagamento").show();
+            $("#divFormaPgto").show();
+            $("#divCondicaoPagamento").show();
+            $("#formaPagamento").val("");
+            $("#condicaoPagamento").val("");
+            $("#formaPagamento").empty().trigger("change");
+            puxaFormaPgto();
+        } else {
+            $("#divTabelaDeRecebimentos").hide();
+            $("#divPagamento").hide();
+            $("#divFormaPgto").hide();
+            $("#divCondicaoPagamento").hide();
+        }
+    });
+    
+}
+
 var itensArmazenados = [];
 
-$(document).on("click", ".btnSelecionaProduto", function () {
-    var selectedRow = dataTableNovoItem.row($(this).closest("tr")).data();
 
-    try {
-        adicionarEstruturaAoArray(selectedRow);
-        FLUIGC.toast({
-            message: "Item incluido!",
-            type: "success",
-        });
-    } catch {
-        FLUIGC.toast({
-            message: "Ocorreu um erro ao adicionar o item!",
-            type: "danger",
-        });
-    }
-});
 
 function ChecaBotoes() {
     if ($("#motivoReembolsoDto").val() == "Viagem Familiar") {
@@ -261,19 +360,7 @@ function SelecionarData() {
     $("#dataAtual").val(dataAtual);
 }
 
-$("[id^=tabItensProduto]").click(function () {
-    $("[id^=atabInformacoesProduto]").removeClass("active");
 
-    $(this).toggleClass("active");
-    $(this).style.display = "flex";
-});
-
-$("[id^=atabInformacoesProduto]").click(function () {
-    $("[id^=tabItensProduto]").removeClass("active");
-
-    $(this).toggleClass("active");
-    $(this).style.display = "flex";
-});
 
 var contadorItens = 0;
 
@@ -566,19 +653,6 @@ function recontarRateioTabelaRateio(contador) {
     });
 }
 
-function formatarValor(input) {
-    var valor = input.value.replace(/\D/g, "");
-    valor = (valor / 100).toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-    });
-    input.value = valor;
-}
-
-function formatarPercentual(input) {
-    input.value = input.value.replace(/\D/g, "") + "%";
-}
-
 function preencherLocalEstoque(dsFinalLocEstoque, selectedFilial) {
     $("#selectLocalEstoque").html("");
     $("#selectLocalEstoque").append('<option value=" "></option>');
@@ -830,50 +904,7 @@ document.querySelectorAll("ul.nav.nav-tabs.nav-justified.nav-pills a.collapseIte
     atualizarValorTotalFFCX();
 });
 
-$("#fundoFixo").on("change", function () {
-    var fundoFixo = $("#fundoFixo").val();
-    $("#campoFundoFixoDto").val(fundoFixo);
-    $("#fundoFixo").val($("#campoFundoFixoDto").val());
-    $("#formaPagamento").empty().trigger("change");
-    puxaFormaPgto();
-});
 
-$("#modalidade").on("change", function () {
-    var modalidade = $("#modalidade").val();
-    $("#campoModalidadeDto").val(modalidade);
-});
-
-$("#formaPagamento").on("change", function () {
-    var formaPagamento = $("#formaPagamento").val();
-    $("#campoformaPagamentoDto").val(formaPagamento);
-});
-
-$("#condicaoPagamento").on("change", function () {
-    var condicaoPagamento = $("#condicaoPagamento").val();
-    $("#campoCondicaoPagamentoDto").val(condicaoPagamento);
-});
-
-$("#tipo").on("change", function () {
-    var tipo = $("#tipo").val();
-    $("#campoTipoDto").val(tipo);
-    var linkElement = document.getElementById("atabItens");
-    var linkElementPrincipal = document.getElementById("atabInformacoesIniciais");
-
-    if (tipo == "Fundo Fixo") {
-        linkElementPrincipal.textContent = "Informações do Fundo Fixo";
-    } else if (tipo == "R.D.O") {
-        linkElementPrincipal.textContent = "Informações do R.D.O";
-    }
-});
-
-$("#selectFilial").on("change", function () {
-    var selectedFilial = $("#selectFilial").val();
-    $("#campoFilialDto").val(selectedFilial);
-});
-
-$("#selectLocalEstoque").on("change", function () {
-    $("#ObraFiltro").val($("#selectLocalEstoque").val());
-});
 
 function ListaLocalDeEstoque() {
     var p1 = DatasetFactory.createConstraint(
@@ -1034,41 +1065,6 @@ function BuscaLocalDeEstoque() {
     });
 }
 
-$('ul.nav.nav-tabs.nav-justified.nav-pills a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
-    if ($("#coltabs li:first").hasClass("active")) {
-        $("#divTabelaDeRecebimentos").hide();
-    }
-});
-
-$("#modalidade").on("change", function () {
-    var firstOption = true;
-    if (activity == 7) {
-        $("#formaPagamento").empty();
-        puxaFormaPgto();
-        if (firstOption) {
-            $("#fundoFixo option")
-                .filter(function () {
-                    return $(this).text() === "001";
-                })
-                .remove();
-            firstOption = false;
-        }
-    }
-    if ($("#modalidade").val() == "Recebimento") {
-        $("#divPagamento").show();
-        $("#divFormaPgto").show();
-        $("#divCondicaoPagamento").show();
-        $("#formaPagamento").val("");
-        $("#condicaoPagamento").val("");
-        $("#formaPagamento").empty().trigger("change");
-        puxaFormaPgto();
-    } else {
-        $("#divTabelaDeRecebimentos").hide();
-        $("#divPagamento").hide();
-        $("#divFormaPgto").hide();
-        $("#divCondicaoPagamento").hide();
-    }
-});
 
 function puxaFormaPgto() {
     var fundoFixo = $("#campoFundoFixoDto").val();
@@ -2113,17 +2109,6 @@ function atualizarValorTotal(ordem) {
     }
 }
 
-function FormataValorInserir(valor) {
-    if (!valor) {
-        valor = "0";
-    }
-
-    var numero = parseFloat(valor.replace(/[^\d.-]/g, "").replace(",", "."));
-    if (isNaN(numero)) numero = 0;
-
-    return numero.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
 function procuraProdutos(ordem) {
     var callback = {
         success: function (dataset) {
@@ -3021,4 +3006,25 @@ function removeDivsByClass(className) {
     for (let i = 0; i < divs.length; i++) {
         divs[i].parentNode.removeChild(divs[i]);
     }
+}
+function formatarValor(input) {
+    var valor = input.value.replace(/\D/g, "");
+    valor = (valor / 100).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+    });
+    input.value = valor;
+}
+function formatarPercentual(input) {
+    input.value = input.value.replace(/\D/g, "") + "%";
+}
+function FormataValorInserir(valor) {
+    if (!valor) {
+        valor = "0";
+    }
+
+    var numero = parseFloat(valor.replace(/[^\d.-]/g, "").replace(",", "."));
+    if (isNaN(numero)) numero = 0;
+
+    return numero.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
