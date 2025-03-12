@@ -63,15 +63,6 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
     }
 
     if (modalidade == "Recebimento" && atividade == ATIVIDADES.APROVACAO_CONTABILIDADE && decisaoAprovar == "sim") {
-        if (tipo == "R.D.O") {
-            codtmv = "1.1.09";
-            codtmvDestiny = "1.2.10";
-            xmlStructure = createReceiptXML(codtmv, codtmvDestiny);
-        } else if (tipo == "Fundo Fixo") {
-            codtmv = "1.1.03";
-            codtmvDestiny = "1.2.07";
-            xmlStructure = createReceiptXML(codtmv, codtmvDestiny);
-        }
         var formaPgtoAntigo = "";
         var formaPgtoAtual = hAPI.getCardValue("formaPagamento");
         log.error("A forma de pagamento eh: " + formaPgtoAntigo + "e a atual eh: " + formaPgtoAtual);
@@ -79,27 +70,7 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {
             alteraFormaDePagamento();
         }
 
-        var retorno = DatasetFactory.getDataset(
-            "FaturaMovimento",
-            null,
-            [
-                DatasetFactory.createConstraint("pCodcoligada", coligada, coligada, ConstraintType.MUST),
-                DatasetFactory.createConstraint("pXML", xmlStructure, xmlStructure, ConstraintType.MUST),
-            ],
-            null
-        );
-
-        if (FundoFixo != "000557") {
-            if (!retorno || retorno == "" || retorno == null) {
-                throw "Houve um erro na comunicação com o webservice. Tente novamente!";
-            } else if (retorno.values[0][0] == "false") {
-                throw (
-                    "Não foi possível baixar a NF. Motivo: " +
-                    retorno.values[0][1] +
-                    ". Favor verificar as informações ou entrar em contato com o administrador do sistema."
-                );
-            }
-        }
+        faturaMovimento();
 
         enviaEmailAprovacao();
     }
@@ -819,11 +790,15 @@ function alteraFormaDePagamento() {
 
         var xmlAtualizaMov = montaXMLatualizaMovimento();
 
-        var retornoAtualizaMovimento = DatasetFactory.getDataset("AtualizaMovimento",null,
+        var retornoAtualizaMovimento = DatasetFactory.getDataset(
+            "AtualizaMovimento",
+            null,
             [
                 DatasetFactory.createConstraint("pCodcoligada", coligada, coligada, ConstraintType.MUST),
                 DatasetFactory.createConstraint("pXML", xmlAtualizaMov, null, ConstraintType.MUST),
-            ],null);
+            ],
+            null
+        );
 
         if (!retornoAtualizaMovimento || retornoAtualizaMovimento == "" || retornoAtualizaMovimento == null) {
             throw "Houve um erro na comunicação com o webservice. Tente novamente!";
@@ -837,6 +812,47 @@ function alteraFormaDePagamento() {
         }
 
         return true;
+    } catch (error) {
+        throw error;
+    }
+}
+
+function faturaMovimento() {
+    try {
+        var tipo = hAPI.getCardValue("tipo");
+        var coligada = hAPI.getCardValue("coligada");
+
+        if (tipo == "R.D.O") {
+            codtmv = "1.1.09";
+            codtmvDestiny = "1.2.10";
+            xmlStructure = createReceiptXML(codtmv, codtmvDestiny);
+        } else if (tipo == "Fundo Fixo") {
+            codtmv = "1.1.03";
+            codtmvDestiny = "1.2.07";
+            xmlStructure = createReceiptXML(codtmv, codtmvDestiny);
+        }
+
+        var retorno = DatasetFactory.getDataset(
+            "FaturaMovimento",
+            null,
+            [
+                DatasetFactory.createConstraint("pCodcoligada", coligada, coligada, ConstraintType.MUST),
+                DatasetFactory.createConstraint("pXML", xmlStructure, xmlStructure, ConstraintType.MUST),
+            ],
+            null
+        );
+
+        if (FundoFixo != "000557") {
+            if (!retorno || retorno == "" || retorno == null) {
+                throw "Houve um erro na comunicação com o webservice. Tente novamente!";
+            } else if (retorno.values[0][0] == "false") {
+                throw (
+                    "Não foi possível baixar a NF. Motivo: " +
+                    retorno.values[0][1] +
+                    ". Favor verificar as informações ou entrar em contato com o administrador do sistema."
+                );
+            }
+        }
     } catch (error) {
         throw error;
     }
