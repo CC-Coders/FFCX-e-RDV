@@ -348,7 +348,7 @@ function exibirItensArmazenados() {
         itensArmazenados.forEach(function (item) {
             ordem++;
             var htmlStructure = `
-      <div class="panel-primary divItensProdutos divNovosItens" style="margin-top: 20px" id="divItensProdutos${ordem}">
+      <div class="panel panel-primary divItensProdutos divNovosItens" style="margin-top: 20px" id="divItensProdutos${ordem}">
     <div class="panel-heading" style="border: 1px solid #000; padding: 10px; display: flex; justify-content: space-between; align-items: flex-start;">
         <div style="width: 15%; display: flex; align-items: center;">
             <div class="details detailsShow"></div>
