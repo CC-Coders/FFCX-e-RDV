@@ -1593,7 +1593,7 @@ function mostrarDetalhes(IDMOV) {
 
     for (total = 0; total < DatasetShowItems.values.length; total++) {
         retorno +=
-            '<div class="panel-primary divItensProdutos">\
+            '<div class="panel panel-primary divItensProdutos">\
     <div class="cabecalhoReceber panel-heading">\
     <div class="row">\
       <div class="col-md-10">\
