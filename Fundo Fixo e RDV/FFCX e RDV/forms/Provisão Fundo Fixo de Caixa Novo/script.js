@@ -157,7 +157,7 @@ $(document).ready(function () {
 });
 
 function bindings(){
-    $(".btnSelecionaProduto").on("click", function () {
+    $(document).on("click",".btnSelecionaProduto", function () {
         var selectedRow = dataTableNovoItem.row($(this).closest("tr")).data();
         try {
             adicionarEstruturaAoArray(selectedRow);
