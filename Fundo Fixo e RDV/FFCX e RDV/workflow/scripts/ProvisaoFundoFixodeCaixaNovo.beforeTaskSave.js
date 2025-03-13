@@ -390,9 +390,9 @@ function insereProvisao() {
         var viagemCorporativa = hAPI.getCardValue("corporativaDto") == "sim" ? true : false;
         var viagemFamiliar = hAPI.getCardValue("familiarDto") == "sim" ? true : false;
         
-        if (viagemCorporativa == "sim") {
+        if (viagemCorporativa == true) {
             motivoReembolso = "Viagem Corporativa";
-        } else if (viagemFamiliar == "sim") {
+        } else if (viagemFamiliar == true) {
             motivoReembolso = "Visita Familiar";
         } else {
             motivoReembolso = "";
