@@ -882,8 +882,6 @@ document.querySelectorAll("ul.nav.nav-tabs.nav-justified.nav-pills a.collapseIte
     atualizarValorTotalFFCX();
 });
 
-
-
 function ListaLocalDeEstoque() {
     var p1 = DatasetFactory.createConstraint(
         "OPERACAO",
@@ -1042,7 +1040,6 @@ function BuscaLocalDeEstoque() {
         );
     });
 }
-
 
 function puxaFormaPgto() {
     var fundoFixo = $("#campoFundoFixoDto").val();
@@ -2376,212 +2373,6 @@ function handleAprovContabilidade() {
     }
 }
 
-function validateJsonInfos() {
-    var tipo = $("#tipo").val();
-    var atividadeDto = activity;
-    enviaHistoricoCurtoData();
-
-    if ($("#campoFundoFixoDto").val() == "000557") {
-        atividadeDto = 6;
-        $("#aprovacao").val("sim");
-    }
-
-    try {
-        if (atividadeDto == 6) {
-            if ($("#aprovacao").val() == "sim") {
-                listJson1207 = [];
-                $("#tabelaDeRecebimentos tbody tr").each(function () {
-                    var p1 = DatasetFactory.createConstraint(
-                        "IDMOV",
-                        $(this).find(".Idmov1207").val(),
-                        $(this).find(".Idmov1207").val(),
-                        ConstraintType.MUST
-                    );
-                    if (tipo == "Fundo Fixo") {
-                        p2 = DatasetFactory.createConstraint(
-                            "OPERACAO",
-                            "GeraXML1207",
-                            "GeraXML1207",
-                            ConstraintType.MUST
-                        );
-                    } else if (tipo == "R.D.O") {
-                        p2 = DatasetFactory.createConstraint(
-                            "OPERACAO",
-                            "GeraXMLRDO",
-                            "GeraXMLRDO",
-                            ConstraintType.MUST
-                        );
-                    }
-                    var DatasetDadosMov1207 = DatasetFactory.getDataset("DatasetFFCXprod", null, [p1, p2], null);
-                    for (k = 0; k < DatasetDadosMov1207.values.length; k++) {
-                        var json = {
-                            values: DatasetDadosMov1207.values[k],
-                        };
-                        var convertido1207 = json;
-                        listJson1207.push(convertido1207);
-                    }
-                });
-
-                $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
-                handleProvisao();
-                $("#valuesRecebimento").val(JSON.stringify(listJson1207));
-
-                if ($("#campoFundoFixoDto").val() != "000557") {
-                    if (!$("#decisaoFaturamentoSim").prop("checked") && !$("#decisaoFaturamentoNao").prop("checked")) {
-                        FLUIGC.toast({
-                            message: "Selecione uma opção",
-                            type: "warning",
-                        });
-                        $("label[for='decisaoFaturamentoSim'], label[for='decisaoFaturamentoNao']").css(
-                            "border",
-                            "1px solid red"
-                        );
-                        return false;
-                    } else {
-                        $("label[for='decisaoFaturamentoSim'], label[for='decisaoFaturamentoNao']").css("border", "");
-                    }
-                }
-            } else {
-                // var qtdAnexos = parent.ECM.attachmentTable.getData().length;
-                // for (d = 0; d < qtdAnexos; d++) {
-                //   parent.WKFViewAttachment.removeAttach([0]);
-                // }
-
-                $("#DataEmailRetorno").val(getDataHoje("DD/MM/AAAA"));
-            }
-        }
-
-        if (atividadeDto == 0) {
-            if ($("#modalidade").val() == "Recebimento") {
-                if ($(".CentroDeCusto1207").length === 0) {
-                    FLUIGC.toast({
-                        message: "Não é possível incluir movimento sem itens",
-                        type: "warning",
-                    });
-                    return false;
-                }
-                if ($(".divItensProdutos").is(":visible")) {
-                    $(".details-control").click();
-                }
-                const select = document.getElementById("formaPagamento");
-                const selectedOption = select.options[select.selectedIndex];
-                const textoSelecionado = selectedOption.text;
-                $("#formaDePagamentoPlaceHolder").val(textoSelecionado);
-                handleRecebimento();
-                return true;
-            }
-        }
-
-        if ($("#modalidade").val() == "Provisao") {
-            if ($("#tipo").val() == "R.D.O") {
-                $(".codCC").each(function (index) {
-                    let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
-
-                    if ($(this).val().trim() === "") {
-                        showErrorMessage("Centro de Custo", itemNumber);
-                        return false;
-                    }
-                });
-
-                if (!validateCamposProvisao()) {
-                    return false;
-                }
-                handleProvisao();
-                ChecaBotoes();
-
-                if (!$("#familiar").is(":checked") && !$("#corporativa").is(":checked")) {
-                    FLUIGC.toast({
-                        message: "Selecione o Motivo do Reembolso de Despesa!",
-                        type: "warning",
-                    });
-                    return false;
-                }
-
-                if (document.querySelectorAll(".divNovosItens").length === 0) {
-                    FLUIGC.toast({
-                        message: "Insira pelo menos um item!",
-                        type: "warning",
-                    });
-                    return false;
-                } else {
-                    return true;
-                }
-            } else {
-                handleProvisao();
-            }
-        }
-
-        if ($("#modalidade").val() == "Recebimento") {
-            if ($("#tipo").val() == "R.D.O") {
-                if (!$("#motivoReembolsoTitulo").is(":visible")) {
-                    if (!$("#familiar").prop("checked") && !$("#corporativa").prop("checked")) {
-                        FLUIGC.toast({
-                            message: "Escolha o motivo do reembolso da despesa!",
-                            type: "warning",
-                        });
-                        $("#familiar, #corporativa").css("border", "1px solid red");
-                        return false;
-                    } else {
-                        $("#familiar, #corporativa").css("border", "");
-                    }
-                    ChecaBotoes();
-                }
-            }
-        }
-
-        return true;
-    } catch (err) {
-        console.log("error: " + err);
-        return false;
-    }
-}
-
-function validateCamposProvisao() {
-    let isValid = true;
-
-    $(".QuantidadeItem").each(function (index) {
-        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
-
-        if ($(this).val().trim() === "") {
-            isValid = false;
-            showErrorMessage("Quantidade", itemNumber);
-            return false;
-        }
-    });
-
-    $(".ValorUnitItem").each(function (index) {
-        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
-
-        if ($(this).val().trim() === "") {
-            isValid = false;
-            showErrorMessage("Valor Unit", itemNumber);
-            return false;
-        }
-    });
-
-    $(".fornecedor").each(function (index) {
-        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
-
-        if ($(this).val().trim() === "") {
-            isValid = false;
-            showErrorMessage("Prestador/Fornecedor", itemNumber);
-            return false;
-        }
-    });
-
-    $(".departamento").each(function (index) {
-        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
-
-        if ($(this).val().trim() === "") {
-            isValid = false;
-            showErrorMessage("Departamento", itemNumber);
-            return false;
-        }
-    });
-
-    return isValid;
-}
-
 function atualizarOptions() {
     var tipo = $("#tipo").val();
 
@@ -2920,6 +2711,212 @@ function atribuicaoEngCoord() {
             },
         }
     );
+}
+
+// Validate
+function validateJsonInfos() {
+    var tipo = $("#tipo").val();
+    var atividadeDto = activity;
+    enviaHistoricoCurtoData();
+
+    if ($("#campoFundoFixoDto").val() == "000557") {
+        atividadeDto = 6;
+        $("#aprovacao").val("sim");
+    }
+
+    try {
+        if (atividadeDto == 6) {
+            if ($("#aprovacao").val() == "sim") {
+                listJson1207 = [];
+                $("#tabelaDeRecebimentos tbody tr").each(function () {
+                    var p1 = DatasetFactory.createConstraint(
+                        "IDMOV",
+                        $(this).find(".Idmov1207").val(),
+                        $(this).find(".Idmov1207").val(),
+                        ConstraintType.MUST
+                    );
+                    if (tipo == "Fundo Fixo") {
+                        p2 = DatasetFactory.createConstraint(
+                            "OPERACAO",
+                            "GeraXML1207",
+                            "GeraXML1207",
+                            ConstraintType.MUST
+                        );
+                    } else if (tipo == "R.D.O") {
+                        p2 = DatasetFactory.createConstraint(
+                            "OPERACAO",
+                            "GeraXMLRDO",
+                            "GeraXMLRDO",
+                            ConstraintType.MUST
+                        );
+                    }
+                    var DatasetDadosMov1207 = DatasetFactory.getDataset("DatasetFFCXprod", null, [p1, p2], null);
+                    for (k = 0; k < DatasetDadosMov1207.values.length; k++) {
+                        var json = {
+                            values: DatasetDadosMov1207.values[k],
+                        };
+                        var convertido1207 = json;
+                        listJson1207.push(convertido1207);
+                    }
+                });
+
+                $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
+                handleProvisao();
+                $("#valuesRecebimento").val(JSON.stringify(listJson1207));
+
+                if ($("#campoFundoFixoDto").val() != "000557") {
+                    if (!$("#decisaoFaturamentoSim").prop("checked") && !$("#decisaoFaturamentoNao").prop("checked")) {
+                        FLUIGC.toast({
+                            message: "Selecione uma opção",
+                            type: "warning",
+                        });
+                        $("label[for='decisaoFaturamentoSim'], label[for='decisaoFaturamentoNao']").css(
+                            "border",
+                            "1px solid red"
+                        );
+                        return false;
+                    } else {
+                        $("label[for='decisaoFaturamentoSim'], label[for='decisaoFaturamentoNao']").css("border", "");
+                    }
+                }
+            } else {
+                // var qtdAnexos = parent.ECM.attachmentTable.getData().length;
+                // for (d = 0; d < qtdAnexos; d++) {
+                //   parent.WKFViewAttachment.removeAttach([0]);
+                // }
+
+                $("#DataEmailRetorno").val(getDataHoje("DD/MM/AAAA"));
+            }
+        }
+
+        if (atividadeDto == 0) {
+            if ($("#modalidade").val() == "Recebimento") {
+                if ($(".CentroDeCusto1207").length === 0) {
+                    FLUIGC.toast({
+                        message: "Não é possível incluir movimento sem itens",
+                        type: "warning",
+                    });
+                    return false;
+                }
+                if ($(".divItensProdutos").is(":visible")) {
+                    $(".details-control").click();
+                }
+                const select = document.getElementById("formaPagamento");
+                const selectedOption = select.options[select.selectedIndex];
+                const textoSelecionado = selectedOption.text;
+                $("#formaDePagamentoPlaceHolder").val(textoSelecionado);
+                handleRecebimento();
+                return true;
+            }
+        }
+
+        if ($("#modalidade").val() == "Provisao") {
+            if ($("#tipo").val() == "R.D.O") {
+                $(".codCC").each(function (index) {
+                    let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
+
+                    if ($(this).val().trim() === "") {
+                        showErrorMessage("Centro de Custo", itemNumber);
+                        return false;
+                    }
+                });
+
+                if (!validateCamposProvisao()) {
+                    return false;
+                }
+                handleProvisao();
+                ChecaBotoes();
+
+                if (!$("#familiar").is(":checked") && !$("#corporativa").is(":checked")) {
+                    FLUIGC.toast({
+                        message: "Selecione o Motivo do Reembolso de Despesa!",
+                        type: "warning",
+                    });
+                    return false;
+                }
+
+                if (document.querySelectorAll(".divNovosItens").length === 0) {
+                    FLUIGC.toast({
+                        message: "Insira pelo menos um item!",
+                        type: "warning",
+                    });
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                handleProvisao();
+            }
+        }
+
+        if ($("#modalidade").val() == "Recebimento") {
+            if ($("#tipo").val() == "R.D.O") {
+                if (!$("#motivoReembolsoTitulo").is(":visible")) {
+                    if (!$("#familiar").prop("checked") && !$("#corporativa").prop("checked")) {
+                        FLUIGC.toast({
+                            message: "Escolha o motivo do reembolso da despesa!",
+                            type: "warning",
+                        });
+                        $("#familiar, #corporativa").css("border", "1px solid red");
+                        return false;
+                    } else {
+                        $("#familiar, #corporativa").css("border", "");
+                    }
+                    ChecaBotoes();
+                }
+            }
+        }
+
+        return true;
+    } catch (err) {
+        console.log("error: " + err);
+        return false;
+    }
+}
+function validateCamposProvisao() {
+    let isValid = true;
+
+    $(".QuantidadeItem").each(function (index) {
+        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
+
+        if ($(this).val().trim() === "") {
+            isValid = false;
+            showErrorMessage("Quantidade", itemNumber);
+            return false;
+        }
+    });
+
+    $(".ValorUnitItem").each(function (index) {
+        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
+
+        if ($(this).val().trim() === "") {
+            isValid = false;
+            showErrorMessage("Valor Unit", itemNumber);
+            return false;
+        }
+    });
+
+    $(".fornecedor").each(function (index) {
+        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
+
+        if ($(this).val().trim() === "") {
+            isValid = false;
+            showErrorMessage("Prestador/Fornecedor", itemNumber);
+            return false;
+        }
+    });
+
+    $(".departamento").each(function (index) {
+        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
+
+        if ($(this).val().trim() === "") {
+            isValid = false;
+            showErrorMessage("Departamento", itemNumber);
+            return false;
+        }
+    });
+
+    return isValid;
 }
 
 
