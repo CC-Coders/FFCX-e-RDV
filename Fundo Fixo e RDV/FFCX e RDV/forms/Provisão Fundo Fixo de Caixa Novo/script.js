@@ -1739,12 +1739,7 @@ function enviaHistoricoCurtoData() {
     } else if (tipo == "R.D.O") {
         var c4 = DatasetFactory.createConstraint("OPERACAO", "SelectMovRDO", "SelectMovRDO", ConstraintType.MUST);
     }
-    var c5 = DatasetFactory.createConstraint(
-        "CODCOLIGADA",
-        $("#coligada").val(),
-        $("#coligada").val(),
-        ConstraintType.MUST
-    );
+    var c5 = DatasetFactory.createConstraint("CODCOLIGADA",$("#coligada").val(),$("#coligada").val(),ConstraintType.MUST);
 
     var dsVerificaFundoFixo = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2, c3, c4, c5], null);
     dsFinal = dsVerificaFundoFixo.values;
@@ -2493,6 +2488,14 @@ function validateJsonInfos() {
                 }
                 handleProvisao();
                 ChecaBotoes();
+
+                if (!$("#familiar").is(":checked") && !$("#corporativa").is(":checked")) {
+                    FLUIGC.toast({
+                        message: "Selecione o Motivo do Reembolso de Despesa!",
+                        type: "warning",
+                    });
+                    return false;
+                }
 
                 if (document.querySelectorAll(".divNovosItens").length === 0) {
                     FLUIGC.toast({
