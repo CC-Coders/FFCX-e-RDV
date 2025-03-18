@@ -62,6 +62,11 @@ $(document).ready(function () {
         var textPlaceHolder = $("#formaDePagamentoPlaceHolder").val();
         $("#formaPagamento").empty();
         $("#formaPagamento").append(new Option(textPlaceHolder, valueOfPayment));
+
+
+        if ($("#modalidade").text() == "Provisão") {
+            carregaItensProvisaoModoView();
+        }
     }
 
     $("#tabelaRateio").DataTable({
@@ -2230,6 +2235,7 @@ function getCommonJson(element) {
         codCC: codCCValue ? codCCValue.split(" - ")[0] : null,
         valor: element.find(".valorTotal").val(),
         valorUnitario: element.find(".ValorUnitItem").val(),
+        quantidade: element.find(".QuantidadeItem").val(),
         depart: getDepartamentos(element, codCCSplit),
     };
 }
@@ -2713,6 +2719,165 @@ function atribuicaoEngCoord() {
             },
         }
     );
+}
+
+
+function carregaItensProvisaoModoView(){
+    var itens = $("#codList").val();
+    if (itens.trim() == "") {
+        console.error("Nenhum item encontrado no campo codList");
+        throw "Nenhum item encontrado no campo codList";
+    }
+
+    try {
+        itens = JSON.parse(itens);
+    } catch (error) {
+        console.error("Não foi possível extrair o JSON do campo codList");
+        throw "Não foi possível extrair o JSON do campo codList";
+    }
+
+    var html = "";
+    var counter = 1;
+    for (const item of itens) {
+        html+=
+        `<div class="panel panel-primary divItensProdutos" style="margin-top: 20px" id="divItensProdutos${ordem}">
+            ${htmlHeader(counter,item)}
+            ${htmlBody(counter,item)}
+        </div>`;
+        counter++;
+    }
+
+
+    $("#tabItens").html(html);
+    $("[id^='icon-green']").hide();
+
+    function htmlHeader(ordem,item){
+        var html =      
+        `<div class="panel-heading" style="border: 1px solid #000; padding: 10px; display: flex; justify-content: space-between; align-items: flex-start;">
+            <div style="width: 15%; display: flex; align-items: center;">
+                <div class="details detailsShow"></div>
+                <div class="icon-green" id="icon-green${ordem}" onclick="MostraDivItem(${ordem})" style="margin-right: 10px;">+</div>
+                <div class="icon-red" id="icon-red${ordem}" onclick="MostraDivItem(${ordem})"><span>-</span></div>
+                <h3 class="panel-title countItem" style="margin: 0 10px;">Item ${ordem}</h3>
+            </div>
+            <div style="width: 70%; display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 70%;">
+                        <b>Fornecedor/Prestador: </b><p id="descricaoAtual${ordem}" style="display: inline;">${item.fornecedor}</p>
+                    </div>
+                    <div style="width: 30%; text-align: left;">
+                        <b>Quantidade:</b> <span id="inputQuantidadeItem${ordem}">${item.quantidade}</span> UN 
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                    <div style="width: 70%;">
+                        <b>Valor Unitário:</b> <span id="valorUnitEdicao${ordem}">${item.valorUnitario}</span>
+                    </div>
+                    <div style="width: 30%; text-align: left;">
+                        <b>Valor Total:</b> <input type="text" readonly class="valorTotal" id="valorTotal${ordem}" value="${item.valor}" style="background: transparent; border: none; width: 50%;">
+                    </div>
+                </div>
+            </div>
+             <div style="width: 15%; display: flex; justify-content: flex-end;">
+                <button class="btn btn-danger btnRemoverItem${ordem} btnRemoverItem" id="btnRemoverItem${ordem}" onclick="RemoveDivItem(${ordem})">
+                    <i class="flaticon flaticon-trash icon-sm" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>`;
+
+        return html
+    }
+    function htmlBody(ordem,item){
+        var html = 
+        `<div class="panel-body divCorpoTabela" id="divCorpoTabela${ordem}">
+            <div id="tabInformacoesProduto${ordem}" style="width: 100%">
+                <div class="row">
+                    <div class="col-md-6 col-lg-6">
+                        <label class="labelFullWidth" style="width: 100%"
+                            >Produto:
+                            <input name="ProdutoItem" type="text" class="form-control produto" readonly id="produto${ordem}" value="${item.nomeFantasia}" />
+                        </label>
+                        <br />
+                    </div>
+                    <div class="col-md-6 col-lg-6" id="divInfoProdutos${ordem}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="labelFullWidth" style="width: 100%"
+                                    >Quantidade:
+                                    <div class="with-suffix" suffix="UN">
+                                        <input
+                                            type="text"
+                                            readonly
+                                            class="form-control QuantidadeItem"
+                                            id="QuantidadeItemEdicao${ordem}"
+                                            oninput="AlteraQuantidadeEdicao(this, ${ordem}); atualizarValorTotal(${ordem}); atualizarValorTotalFFCX();"
+                                            id="inputQuantidadeItem${ordem}"
+                                            name="QuantidadeItem"
+                                            value="${item.quantidade}"
+                                        />
+                                    </div>
+                                </label>
+                                <br />
+                            </div>
+                            <div class="col-md-6" id="produtosInfo${ordem}">
+                                <label class="labelFullWidth" style="width: 100%"
+                                    >Valor Unitário:
+                                    <input
+                                        type="text"
+                                        name="ValorUnitItem"
+                                        readonly
+                                        class="form-control ValorUnitItem"
+                                        value="${item.valorUnitario}"
+                                        id="inputValorUnitEdicao${ordem}"
+                                        oninput="FormataNumeros(this); atualizarValorTotalFFCX(); atualizarValorTotal(${ordem}); 
+                                                            ${FormataValorInserir(this.val)}; AtualizaValorCampoValorUnitEdicao(${ordem})"
+                                    />
+                                </label>
+                                <br />
+                                <input type="hidden" name="codigo" id="codigo${ordem}" class="codigo" />
+                                <input type="hidden" name="unidade" id="unidade${ordem}" class="unidade" />
+                                <input type="hidden" name="codigoProduto" id="codigoProduto${ordem}" class="codigoProduto" />
+                                <input type="hidden" name="CodTb1Fat" id="CodTb1Fat${ordem}" class="CodTb1Fat" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top: 10px">
+                        <label class="labelFullWidth" style="width: 100%"
+                            >Prestador/Fornecedor:
+                            <textarea
+                                name="fornecedor"
+                                type="text"
+                                readonly
+                                oninput="AlteraDescricao(this, ${ordem})"
+                                class="form-control fornecedor"
+                                id="fornecedor"
+                                value=""
+                            >${item.fornecedor}</textarea>
+                        </label>
+                        <br />
+                    </div>
+                    <div class="col-md-6" style="margin-top: 10px">
+                        <label class="labelFullWidth" style="width: 100%"
+                            >Centro de Custo:
+                            <select class="form-control codCC" id="selectCentroDeCustoEdicao${ordem}" readonly value="${item.codCC}" style="width: 100%; height: 32px">
+                                <option selected>${item.codCC}</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="col-md-6 departamentoDiv" style="margin-top: 10px">
+                        <label class="labelFullWidth" style="width: 100%"
+                            >Departamento:
+                            <select class="form-control departamento" id="departamentoHtmlEdicao${ordem}" readonly style="width: 100%; height: 32px">
+                                <option selected>${item.depart[0].departamento}</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+                <br />
+            </div>
+        </div>`;
+        return html;
+    }
 }
 
 // Validate
