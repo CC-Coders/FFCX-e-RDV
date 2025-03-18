@@ -1836,7 +1836,7 @@ function VerificaRetornoFundoFixo() {
                 ordem++;
 
                 $("#tabItens").append(`
-          <div class="panel-primary divItensProdutos" style="margin-top: 20px" id="divItensProdutos${ordem}">
+          <div class="panel panel-primary divItensProdutos" style="margin-top: 20px" id="divItensProdutos${ordem}">
               <div class="panel-heading" style="border: 1px solid #000; padding: 10px; display: flex; justify-content: space-between; align-items: flex-start;">
                   <div style="display: flex; align-items: center;">
                       <div class="details detailsShow"></div>
@@ -1917,6 +1917,7 @@ function VerificaRetornoFundoFixo() {
                               </div>
                           </div>
                       </div>
+                      <div class="row">
                       <div class="col-md-12">
                           <label class="labelFullWidth" style="width: 100%; margin-top: 10px">Prestador/Fornecedor:
                               <textarea name="fornecedor" readonly disabled class="form-control fornecedor" id="fornecedor${ordem}" oninput="AlteraDescricao(this, ${ordem})">${
@@ -1946,6 +1947,7 @@ function VerificaRetornoFundoFixo() {
                 }</option>
                               </select>
                           </label>
+                      </div>
                       </div>
                   </div>
               </div>
