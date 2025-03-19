@@ -10,6 +10,13 @@ Fim               9
 
 */
 
+const ATIVIDADES = {
+    INICIO: 7,
+    INICIO_0: 0,
+    APROVACAO_ENGENHEIRO: 8,
+    APROVACAO_CONTABILIDADE: 6,
+};
+
 var dataTableNovoItem;
 var atividade = WKNumState;
 var formMode = $("#formMode").val();
@@ -2851,7 +2858,7 @@ function validateJsonInfos() {
         if ($("#modalidade").val() == "Recebimento") {
             if ($("#tipo").val() == "R.D.O") {
                 if (!$("#motivoReembolsoTitulo").is(":visible")) {
-                    if (!$("#familiar").prop("checked") && !$("#corporativa").prop("checked")) {
+                    if (!$("#familiar").prop("checked") && !$("#corporativa").prop("checked") && (atividadeDto == ATIVIDADES.INICIO || atividadeDto == ATIVIDADES.INICIO_0 )) {
                         FLUIGC.toast({
                             message: "Escolha o motivo do reembolso da despesa!",
                             type: "warning",
