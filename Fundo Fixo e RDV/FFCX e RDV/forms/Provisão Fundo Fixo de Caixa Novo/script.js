@@ -742,7 +742,7 @@ document.querySelectorAll("ul.nav.nav-tabs.nav-justified.nav-pills a.collapseIte
             }
 
             if (modalidade == "Recebimento") {
-                $("#divValorTotal, #titleValorTotal, #valorTotalFFCX").show();
+                $("#titleValorTotal, #valorTotalFFCX").show();
             }
 
             for (var campoId in campos) {
@@ -823,7 +823,7 @@ document.querySelectorAll("ul.nav.nav-tabs.nav-justified.nav-pills a.collapseIte
                             }
                         }
                     }
-                    $("#divValorTotal, #titleValorTotal, #valorTotalFFCX").show();
+                    $("#titleValorTotal, #valorTotalFFCX").show();
                     $("#titleFundoSelecionado").text("Reembolso de Despesas da Obra (R.D.O):");
                     var fundoFixo = $("#fundoFixo").val();
                     var numeros = fundoFixo.match(/\d+/);
