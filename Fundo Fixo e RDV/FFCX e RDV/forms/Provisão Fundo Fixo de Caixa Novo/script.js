@@ -2182,11 +2182,14 @@ function handleRecebimento() {
         $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
         $("#valuesRecebimento").val(JSON.stringify(listJsonAprov));
     } else {
-        $(".divItensProdutos").each(function () {
-            var json = getCommonJson($(this));
-            listJsonAprov.push(json);
-        });
-        $("#codList").val(JSON.stringify(listJsonAprov));
+        // Comentado o Código pois a função getCommonJson dava erro quando executada na aprovação da Contabilidade com os Itens do Movimento Abertos
+        // Devido a alguns campos do getCommonJson não existirem no Recebimento
+        // E o campo "#codList" só é usado para a Provisão, então não afeta o Recebimento
+        // $(".divItensProdutos").each(function () {
+        //     var json = getCommonJson($(this));
+        //     listJsonAprov.push(json);
+        // });
+        // $("#codList").val(JSON.stringify(listJsonAprov));
     }
 }
 
@@ -2749,7 +2752,7 @@ function validateJsonInfos() {
     }
 
     try {
-        if (atividadeDto == 6) {
+        if (atividadeDto == ATIVIDADES.APROVACAO_CONTABILIDADE) {
             if ($("#aprovacao").val() == "sim") {
                 listJson1207 = [];
                 $("#tabelaDeRecebimentos tbody tr").each(function () {
@@ -2770,7 +2773,11 @@ function validateJsonInfos() {
                 });
 
                 $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
-                handleProvisao();
+                // A condição (atividadeDto == ATIVIDADES.APROVACAO_CONTABILIDADE) somente será verdadeira para o Recebimento
+                // Pois a Provisão é encerrada logo após o Inicio, sem passar pela Aprovação Contabilidade
+                // Sendo assim, é errado chamar o handleProvisao para o Recebimento
+                // E essa chamada estava dando erro quando os Itens do Movimento estava expandidos, pois a função não encontrava os campos necessários
+                // handleProvisao();
                 $("#valuesRecebimento").val(JSON.stringify(listJson1207));
 
                 if ($("#campoFundoFixoDto").val() != "000557") {
