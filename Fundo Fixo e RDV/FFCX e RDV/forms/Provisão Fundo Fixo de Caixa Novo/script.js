@@ -1148,6 +1148,8 @@ function puxaFormaPgto() {
         var p3 = DatasetFactory.createConstraint("CODTB1FLX", "072", "072", ConstraintType.MUST);
     } else if (fundoFixo == "028452") {
         var p3 = DatasetFactory.createConstraint("CODTB1FLX", "073", "073", ConstraintType.MUST);
+    } else if (fundoFixo == "031519") {
+        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "076", "076", ConstraintType.MUST);
     } else {
         var p3 = DatasetFactory.createConstraint("CODTB1FLX", "1", "1", ConstraintType.MUST);
     }
