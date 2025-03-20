@@ -320,3 +320,8 @@ tr.shown td.details-control {
     width: 100%;
     background-color: inherit;
 }
+
+
+.divFatItem{
+    display: none;
+}
