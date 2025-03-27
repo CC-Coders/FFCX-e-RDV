@@ -10,20 +10,24 @@ Fim               9
 
 */
 
+const ATIVIDADES = {
+    INICIO: 7,
+    INICIO_0: 0,
+    APROVACAO_ENGENHEIRO: 8,
+    APROVACAO_CONTABILIDADE: 6,
+};
+
 var dataTableNovoItem;
 var atividade = WKNumState;
 var formMode = $("#formMode").val();
 
 $(".divFaturamento").hide();
-
-let dataEmail = new Date();
-let dataFormatadaEmail = dataEmail.getDate() + "/" + (dataEmail.getMonth() + 1) + "/" + dataEmail.getFullYear();
-$(".DatadeHoje").val(dataFormatadaEmail);
+$(".DatadeHoje").val(getDataHoje("DD/MM/AAAA"));
 
 var activityValue = document.getElementById("atividade").value;
 var activity = parseInt(activityValue);
 
-SelecionarData();
+$("#dataAtual").val(getDataHoje("AAAA-MM-DD") + "T00:00:00.000");
 
 $("#divFundoView, #divValorTotal, #titleValorTotal, #valorTotalFFCX").hide();
 
@@ -31,26 +35,9 @@ var ListProdutos = null;
 var fundoFixoVerificacao = null;
 var filialVerificacao = null;
 
-$('input[type="radio"]').click(function () {
-    if ($(this).prop("checked")) {
-        var value = $(this).val();
-    } else {
-        $(this).removeAttr("value");
-    }
-});
-
 $(document).ready(function () {
-    $("#divbtnVoltarAosItens").hide();
-    $("#dropaTable").hide();
-    $("#rateiosContainer").hide();
-    $("#painelTabelaDeProdutos").hide();
-    $("#divAprovar").hide();
-    $("#divFormaPgto").hide();
-    $("#divCondicaoPagamento").hide();
-    $("#divPagamento").hide();
-    $("#divTabelaDeRecebimentos").hide();
-    $("#faturamentoDecisao").hide();
-    $("#motivoReembolsoTitulo").hide();
+    bindings();
+    escondeDivs();
 
     $("#fundoFixo").select2().addClass("form-control");
     $("#fundoFixo").next(".select2-container").find(".select2-selection--single").css("height", "32px");
@@ -80,6 +67,85 @@ $(document).ready(function () {
         var textPlaceHolder = $("#formaDePagamentoPlaceHolder").val();
         $("#formaPagamento").empty();
         $("#formaPagamento").append(new Option(textPlaceHolder, valueOfPayment));
+
+        if ($("#modalidade").text() == "Provisão") {
+            carregaItensProvisaoModoView();
+        } else {
+            var tabela = $("#tabelaDeRecebimentos");
+
+            if ($.fn.DataTable.isDataTable("#tabelaDeRecebimentos")) {
+                tabela.DataTable().clear().draw();
+                $("#tabelaDeRecebimentos tbody").on("click", "td.details-control", function () {
+                    var tr = $(this).closest("tr");
+                    var row = tabela.DataTable().row(tr);
+
+                    if (row.child.isShown()) {
+                        row.child.hide();
+                        tr.removeClass("shown");
+                    } else {
+                        row.child(format(row.data())).show();
+                        tr.addClass("shown");
+                    }
+                });
+                preencheTabelaReceber();
+                return;
+            } else {
+                tabela.DataTable({
+                    columns: [
+                        {
+                            className: "details-control",
+                            align: "justified",
+                            orderable: false,
+                            data: null,
+                            defaultContent: "",
+                            targets: 1,
+                            responsive: true,
+                            render: function (data, type, row) {
+                                return "<span></span>";
+                            },
+                        },
+                        {
+                            data: "IDMOV",
+                            render: function (data, type, row) {
+                                return "<input class='Idmov1207' readonly style='border: 0' value='" + data + "'>";
+                            },
+                        },
+                        {
+                            data: "NOMECENTRODECUSTO",
+                            render: function (data, type, row) {
+                                return "<input class='CentroDeCusto1207' readonly style='border: 0' value='" + data + "'>";
+                            },
+                        },
+                        {
+                            data: "VALORBRUTO",
+                            render: function (data, type, row) {
+                                return "<input class='ValorMov1207' readonly style='border: 0;' readonly value='" + FormataValor(data) + "'>";
+                            },
+                        },
+                    ],
+                    language: {
+                        url: "https://cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json",
+                    },
+                });
+
+                $("#tabelaDeRecebimentos tbody").on("click", "td.details-control", function () {
+                    var tr = $(this).closest("tr");
+                    var row = tabela.DataTable().row(tr);
+
+                    if (row.child.isShown()) {
+                        row.child.hide();
+                        tr.removeClass("shown");
+                    } else {
+                        row.child(format(row.data())).show();
+                        tr.addClass("shown");
+                    }
+                });
+                preencheTabelaReceber();
+            }
+
+            $("#divTabelaDeRecebimentos").show();
+            $("#mensagemNenhumaItem").hide();
+        }
     }
 
     $("#tabelaRateio").DataTable({
@@ -102,15 +168,11 @@ $(document).ready(function () {
         $("#formaPagamento").empty();
         $("#formaPagamento").append(new Option(textPlaceHolder, valueOfPayment));
 
-        $(
-            "#tipo, #selectFilial, #selectLocalEstoque, #fundoFixo, #modalidade, #formaPagamento, #condicaoPagamento"
-        ).prop("disabled", true);
+        $("#tipo, #selectFilial, #selectLocalEstoque, #fundoFixo, #modalidade, #formaPagamento, #condicaoPagamento").prop("disabled", true);
         $("#divAprovar").show();
 
         if ($("#modalidade").val() == "Recebimento") {
-            $(
-                "#divPagamento, #divFormaPgto, #titleFormaPagamento, #formaPagamento, #titleCondicaoPagamento, #condicaoPagamento, #divCondicaoPagamento"
-            ).show();
+            $("#divPagamento, #divFormaPgto, #titleFormaPagamento, #formaPagamento, #titleCondicaoPagamento, #condicaoPagamento, #divCondicaoPagamento").show();
         }
 
         clickInTheItens();
@@ -158,26 +220,132 @@ $(document).ready(function () {
     });
 
     AddCentroDeCusto();
-});
 
-var itensArmazenados = [];
-
-$(document).on("click", ".btnSelecionaProduto", function () {
-    var selectedRow = dataTableNovoItem.row($(this).closest("tr")).data();
-
-    try {
-        adicionarEstruturaAoArray(selectedRow);
-        FLUIGC.toast({
-            message: "Item incluido!",
-            type: "success",
-        });
-    } catch {
-        FLUIGC.toast({
-            message: "Ocorreu um erro ao adicionar o item!",
-            type: "danger",
-        });
+    function escondeDivs() {
+        $("#divbtnVoltarAosItens").hide();
+        $("#dropaTable").hide();
+        $("#rateiosContainer").hide();
+        $("#painelTabelaDeProdutos").hide();
+        $("#divAprovar").hide();
+        $("#divFormaPgto").hide();
+        $("#divCondicaoPagamento").hide();
+        $("#divPagamento").hide();
+        $("#divTabelaDeRecebimentos").hide();
+        $("#faturamentoDecisao").hide();
+        $("#motivoReembolsoTitulo").hide();
     }
 });
+
+function bindings() {
+    $(document).on("click", ".btnSelecionaProduto", function () {
+        var selectedRow = dataTableNovoItem.row($(this).closest("tr")).data();
+        try {
+            adicionarEstruturaAoArray(selectedRow);
+            FLUIGC.toast({
+                message: "Item incluido!",
+                type: "success",
+            });
+        } catch {
+            FLUIGC.toast({
+                message: "Ocorreu um erro ao adicionar o item!",
+                type: "danger",
+            });
+        }
+    });
+    $("[id^=tabItensProduto]").click(function () {
+        $("[id^=atabInformacoesProduto]").removeClass("active");
+
+        $(this).toggleClass("active");
+        $(this).style.display = "flex";
+    });
+    $("[id^=atabInformacoesProduto]").click(function () {
+        $("[id^=tabItensProduto]").removeClass("active");
+
+        $(this).toggleClass("active");
+        $(this).style.display = "flex";
+    });
+    $("#fundoFixo").on("change", function () {
+        var fundoFixo = $("#fundoFixo").val();
+        $("#campoFundoFixoDto").val(fundoFixo);
+        $("#fundoFixo").val($("#campoFundoFixoDto").val());
+        $("#formaPagamento").empty().trigger("change");
+        puxaFormaPgto();
+    });
+    $("#modalidade").on("change", function () {
+        var modalidade = $("#modalidade").val();
+        $("#campoModalidadeDto").val(modalidade);
+    });
+    $("#formaPagamento").on("change", function () {
+        var formaPagamento = $("#formaPagamento").val();
+        $("#campoformaPagamentoDto").val(formaPagamento);
+    });
+    $("#condicaoPagamento").on("change", function () {
+        var condicaoPagamento = $("#condicaoPagamento").val();
+        $("#campoCondicaoPagamentoDto").val(condicaoPagamento);
+    });
+    $("#tipo").on("change", function () {
+        var tipo = $("#tipo").val();
+        $("#campoTipoDto").val(tipo);
+        var linkElement = document.getElementById("atabItens");
+        var linkElementPrincipal = document.getElementById("atabInformacoesIniciais");
+
+        if (tipo == "Fundo Fixo") {
+            linkElementPrincipal.textContent = "Informações do Fundo Fixo";
+        } else if (tipo == "R.D.O") {
+            linkElementPrincipal.textContent = "Informações do R.D.O";
+        }
+    });
+    $("#selectFilial").on("change", function () {
+        var selectedFilial = $("#selectFilial").val();
+        $("#campoFilialDto").val(selectedFilial);
+    });
+    $("#selectLocalEstoque").on("change", function () {
+        $("#ObraFiltro").val($("#selectLocalEstoque").val());
+    });
+    $('ul.nav.nav-tabs.nav-justified.nav-pills a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
+        if ($("#coltabs li:first").hasClass("active")) {
+            $("#divTabelaDeRecebimentos").hide();
+        }
+    });
+    $("#modalidade").on("change", function () {
+        var firstOption = true;
+        if (activity == 7) {
+            $("#formaPagamento").empty();
+            puxaFormaPgto();
+            if (firstOption) {
+                $("#fundoFixo option")
+                    .filter(function () {
+                        return $(this).text() === "001";
+                    })
+                    .remove();
+                firstOption = false;
+            }
+        }
+        if ($("#modalidade").val() == "Recebimento") {
+            $("#divPagamento").show();
+            $("#divFormaPgto").show();
+            $("#divCondicaoPagamento").show();
+            $("#formaPagamento").val("");
+            $("#condicaoPagamento").val("");
+            $("#formaPagamento").empty().trigger("change");
+            puxaFormaPgto();
+        } else {
+            $("#divTabelaDeRecebimentos").hide();
+            $("#divPagamento").hide();
+            $("#divFormaPgto").hide();
+            $("#divCondicaoPagamento").hide();
+        }
+    });
+    $('input[type="radio"]').click(function () {
+        if ($(this).prop("checked")) {
+            var value = $(this).val();
+        } else {
+            $(this).removeAttr("value");
+        }
+    });
+}
+
+var itensArmazenados = [];
 
 function ChecaBotoes() {
     if ($("#motivoReembolsoDto").val() == "Viagem Familiar") {
@@ -252,29 +420,6 @@ function toggleCheckbox(currentCheckbox, otherCheckboxId) {
     currentCheckbox.value = currentCheckbox.checked ? "sim" : "nao";
 }
 
-function SelecionarData() {
-    var data = new Date();
-    var dia = String(data.getDate()).padStart(2, "0");
-    var mes = String(data.getMonth() + 1).padStart(2, "0");
-    var ano = data.getFullYear();
-    dataAtual = dia + "-" + mes + "-" + ano + "T00:00:00.000";
-    $("#dataAtual").val(dataAtual);
-}
-
-$("[id^=tabItensProduto]").click(function () {
-    $("[id^=atabInformacoesProduto]").removeClass("active");
-
-    $(this).toggleClass("active");
-    $(this).style.display = "flex";
-});
-
-$("[id^=atabInformacoesProduto]").click(function () {
-    $("[id^=tabItensProduto]").removeClass("active");
-
-    $(this).toggleClass("active");
-    $(this).style.display = "flex";
-});
-
 var contadorItens = 0;
 
 function exibirItensArmazenados() {
@@ -283,7 +428,7 @@ function exibirItensArmazenados() {
         itensArmazenados.forEach(function (item) {
             ordem++;
             var htmlStructure = `
-      <div class="panel-primary divItensProdutos divNovosItens" style="margin-top: 20px" id="divItensProdutos${ordem}">
+      <div class="panel panel-primary divItensProdutos divNovosItens" style="margin-top: 20px" id="divItensProdutos${ordem}">
     <div class="panel-heading" style="border: 1px solid #000; padding: 10px; display: flex; justify-content: space-between; align-items: flex-start;">
         <div style="width: 15%; display: flex; align-items: center;">
             <div class="details detailsShow"></div>
@@ -510,32 +655,6 @@ function AddSelectSubEmpreiteiro(identificador) {
     }
 }
 
-function FormataValorParaMoeda(element, decimais, reais = true) {
-    let valor = $(element)
-        .val()
-        .replace(/[^0-9,.]/g, "");
-
-    if (isNaN(valor)) {
-        return " - ";
-    }
-
-    if (valor) {
-        valor = parseFloat(valor.replace(",", "."));
-    }
-
-    if (isNaN(decimais)) {
-        decimais = 6;
-    }
-
-    $(element).val(
-        (reais ? "R$ " : "") +
-            valor.toLocaleString("pt-br", {
-                minimumFractionDigits: decimais,
-                maximumFractionDigits: decimais,
-            })
-    );
-}
-
 function FormataNumeros(element) {
     let valor = element.value;
 
@@ -592,19 +711,6 @@ function recontarRateioTabelaRateio(contador) {
     });
 }
 
-function formatarValor(input) {
-    var valor = input.value.replace(/\D/g, "");
-    valor = (valor / 100).toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-    });
-    input.value = valor;
-}
-
-function formatarPercentual(input) {
-    input.value = input.value.replace(/\D/g, "") + "%";
-}
-
 function preencherLocalEstoque(dsFinalLocEstoque, selectedFilial) {
     $("#selectLocalEstoque").html("");
     $("#selectLocalEstoque").append('<option value=" "></option>');
@@ -636,7 +742,7 @@ document.querySelectorAll("ul.nav.nav-tabs.nav-justified.nav-pills a.collapseIte
             }
 
             if (modalidade == "Recebimento") {
-                $("#divValorTotal, #titleValorTotal, #valorTotalFFCX").show();
+                $("#titleValorTotal, #valorTotalFFCX").show();
             }
 
             for (var campoId in campos) {
@@ -717,7 +823,7 @@ document.querySelectorAll("ul.nav.nav-tabs.nav-justified.nav-pills a.collapseIte
                             }
                         }
                     }
-                    $("#divValorTotal, #titleValorTotal, #valorTotalFFCX").show();
+                    $("#titleValorTotal, #valorTotalFFCX").show();
                     $("#titleFundoSelecionado").text("Reembolso de Despesas da Obra (R.D.O):");
                     var fundoFixo = $("#fundoFixo").val();
                     var numeros = fundoFixo.match(/\d+/);
@@ -771,21 +877,13 @@ document.querySelectorAll("ul.nav.nav-tabs.nav-justified.nav-pills a.collapseIte
                             {
                                 data: "NOMECENTRODECUSTO",
                                 render: function (data, type, row) {
-                                    return (
-                                        "<input class='CentroDeCusto1207' readonly style='border: 0' value='" +
-                                        data +
-                                        "'>"
-                                    );
+                                    return "<input class='CentroDeCusto1207' readonly style='border: 0' value='" + data + "'>";
                                 },
                             },
                             {
                                 data: "VALORBRUTO",
                                 render: function (data, type, row) {
-                                    return (
-                                        "<input class='ValorMov1207' readonly style='border: 0;' readonly value='" +
-                                        FormataValor(data) +
-                                        "'>"
-                                    );
+                                    return "<input class='ValorMov1207' readonly style='border: 0;' readonly value='" + FormataValor(data) + "'>";
                                 },
                             },
                         ],
@@ -817,9 +915,7 @@ document.querySelectorAll("ul.nav.nav-tabs.nav-justified.nav-pills a.collapseIte
                 $("#ObraFiltro").val() != "" &&
                 $("#campoModalidadeDto").val() != ""
             ) {
-                $(
-                    "#divbtnAddItens, .divItensProdutos, .divNovosItens, #divValorTotal, #titleValorTotal, #valorTotalFFCX"
-                ).show();
+                $("#divbtnAddItens, .divItensProdutos, .divNovosItens, #divValorTotal, #titleValorTotal, #valorTotalFFCX").show();
                 buscaProdutos();
 
                 var fundoFixoValue = $("#fundoFixo").val();
@@ -856,78 +952,9 @@ document.querySelectorAll("ul.nav.nav-tabs.nav-justified.nav-pills a.collapseIte
     atualizarValorTotalFFCX();
 });
 
-function removeDivsByClass(className) {
-    const divs = document.querySelectorAll("div." + className);
-    for (let i = 0; i < divs.length; i++) {
-        divs[i].parentNode.removeChild(divs[i]);
-    }
-}
-
-function FormataValor(valor) {
-    var numero = parseFloat(valor);
-    numero = numero.toFixed(2).split(".");
-    numero[0] = "R$" + numero[0].split(/(?=(?:...)*$)/).join(".");
-    return numero.join(",");
-}
-
-$("#fundoFixo").on("change", function () {
-    var fundoFixo = $("#fundoFixo").val();
-    $("#campoFundoFixoDto").val(fundoFixo);
-    $("#fundoFixo").val($("#campoFundoFixoDto").val());
-    $("#formaPagamento").empty().trigger("change");
-    puxaFormaPgto();
-});
-
-$("#modalidade").on("change", function () {
-    var modalidade = $("#modalidade").val();
-    $("#campoModalidadeDto").val(modalidade);
-});
-
-$("#formaPagamento").on("change", function () {
-    var formaPagamento = $("#formaPagamento").val();
-    $("#campoformaPagamentoDto").val(formaPagamento);
-});
-
-$("#condicaoPagamento").on("change", function () {
-    var condicaoPagamento = $("#condicaoPagamento").val();
-    $("#campoCondicaoPagamentoDto").val(condicaoPagamento);
-});
-
-$("#tipo").on("change", function () {
-    var tipo = $("#tipo").val();
-    $("#campoTipoDto").val(tipo);
-    var linkElement = document.getElementById("atabItens");
-    var linkElementPrincipal = document.getElementById("atabInformacoesIniciais");
-
-    if (tipo == "Fundo Fixo") {
-        linkElementPrincipal.textContent = "Informações do Fundo Fixo";
-    } else if (tipo == "R.D.O") {
-        linkElementPrincipal.textContent = "Informações do R.D.O";
-    }
-});
-
-$("#selectFilial").on("change", function () {
-    var selectedFilial = $("#selectFilial").val();
-    $("#campoFilialDto").val(selectedFilial);
-});
-
-$("#selectLocalEstoque").on("change", function () {
-    $("#ObraFiltro").val($("#selectLocalEstoque").val());
-});
-
 function ListaLocalDeEstoque() {
-    var p1 = DatasetFactory.createConstraint(
-        "OPERACAO",
-        "ListaLocalDeEstoque",
-        "ListaLocalDeEstoque",
-        ConstraintType.SHOULD
-    );
-    var p2 = DatasetFactory.createConstraint(
-        "CODCOLIGADA",
-        $("#coligada").val(),
-        $("#coligada").val(),
-        ConstraintType.MUST
-    );
+    var p1 = DatasetFactory.createConstraint("OPERACAO", "ListaLocalDeEstoque", "ListaLocalDeEstoque", ConstraintType.SHOULD);
+    var p2 = DatasetFactory.createConstraint("CODCOLIGADA", $("#coligada").val(), $("#coligada").val(), ConstraintType.MUST);
     var ds = DatasetFactory.getDataset("DatasetFFCXprod", null, [p1], null);
     var dsFinalLocEstoque = ds.values;
 
@@ -941,12 +968,7 @@ function BuscaFilial() {
             null,
             [
                 DatasetFactory.createConstraint("operacao", "BuscaFilial", "BuscaFilial", ConstraintType.MUST),
-                DatasetFactory.createConstraint(
-                    "codcoligada",
-                    $("#coligada").val(),
-                    $("#coligada").val(),
-                    ConstraintType.MUST
-                ),
+                DatasetFactory.createConstraint("codcoligada", $("#coligada").val(), $("#coligada").val(), ConstraintType.MUST),
             ],
             null,
             {
@@ -985,12 +1007,7 @@ function VerificaSeUsuarioPermissaoGeral() {
         "colleagueGroup",
         ["colleagueId"],
         [
-            DatasetFactory.createConstraint(
-                "colleagueId",
-                $("#usuarioInicial").val(),
-                $("#usuarioInicial").val(),
-                ConstraintType.MUST
-            ),
+            DatasetFactory.createConstraint("colleagueId", $("#usuarioInicial").val(), $("#usuarioInicial").val(), ConstraintType.MUST),
             DatasetFactory.createConstraint("groupId", "Comprador", "Comprador", ConstraintType.SHOULD),
             DatasetFactory.createConstraint("groupId", "Matriz", "Matriz", ConstraintType.SHOULD),
             DatasetFactory.createConstraint("groupId", "Administrador TI", "Administrador TI", ConstraintType.SHOULD),
@@ -1011,30 +1028,10 @@ function BuscaLocalDeEstoque() {
             "DatasetSolicitacaoDeCompraseServicos",
             null,
             [
-                DatasetFactory.createConstraint(
-                    "operacao",
-                    "BuscaLocalDeEstoque",
-                    "BuscaLocalDeEstoque",
-                    ConstraintType.MUST
-                ),
-                DatasetFactory.createConstraint(
-                    "codusuario",
-                    $("#usuarioInicial").val(),
-                    $("#usuarioInicial").val(),
-                    ConstraintType.MUST
-                ),
-                DatasetFactory.createConstraint(
-                    "codcoligada",
-                    $("#coligada").val(),
-                    $("#coligada").val(),
-                    ConstraintType.MUST
-                ),
-                DatasetFactory.createConstraint(
-                    "codfilial",
-                    $("#selectFilial").val(),
-                    $("#selectFilial").val(),
-                    ConstraintType.MUST
-                ),
+                DatasetFactory.createConstraint("operacao", "BuscaLocalDeEstoque", "BuscaLocalDeEstoque", ConstraintType.MUST),
+                DatasetFactory.createConstraint("codusuario", $("#usuarioInicial").val(), $("#usuarioInicial").val(), ConstraintType.MUST),
+                DatasetFactory.createConstraint("codcoligada", $("#coligada").val(), $("#coligada").val(), ConstraintType.MUST),
+                DatasetFactory.createConstraint("codfilial", $("#selectFilial").val(), $("#selectFilial").val(), ConstraintType.MUST),
                 DatasetFactory.createConstraint(
                     "permissaoGeral",
                     VerificaSeUsuarioPermissaoGeral() ? "true" : "false",
@@ -1074,59 +1071,13 @@ function BuscaLocalDeEstoque() {
     });
 }
 
-$('ul.nav.nav-tabs.nav-justified.nav-pills a[data-toggle="tab"]').on("shown.bs.tab", function (e) {
-    if ($("#coltabs li:first").hasClass("active")) {
-        $("#divTabelaDeRecebimentos").hide();
-    }
-});
-
-$("#modalidade").on("change", function () {
-    var firstOption = true;
-    if (activity == 7) {
-        $("#formaPagamento").empty();
-        puxaFormaPgto();
-        if (firstOption) {
-            $("#fundoFixo option")
-                .filter(function () {
-                    return $(this).text() === "001";
-                })
-                .remove();
-            firstOption = false;
-        }
-    }
-    if ($("#modalidade").val() == "Recebimento") {
-        $("#divPagamento").show();
-        $("#divFormaPgto").show();
-        $("#divCondicaoPagamento").show();
-        $("#formaPagamento").val("");
-        $("#condicaoPagamento").val("");
-        $("#formaPagamento").empty().trigger("change");
-        puxaFormaPgto();
-    } else {
-        $("#divTabelaDeRecebimentos").hide();
-        $("#divPagamento").hide();
-        $("#divFormaPgto").hide();
-        $("#divCondicaoPagamento").hide();
-    }
-});
-
 function puxaFormaPgto() {
     var fundoFixo = $("#campoFundoFixoDto").val();
     var tipo = $("#tipo").val();
     var modalidade = $("#modalidade").val();
 
-    var p1 = DatasetFactory.createConstraint(
-        "CODCOLIGADA",
-        $("#coligada").val(),
-        $("#coligada").val(),
-        ConstraintType.MUST
-    );
-    var p2 = DatasetFactory.createConstraint(
-        "OPERACAO",
-        "puxaFormaPagamentoFFCXRDO",
-        "puxaFormaPagamentoFFCXRDO",
-        ConstraintType.MUST
-    );
+    var p1 = DatasetFactory.createConstraint("CODCOLIGADA", $("#coligada").val(), $("#coligada").val(), ConstraintType.MUST);
+    var p2 = DatasetFactory.createConstraint("OPERACAO", "puxaFormaPagamentoFFCXRDO", "puxaFormaPagamentoFFCXRDO", ConstraintType.MUST);
 
     if (tipo == "R.D.O" && modalidade == "Recebimento") {
         var p3 = DatasetFactory.createConstraint("CODTB1FLX", "009", "009", ConstraintType.MUST);
@@ -1197,6 +1148,8 @@ function puxaFormaPgto() {
         var p3 = DatasetFactory.createConstraint("CODTB1FLX", "072", "072", ConstraintType.MUST);
     } else if (fundoFixo == "028452") {
         var p3 = DatasetFactory.createConstraint("CODTB1FLX", "073", "073", ConstraintType.MUST);
+    } else if (fundoFixo == "031519") {
+        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "076", "076", ConstraintType.MUST);
     } else {
         var p3 = DatasetFactory.createConstraint("CODTB1FLX", "1", "1", ConstraintType.MUST);
     }
@@ -1205,9 +1158,7 @@ function puxaFormaPgto() {
     dsFinal = dataset.values;
     if (dsFinal.length > 0) {
         for (var i = 0; i < dataset.values.length; i++) {
-            $("#formaPagamento").append(
-                "<option value='" + dsFinal[i].CODTB1FLX + "'>" + dsFinal[i].DESCRICAO + "</option>"
-            );
+            $("#formaPagamento").append("<option value='" + dsFinal[i].CODTB1FLX + "'>" + dsFinal[i].DESCRICAO + "</option>");
         }
     }
 }
@@ -1225,9 +1176,7 @@ function AddItem() {
         $(
             "#mensagemNenhumaItem, #faturamentoDecisao, #icon-green, #divbtnAddItens, .itens, [id^=divItensProdutos], [id^=divCorpoTabela], #divValorTotal, #titleValorTotal, #valorTotalFFCX"
         ).hide();
-        $(
-            "#divbtnVoltarAosItens, #icon-red, #rateiosContainer, #dropaTable, #icon-red, #painelTabelaDeProdutos"
-        ).show();
+        $("#divbtnVoltarAosItens, #icon-red, #rateiosContainer, #dropaTable, #icon-red, #painelTabelaDeProdutos").show();
     }
 }
 
@@ -1236,12 +1185,7 @@ function FiltrarFfUsuario() {
 
     var p1 = DatasetFactory.createConstraint("ATIVO", "1", "1", ConstraintType.MUST);
     if (tipo == "Fundo Fixo") {
-        var p2 = DatasetFactory.createConstraint(
-            "OPERACAO",
-            "PuxarFundosFixos",
-            "PuxarFundosFixos",
-            ConstraintType.MUST
-        );
+        var p2 = DatasetFactory.createConstraint("OPERACAO", "PuxarFundosFixos", "PuxarFundosFixos", ConstraintType.MUST);
     } else if (tipo == "R.D.O") {
         var p2 = DatasetFactory.createConstraint("OPERACAO", "PuxarRDO", "PuxarRDO", ConstraintType.MUST);
     }
@@ -1250,15 +1194,7 @@ function FiltrarFfUsuario() {
     if (ds.values.length > 0) {
         $("#fundoFixo").html("<option></option>");
         for (var i = 0; i < ds.values.length; i++) {
-            $("#fundoFixo").append(
-                "<option value='" +
-                    ds.values[i].CODCFO +
-                    "'>" +
-                    ds.values[i].CODCFO +
-                    " - " +
-                    ds.values[i].NOME +
-                    "</option>"
-            );
+            $("#fundoFixo").append("<option value='" + ds.values[i].CODCFO + "'>" + ds.values[i].CODCFO + " - " + ds.values[i].NOME + "</option>");
         }
     }
 }
@@ -1322,12 +1258,7 @@ function AddDepartamentoItem(select) {
 
     if (filial != 0 || filial != "" || filial != null) {
         var constraints = [
-            DatasetFactory.createConstraint(
-                "codcoligada",
-                $("#coligada").val(),
-                $("#coligada").val(),
-                ConstraintType.MUST
-            ),
+            DatasetFactory.createConstraint("codcoligada", $("#coligada").val(), $("#coligada").val(), ConstraintType.MUST),
             DatasetFactory.createConstraint("codfilial", filial, filial, ConstraintType.MUST),
         ];
 
@@ -1399,12 +1330,7 @@ function AddDepartamento(select) {
 
     if (filial != 0 || filial != "" || filial != null) {
         var constraints = [
-            DatasetFactory.createConstraint(
-                "codcoligada",
-                $("#coligada").val(),
-                $("#coligada").val(),
-                ConstraintType.MUST
-            ),
+            DatasetFactory.createConstraint("codcoligada", $("#coligada").val(), $("#coligada").val(), ConstraintType.MUST),
             DatasetFactory.createConstraint("codfilial", filial, filial, ConstraintType.MUST),
         ];
 
@@ -1553,20 +1479,15 @@ function RemoveDivItem(idBotaoRemover) {
 }
 
 function preencheTabelaReceber() {
-    var codfco = $("#campoFundoFixoDto").val();
+    var codfco = $("#campoFundoFixoDto").val() ? $("#campoFundoFixoDto").val() : $("#campoFundoFixoDto").text();
     var codfcoAtt = codfco.slice(0, 6);
-    var tipo = $("#tipo").val();
-    var coligada = $("#coligada").val();
-    var localDeEstoque = $("#ObraFiltro").val();
+    var tipo = $("#tipo").val() ? $("#tipo").val() : $("#tipo").text();
+    var coligada = $("#coligada").val() ? $("#coligada").val() : $("#coligada").text().split(" - ")[0];
+    var localDeEstoque = $("#ObraFiltro").val() ? $("#ObraFiltro").val() : $("#ObraFiltro").text();
 
     var c1 = DatasetFactory.createConstraint("CODCOLIGADA", coligada, coligada, ConstraintType.MUST);
     var c2 = DatasetFactory.createConstraint("CODCFO", codfcoAtt, codfcoAtt, ConstraintType.MUST);
-    var c3 = DatasetFactory.createConstraint(
-        "FILIAL",
-        $("#campoFilialDto").val(),
-        $("#campoFilialDto").val(),
-        ConstraintType.SHOULD
-    );
+    var c3 = DatasetFactory.createConstraint("FILIAL", $("#campoFilialDto").val(), $("#campoFilialDto").val(), ConstraintType.SHOULD);
     var c4 = DatasetFactory.createConstraint("CODLOC", localDeEstoque, localDeEstoque, ConstraintType.MUST);
 
     if (tipo == "Fundo Fixo") {
@@ -1624,7 +1545,7 @@ function preencheTabelaReceber() {
 }
 
 function mostrarDetalhes(IDMOV) {
-    var coligada = $("#coligada").val();
+    var coligada = $("#coligada").val() ? $("#coligada").val() : $("#coligada").text().split(" - ")[0];
 
     var p1 = DatasetFactory.createConstraint("IDMOV", IDMOV, IDMOV, ConstraintType.MUST);
     var p2 = DatasetFactory.createConstraint("CODCOLIGADA", coligada, coligada, ConstraintType.MUST);
@@ -1634,23 +1555,13 @@ function mostrarDetalhes(IDMOV) {
 
     var p1 = DatasetFactory.createConstraint("IDMOV", IDMOV, IDMOV, ConstraintType.MUST);
     var p2 = DatasetFactory.createConstraint("CODCOLIGADA", coligada, coligada, ConstraintType.MUST);
-    var p3 = DatasetFactory.createConstraint(
-        "OPERACAO",
-        "ShowRateioDepartamento",
-        "ShowRateioDepartamento",
-        ConstraintType.MUST
-    );
+    var p3 = DatasetFactory.createConstraint("OPERACAO", "ShowRateioDepartamento", "ShowRateioDepartamento", ConstraintType.MUST);
 
     var datasetshowRateiosDepatamento = DatasetFactory.getDataset("DatasetFFCXprod", null, [p1, p2, p3], null);
 
     var p1 = DatasetFactory.createConstraint("IDMOV", IDMOV, IDMOV, ConstraintType.MUST);
     var p2 = DatasetFactory.createConstraint("CODCOLIGADA", coligada, coligada, ConstraintType.MUST);
-    var p3 = DatasetFactory.createConstraint(
-        "OPERACAO",
-        "ShowRateioCentroDeCusto",
-        "ShowRateioCentroDeCusto",
-        ConstraintType.MUST
-    );
+    var p3 = DatasetFactory.createConstraint("OPERACAO", "ShowRateioCentroDeCusto", "ShowRateioCentroDeCusto", ConstraintType.MUST);
 
     var datasetshowRateiosCentrodeCusto = DatasetFactory.getDataset("DatasetFFCXprod", null, [p1, p2, p3], null);
 
@@ -1659,7 +1570,7 @@ function mostrarDetalhes(IDMOV) {
 
     for (total = 0; total < DatasetShowItems.values.length; total++) {
         retorno +=
-            '<div class="panel-primary divItensProdutos">\
+            '<div class="panel panel-primary divItensProdutos">\
     <div class="cabecalhoReceber panel-heading">\
     <div class="row">\
       <div class="col-md-10">\
@@ -1805,12 +1716,7 @@ function enviaHistoricoCurtoData() {
     } else if (tipo == "R.D.O") {
         var c4 = DatasetFactory.createConstraint("OPERACAO", "SelectMovRDO", "SelectMovRDO", ConstraintType.MUST);
     }
-    var c5 = DatasetFactory.createConstraint(
-        "CODCOLIGADA",
-        $("#coligada").val(),
-        $("#coligada").val(),
-        ConstraintType.MUST
-    );
+    var c5 = DatasetFactory.createConstraint("CODCOLIGADA", $("#coligada").val(), $("#coligada").val(), ConstraintType.MUST);
 
     var dsVerificaFundoFixo = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2, c3, c4, c5], null);
     dsFinal = dsVerificaFundoFixo.values;
@@ -1847,12 +1753,7 @@ function VerificaRetornoFundoFixo() {
     } else if (tipo == "R.D.O") {
         var c4 = DatasetFactory.createConstraint("OPERACAO", "SelectMovRDO", "SelectMovRDO", ConstraintType.MUST);
     }
-    var c5 = DatasetFactory.createConstraint(
-        "CODCOLIGADA",
-        $("#coligada").val(),
-        $("#coligada").val(),
-        ConstraintType.MUST
-    );
+    var c5 = DatasetFactory.createConstraint("CODCOLIGADA", $("#coligada").val(), $("#coligada").val(), ConstraintType.MUST);
 
     var dsVerificaFundoFixo = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2, c3, c4, c5], null);
     dsFinal = dsVerificaFundoFixo.values;
@@ -1871,12 +1772,7 @@ function VerificaRetornoFundoFixo() {
             }
 
             var p1 = DatasetFactory.createConstraint("IDMOV", IdMovimento, IdMovimento, ConstraintType.MUST);
-            var p2 = DatasetFactory.createConstraint(
-                "CODCOLIGADA",
-                $("#coligada").val(),
-                $("#coligada").val(),
-                ConstraintType.MUST
-            );
+            var p2 = DatasetFactory.createConstraint("CODCOLIGADA", $("#coligada").val(), $("#coligada").val(), ConstraintType.MUST);
 
             //Itens:
             var p3 = DatasetFactory.createConstraint("OPERACAO", "SelectItem", "SelectItem", ConstraintType.MUST);
@@ -1884,22 +1780,12 @@ function VerificaRetornoFundoFixo() {
             dsFinalItems = DatasetShowItems.values;
 
             //Departamento:
-            var p4 = DatasetFactory.createConstraint(
-                "OPERACAO",
-                "ShowRateioDepartamento",
-                "ShowRateioDepartamento;",
-                ConstraintType.MUST
-            );
+            var p4 = DatasetFactory.createConstraint("OPERACAO", "ShowRateioDepartamento", "ShowRateioDepartamento;", ConstraintType.MUST);
             var DatasetShowRatDep = DatasetFactory.getDataset("DatasetFFCXprod", null, [p1, p2, p4], null);
             dsFinalRatDep = DatasetShowRatDep.values;
 
             //Centro de Custo:
-            var p5 = DatasetFactory.createConstraint(
-                "OPERACAO",
-                "ShowRateioCentroDeCusto",
-                "ShowRateioCentroDeCusto",
-                ConstraintType.MUST
-            );
+            var p5 = DatasetFactory.createConstraint("OPERACAO", "ShowRateioCentroDeCusto", "ShowRateioCentroDeCusto", ConstraintType.MUST);
             var DatasetShowRatCC = DatasetFactory.getDataset("DatasetFFCXprod", null, [p1, p2, p5], null);
             dsFinalRatCC = DatasetShowRatCC.values;
 
@@ -1910,7 +1796,7 @@ function VerificaRetornoFundoFixo() {
                 ordem++;
 
                 $("#tabItens").append(`
-          <div class="panel-primary divItensProdutos" style="margin-top: 20px" id="divItensProdutos${ordem}">
+          <div class="panel panel-primary divItensProdutos" style="margin-top: 20px" id="divItensProdutos${ordem}">
               <div class="panel-heading" style="border: 1px solid #000; padding: 10px; display: flex; justify-content: space-between; align-items: flex-start;">
                   <div style="display: flex; align-items: center;">
                       <div class="details detailsShow"></div>
@@ -1921,9 +1807,7 @@ function VerificaRetornoFundoFixo() {
                   <div style="width: 70%; display: flex; flex-direction: column;">
                       <div style="display: flex; justify-content: space-between;">
                           <div style="width: 70%;">
-                              <b>Fornecedor/Prestador: </b><p id="descricaoAtual${ordem}" style="display: inline;">${
-                    dsFinalItems[j].HISTORICOCURTO
-                }</p>
+                              <b>Fornecedor/Prestador: </b><p id="descricaoAtual${ordem}" style="display: inline;">${dsFinalItems[j].HISTORICOCURTO}</p>
                           </div>
                           <div style="width: 30%; text-align: left;">
                               <b>Quantidade:</b> <span id="quantidadeInput${ordem}"></span> UN
@@ -1931,9 +1815,7 @@ function VerificaRetornoFundoFixo() {
                       </div>
                       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
                           <div style="width: 70%;">
-                              <b>Valor Unitário:</b> <span id="valorUnit${ordem}">${FormataValorInserir(
-                    valorItem
-                )}</span>
+                              <b>Valor Unitário:</b> <span id="valorUnit${ordem}">${FormataValorInserir(valorItem)}</span>
                           </div>
                           <div style="width: 30%; text-align: left;">
                               <b>Valor Total:</b> <input type="text" readonly class="valorTotal" id="valorTotal${ordem}" style="background: transparent; border: none; width: 50%;">
@@ -1954,18 +1836,10 @@ function VerificaRetornoFundoFixo() {
                                   <input name="ProdutoItem" readonly disabled id="produto${ordem}" type="text" class="form-control produto" value="${
                     dsFinalItems[j].NOMEFANTASIA
                 }" />
-                                  <input type="hidden" name="codigo" id="codigo" class="codigo" value="${
-                                      dsFinalItems[j].CODIGOPRD
-                                  }" />
-                                  <input type="hidden" name="unidade" id="unidade" class="unidade" value="${
-                                      dsFinalItems[j].UNIDADE
-                                  }" />
-                                  <input type="hidden" name="codigoProduto" id="codigoProduto" class="codigoProduto" value="${
-                                      dsFinalItems[j].IDPRD
-                                  }" />
-                                  <input type="hidden" name="CodTb1Fat" id="CodTb1Fat" class="CodTb1Fat" value="${
-                                      dsFinalItems[j].CODTB1FAT
-                                  }" />
+                                  <input type="hidden" name="codigo" id="codigo" class="codigo" value="${dsFinalItems[j].CODIGOPRD}" />
+                                  <input type="hidden" name="unidade" id="unidade" class="unidade" value="${dsFinalItems[j].UNIDADE}" />
+                                  <input type="hidden" name="codigoProduto" id="codigoProduto" class="codigoProduto" value="${dsFinalItems[j].IDPRD}" />
+                                  <input type="hidden" name="CodTb1Fat" id="CodTb1Fat" class="CodTb1Fat" value="${dsFinalItems[j].CODTB1FAT}" />
                               </label>
                               <br>
                           </div>
@@ -1991,6 +1865,7 @@ function VerificaRetornoFundoFixo() {
                               </div>
                           </div>
                       </div>
+                      <div class="row">
                       <div class="col-md-12">
                           <label class="labelFullWidth" style="width: 100%; margin-top: 10px">Prestador/Fornecedor:
                               <textarea name="fornecedor" readonly disabled class="form-control fornecedor" id="fornecedor${ordem}" oninput="AlteraDescricao(this, ${ordem})">${
@@ -2001,12 +1876,12 @@ function VerificaRetornoFundoFixo() {
                       </div>
                       <div class="col-md-12">
                           <label class="labelFullWidth" style="width: 100%; margin-top: 10px">Centro de Custo:
-                              <select class="form-control codCC" readonly disabled id="selectCentroDeCusto${ordem}" value="${
-                    dsFinalRatCC[j].CODCCUSTO
-                } - ${dsFinalRatCC[j].NOMECENTRODECUSTO}">
-                                  <option value="${dsFinalRatCC[j].CODCCUSTO} - ${
+                              <select class="form-control codCC" readonly disabled id="selectCentroDeCusto${ordem}" value="${dsFinalRatCC[j].CODCCUSTO} - ${
                     dsFinalRatCC[j].NOMECENTRODECUSTO
-                }" readonly>${dsFinalRatCC[j].CODCCUSTO} - ${dsFinalRatCC[j].NOMECENTRODECUSTO}</option>
+                }">
+                                  <option value="${dsFinalRatCC[j].CODCCUSTO} - ${dsFinalRatCC[j].NOMECENTRODECUSTO}" readonly>${dsFinalRatCC[j].CODCCUSTO} - ${
+                    dsFinalRatCC[j].NOMECENTRODECUSTO
+                }</option>
                               </select>
                           </label>
                       </div>
@@ -2015,11 +1890,10 @@ function VerificaRetornoFundoFixo() {
                               <select class="form-control departamento" readonly disabled id="departamentoHtml${ordem}" value="${
                     dsFinalRatDep[j].CODDEPARTAMENTO
                 }">
-                                  <option value="${dsFinalRatDep[j].CODDEPARTAMENTO}" readonly>${
-                    dsFinalRatDep[j].NOMEDEPARTAMENTO
-                }</option>
+                                  <option value="${dsFinalRatDep[j].CODDEPARTAMENTO}" readonly>${dsFinalRatDep[j].NOMEDEPARTAMENTO}</option>
                               </select>
                           </label>
+                      </div>
                       </div>
                   </div>
               </div>
@@ -2028,10 +1902,7 @@ function VerificaRetornoFundoFixo() {
 
                 $("#IdMovimento").val(IdMovimento);
                 $("#NumeroMovimento").val(NumeroMovimento);
-                if (
-                    $("#inputQuantidadeItem" + ordem).val() === "" ||
-                    $("#inputQuantidadeItem" + ordem).val() == undefined
-                ) {
+                if ($("#inputQuantidadeItem" + ordem).val() === "" || $("#inputQuantidadeItem" + ordem).val() == undefined) {
                     $("#quantidadeInput" + ordem).text(1);
                     $("#inputQuantidadeItem" + ordem).val(1);
                     $("#valorTotal" + ordem).val(FormataValorInserir(valorItem));
@@ -2091,12 +1962,7 @@ function AddDepartamentoHtml(selectId) {
 
     if (filial != 0 && filial != "" && filial != null) {
         var constraints = [
-            DatasetFactory.createConstraint(
-                "codcoligada",
-                $("#coligada").val(),
-                $("#coligada").val(),
-                ConstraintType.MUST
-            ),
+            DatasetFactory.createConstraint("codcoligada", $("#coligada").val(), $("#coligada").val(), ConstraintType.MUST),
             DatasetFactory.createConstraint("codfilial", filial, filial, ConstraintType.MUST),
         ];
 
@@ -2151,17 +2017,6 @@ function atualizarValorTotal(ordem) {
     } else {
         console.error("Não foi possível encontrar os elementos de quantidade ou valor unitário.");
     }
-}
-
-function FormataValorInserir(valor) {
-    if (!valor) {
-        valor = "0";
-    }
-
-    var numero = parseFloat(valor.replace(/[^\d.-]/g, "").replace(",", "."));
-    if (isNaN(numero)) numero = 0;
-
-    return numero.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function procuraProdutos(ordem) {
@@ -2241,51 +2096,21 @@ function procuraProdutos(ordem) {
         },
         error: function (error) {},
     };
-    var p1 = DatasetFactory.createConstraint(
-        "CODCOLIGADA",
-        $("#coligada").val(),
-        $("#coligada").val(),
-        ConstraintType.MUST
-    );
-    var p2 = DatasetFactory.createConstraint(
-        "OPERACAO",
-        "buscaProdutosPorColigada",
-        "buscaProdutosPorColigada",
-        ConstraintType.MUST
-    );
+    var p1 = DatasetFactory.createConstraint("CODCOLIGADA", $("#coligada").val(), $("#coligada").val(), ConstraintType.MUST);
+    var p2 = DatasetFactory.createConstraint("OPERACAO", "buscaProdutosPorColigada", "buscaProdutosPorColigada", ConstraintType.MUST);
     DatasetFactory.getDataset("DatasetFFCXprod", null, [p1, p2], null, callback);
 }
 
 function VerificaCondicaoAprovacao() {
-    var c1 = DatasetFactory.createConstraint(
-        "CODCFO",
-        $("#masterValueFCFO").val(),
-        $("#masterValueFCFO").val(),
-        ConstraintType.MUST
-    );
-    var c2 = DatasetFactory.createConstraint(
-        "OPERACAO",
-        "VerificaAprovacaoFundoFixo",
-        "VerificaAprovacaoFundoFixo",
-        ConstraintType.MUST
-    );
+    var c1 = DatasetFactory.createConstraint("CODCFO", $("#masterValueFCFO").val(), $("#masterValueFCFO").val(), ConstraintType.MUST);
+    var c2 = DatasetFactory.createConstraint("OPERACAO", "VerificaAprovacaoFundoFixo", "VerificaAprovacaoFundoFixo", ConstraintType.MUST);
     var dsVerificaFundoFixo = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2], null);
     $("#valorCampoComplemento").val(dsVerificaFundoFixo.values[0].VALIDAFF);
 }
 
 function verificaLocalDeEstoqueMov() {
-    var p1 = DatasetFactory.createConstraint(
-        "CCUSTO",
-        $("#selectLocalEstoque").val(),
-        $("#selectLocalEstoque").val(),
-        ConstraintType.MUST
-    );
-    var p2 = DatasetFactory.createConstraint(
-        "OPERACAO",
-        "buscaLocalDeEstoquePorCentroDeCusto",
-        "buscaLocalDeEstoquePorCentroDeCusto",
-        ConstraintType.MUST
-    );
+    var p1 = DatasetFactory.createConstraint("CCUSTO", $("#selectLocalEstoque").val(), $("#selectLocalEstoque").val(), ConstraintType.MUST);
+    var p2 = DatasetFactory.createConstraint("OPERACAO", "buscaLocalDeEstoquePorCentroDeCusto", "buscaLocalDeEstoquePorCentroDeCusto", ConstraintType.MUST);
     var datasetLocalMov = DatasetFactory.getDataset("DatasetFFCXprod", null, [p1, p2], null);
     for (i = 0; i < datasetLocalMov.values.length; i++) {
         if (datasetLocalMov.values[i].CODFILIAL == $("#selectFilial").val()) {
@@ -2313,6 +2138,7 @@ function getCommonJson(element) {
         codCC: codCCValue ? codCCValue.split(" - ")[0] : null,
         valor: element.find(".valorTotal").val(),
         valorUnitario: element.find(".ValorUnitItem").val(),
+        quantidade: element.find(".QuantidadeItem").val(),
         depart: getDepartamentos(element, codCCSplit),
     };
 }
@@ -2340,12 +2166,7 @@ function handleProvisao() {
 function handleRecebimento() {
     var listJsonAprov = [];
     if ($("#formMode").val() == "ADD") {
-        var p1 = DatasetFactory.createConstraint(
-            "IDMOV",
-            $("#NumeroMovimento").val(),
-            $("#NumeroMovimento").val(),
-            ConstraintType.MUST
-        );
+        var p1 = DatasetFactory.createConstraint("IDMOV", $("#NumeroMovimento").val(), $("#NumeroMovimento").val(), ConstraintType.MUST);
         var p2 = DatasetFactory.createConstraint("OPERACAO", "SelectItem", "SelectItem", ConstraintType.MUST);
         var DatasetDadosMovAprov = DatasetFactory.getDataset("DatasetFFCXprod", null, [p1, p2], null);
 
@@ -2360,16 +2181,17 @@ function handleRecebimento() {
             }
         });
 
-        var dataEmail = new Date();
-        var dataFormatadaEmail = dataEmail.getDate() + "/" + (dataEmail.getMonth() + 1) + "/" + dataEmail.getFullYear();
-        $("#DataEmail").val(dataFormatadaEmail);
+        $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
         $("#valuesRecebimento").val(JSON.stringify(listJsonAprov));
     } else {
-        $(".divItensProdutos").each(function () {
-            var json = getCommonJson($(this));
-            listJsonAprov.push(json);
-        });
-        $("#codList").val(JSON.stringify(listJsonAprov));
+        // Comentado o Código pois a função getCommonJson dava erro quando executada na aprovação da Contabilidade com os Itens do Movimento Abertos
+        // Devido a alguns campos do getCommonJson não existirem no Recebimento
+        // E o campo "#codList" só é usado para a Provisão, então não afeta o Recebimento
+        // $(".divItensProdutos").each(function () {
+        //     var json = getCommonJson($(this));
+        //     listJsonAprov.push(json);
+        // });
+        // $("#codList").val(JSON.stringify(listJsonAprov));
     }
 }
 
@@ -2383,12 +2205,7 @@ function handleAprovEngenheiro() {
         var tipo = $("#tipo").val();
 
         $("#tabelaDeRecebimentos_wrapper tbody tr").each(function () {
-            var p1 = DatasetFactory.createConstraint(
-                "IDMOV",
-                $(this).find(".Idmov1207").val(),
-                $(this).find(".Idmov1207").val(),
-                ConstraintType.MUST
-            );
+            var p1 = DatasetFactory.createConstraint("IDMOV", $(this).find(".Idmov1207").val(), $(this).find(".Idmov1207").val(), ConstraintType.MUST);
 
             if (tipo == "Fundo Fixo") {
                 var p2 = DatasetFactory.createConstraint("OPERACAO", "GeraXML1207", "GeraXML1207", ConstraintType.MUST);
@@ -2406,20 +2223,16 @@ function handleAprovEngenheiro() {
                 listJson1207.push(convertido1207);
             }
         });
-        let dataEmail = new Date();
-        let dataFormatadaEmail = dataEmail.getDate() + "/" + (dataEmail.getMonth() + 1) + "/" + dataEmail.getFullYear();
 
-        $("#DataEmail").val(dataFormatadaEmail);
+        $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
         $("#valuesRecebimento").val(JSON.stringify(listJson1207));
     } else {
         // var qtdAnexos = parent.ECM.attachmentTable.getData().length;
         // for (d = 0; d < qtdAnexos; d++) {
         //   parent.WKFViewAttachment.removeAttach([0]);
         // }
-        let DataEmailRetorno = new Date();
-        let dataFormatadaEmailRetorno =
-            DataEmailRetorno.getDate() + "/" + (DataEmailRetorno.getMonth() + 1) + "/" + DataEmailRetorno.getFullYear();
-        $("#DataEmail").val(dataFormatadaEmailRetorno);
+
+        $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
     }
 }
 
@@ -2428,12 +2241,7 @@ function handleAprovContabilidade() {
         var listJson1207 = [];
         var tipo = $("#tipo").val();
         $("#tabelaDeRecebimentos_wrapper tbody tr").each(function () {
-            var p1 = DatasetFactory.createConstraint(
-                "IDMOV",
-                $(this).find(".Idmov1207").val(),
-                $(this).find(".Idmov1207").val(),
-                ConstraintType.MUST
-            );
+            var p1 = DatasetFactory.createConstraint("IDMOV", $(this).find(".Idmov1207").val(), $(this).find(".Idmov1207").val(), ConstraintType.MUST);
 
             if (tipo === "Fundo Fixo") {
                 var p2 = DatasetFactory.createConstraint("OPERACAO", "GeraXML1207", "GeraXML1207", ConstraintType.MUST);
@@ -2450,9 +2258,8 @@ function handleAprovContabilidade() {
                 listJson1207.push(convertido1207);
             }
         });
-        let dataEmail = new Date();
-        let dataFormatadaEmail = dataEmail.getDate() + "/" + (dataEmail.getMonth() + 1) + "/" + dataEmail.getFullYear();
-        $("#DataEmail").val(dataFormatadaEmail);
+
+        $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
         $("#valuesRecebimento").val(JSON.stringify(listJson1207));
     } else {
         // var qtdAnexos = parent.ECM.attachmentTable.getData().length;
@@ -2461,227 +2268,8 @@ function handleAprovContabilidade() {
         //   parent.WKFViewAttachment.removeAttach([0]);
         // }
 
-        let DataEmailRetorno = new Date();
-        let dataFormatadaEmailRetorno =
-            DataEmailRetorno.getDate() + "/" + (DataEmailRetorno.getMonth() + 1) + "/" + DataEmailRetorno.getFullYear();
-        $("#DataEmail").val(dataFormatadaEmailRetorno);
+        $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
     }
-}
-
-function validateJsonInfos() {
-    var tipo = $("#tipo").val();
-    var atividadeDto = activity;
-    enviaHistoricoCurtoData();
-
-    if ($("#campoFundoFixoDto").val() == "000557") {
-        atividadeDto = 6;
-        $("#aprovacao").val("sim");
-    }
-
-    try {
-        if (atividadeDto == 6) {
-            if ($("#aprovacao").val() == "sim") {
-                listJson1207 = [];
-                $("#tabelaDeRecebimentos tbody tr").each(function () {
-                    var p1 = DatasetFactory.createConstraint(
-                        "IDMOV",
-                        $(this).find(".Idmov1207").val(),
-                        $(this).find(".Idmov1207").val(),
-                        ConstraintType.MUST
-                    );
-                    if (tipo == "Fundo Fixo") {
-                        p2 = DatasetFactory.createConstraint(
-                            "OPERACAO",
-                            "GeraXML1207",
-                            "GeraXML1207",
-                            ConstraintType.MUST
-                        );
-                    } else if (tipo == "R.D.O") {
-                        p2 = DatasetFactory.createConstraint(
-                            "OPERACAO",
-                            "GeraXMLRDO",
-                            "GeraXMLRDO",
-                            ConstraintType.MUST
-                        );
-                    }
-                    var DatasetDadosMov1207 = DatasetFactory.getDataset("DatasetFFCXprod", null, [p1, p2], null);
-                    for (k = 0; k < DatasetDadosMov1207.values.length; k++) {
-                        var json = {
-                            values: DatasetDadosMov1207.values[k],
-                        };
-                        var convertido1207 = json;
-                        listJson1207.push(convertido1207);
-                    }
-                });
-
-                let dataEmail = new Date();
-                let dataFormatadaEmail =
-                    dataEmail.getDate() + "/" + (dataEmail.getMonth() + 1) + "/" + dataEmail.getFullYear();
-                $("#DataEmail").val(dataFormatadaEmail);
-                handleProvisao();
-                $("#valuesRecebimento").val(JSON.stringify(listJson1207));
-
-                if ($("#campoFundoFixoDto").val() != "000557") {
-                    if (!$("#decisaoFaturamentoSim").prop("checked") && !$("#decisaoFaturamentoNao").prop("checked")) {
-                        FLUIGC.toast({
-                            message: "Selecione uma opção",
-                            type: "warning",
-                        });
-                        $("label[for='decisaoFaturamentoSim'], label[for='decisaoFaturamentoNao']").css(
-                            "border",
-                            "1px solid red"
-                        );
-                        return false;
-                    } else {
-                        $("label[for='decisaoFaturamentoSim'], label[for='decisaoFaturamentoNao']").css("border", "");
-                    }
-                }
-            } else {
-                // var qtdAnexos = parent.ECM.attachmentTable.getData().length;
-                // for (d = 0; d < qtdAnexos; d++) {
-                //   parent.WKFViewAttachment.removeAttach([0]);
-                // }
-
-                let DataEmailRetorno = new Date();
-                let dataFormatadaEmailRetorno =
-                    DataEmailRetorno.getDate() +
-                    "/" +
-                    (DataEmailRetorno.getMonth() + 1) +
-                    "/" +
-                    DataEmailRetorno.getFullYear();
-                $("#DataEmailRetorno").val(dataFormatadaEmailRetorno);
-            }
-        }
-
-        if (atividadeDto == 0) {
-            if ($("#modalidade").val() == "Recebimento") {
-                if ($(".CentroDeCusto1207").length === 0) {
-                    FLUIGC.toast({
-                        message: "Não é possível incluir movimento sem itens",
-                        type: "warning",
-                    });
-                    return false;
-                }
-                if ($(".divItensProdutos").is(":visible")) {
-                    $(".details-control").click();
-                }
-                const select = document.getElementById("formaPagamento");
-                const selectedOption = select.options[select.selectedIndex];
-                const textoSelecionado = selectedOption.text;
-                $("#formaDePagamentoPlaceHolder").val(textoSelecionado);
-                handleRecebimento();
-                return true;
-            }
-        }
-
-        if ($("#modalidade").val() == "Provisao") {
-            if ($("#tipo").val() == "R.D.O") {
-                $(".codCC").each(function (index) {
-                    let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
-
-                    if ($(this).val().trim() === "") {
-                        showErrorMessage("Centro de Custo", itemNumber);
-                        return false;
-                    }
-                });
-
-                if (!validateCamposProvisao()) {
-                    return false;
-                }
-                handleProvisao();
-                ChecaBotoes();
-
-                if (document.querySelectorAll(".divNovosItens").length === 0) {
-                    FLUIGC.toast({
-                        message: "Insira pelo menos um item!",
-                        type: "warning",
-                    });
-                    return false;
-                } else {
-                    return true;
-                }
-            } else {
-                handleProvisao();
-            }
-        }
-
-        if ($("#modalidade").val() == "Recebimento") {
-            if ($("#tipo").val() == "R.D.O") {
-                if (!$("#motivoReembolsoTitulo").is(":visible")) {
-                    if (!$("#familiar").prop("checked") && !$("#corporativa").prop("checked")) {
-                        FLUIGC.toast({
-                            message: "Escolha o motivo do reembolso da despesa!",
-                            type: "warning",
-                        });
-                        $("#familiar, #corporativa").css("border", "1px solid red");
-                        return false;
-                    } else {
-                        $("#familiar, #corporativa").css("border", "");
-                    }
-                    ChecaBotoes();
-                }
-            }
-        }
-
-        return true;
-    } catch (err) {
-        console.log("error: " + err);
-        return false;
-    }
-}
-
-function showErrorMessage(fieldName, itemNumber) {
-    FLUIGC.toast({
-        title: "",
-        message: `Preencha o campo "${fieldName}" do ${itemNumber}`,
-        type: "warning",
-    });
-}
-
-function validateCamposProvisao() {
-    let isValid = true;
-
-    $(".QuantidadeItem").each(function (index) {
-        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
-
-        if ($(this).val().trim() === "") {
-            isValid = false;
-            showErrorMessage("Quantidade", itemNumber);
-            return false;
-        }
-    });
-
-    $(".ValorUnitItem").each(function (index) {
-        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
-
-        if ($(this).val().trim() === "") {
-            isValid = false;
-            showErrorMessage("Valor Unit", itemNumber);
-            return false;
-        }
-    });
-
-    $(".fornecedor").each(function (index) {
-        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
-
-        if ($(this).val().trim() === "") {
-            isValid = false;
-            showErrorMessage("Prestador/Fornecedor", itemNumber);
-            return false;
-        }
-    });
-
-    $(".departamento").each(function (index) {
-        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
-
-        if ($(this).val().trim() === "") {
-            isValid = false;
-            showErrorMessage("Departamento", itemNumber);
-            return false;
-        }
-    });
-
-    return isValid;
 }
 
 function atualizarOptions() {
@@ -2810,19 +2398,13 @@ function clickInTheItens() {
                         {
                             data: "NOMECENTRODECUSTO",
                             render: function (data, type, row) {
-                                return (
-                                    "<input class='CentroDeCusto1207' readonly style='border: 0' value='" + data + "'>"
-                                );
+                                return "<input class='CentroDeCusto1207' readonly style='border: 0' value='" + data + "'>";
                             },
                         },
                         {
                             data: "VALORBRUTO",
                             render: function (data, type, row) {
-                                return (
-                                    "<input class='ValorMov1207' readonly style='border: 0;' readonly value='" +
-                                    FormataValor(data) +
-                                    "'>"
-                                );
+                                return "<input class='ValorMov1207' readonly style='border: 0;' readonly value='" + FormataValor(data) + "'>";
                             },
                         },
                     ],
@@ -2937,18 +2519,8 @@ function atribuicaoEngCoord() {
         "verificaAprovador",
         null,
         [
-            DatasetFactory.createConstraint(
-                "paramCodcoligada",
-                $("#hiddenCodColigada").val(),
-                $("#hiddenCodColigada").val(),
-                ConstraintType.MUST
-            ),
-            DatasetFactory.createConstraint(
-                "paramLocal",
-                $("#hiddenObra").val(),
-                $("#hiddenObra").val(),
-                ConstraintType.MUST
-            ),
+            DatasetFactory.createConstraint("paramCodcoligada", $("#hiddenCodColigada").val(), $("#hiddenCodColigada").val(), ConstraintType.MUST),
+            DatasetFactory.createConstraint("paramLocal", $("#hiddenObra").val(), $("#hiddenObra").val(), ConstraintType.MUST),
             DatasetFactory.createConstraint("paramCodTmv", "1.1.98", "1.1.98", ConstraintType.MUST),
             DatasetFactory.createConstraint("paramValorTotal", 1001, 1001, ConstraintType.MUST),
         ],
@@ -2968,12 +2540,7 @@ function atribuicaoEngCoord() {
                                     Aprovador.usuarioFLUIG,
                                     ConstraintType.MUST
                                 ),
-                                DatasetFactory.createConstraint(
-                                    "workflowColleagueRolePK.roleId",
-                                    "aprovaContratos",
-                                    "aprovaContratos",
-                                    ConstraintType.MUST
-                                ),
+                                DatasetFactory.createConstraint("workflowColleagueRolePK.roleId", "aprovaContratos", "aprovaContratos", ConstraintType.MUST),
                             ],
                             null
                         );
@@ -2997,12 +2564,7 @@ function atribuicaoEngCoord() {
                                     Aprovador.usuarioFLUIG,
                                     ConstraintType.MUST
                                 ),
-                                DatasetFactory.createConstraint(
-                                    "workflowColleagueRolePK.roleId",
-                                    "aprovaContratos",
-                                    "aprovaContratos",
-                                    ConstraintType.MUST
-                                ),
+                                DatasetFactory.createConstraint("workflowColleagueRolePK.roleId", "aprovaContratos", "aprovaContratos", ConstraintType.MUST),
                             ],
                             null
                         );
@@ -3022,4 +2584,442 @@ function atribuicaoEngCoord() {
             },
         }
     );
+}
+
+function carregaItensProvisaoModoView() {
+    var itens = $("#codList").val();
+    if (itens.trim() == "") {
+        console.error("Nenhum item encontrado no campo codList");
+        throw "Nenhum item encontrado no campo codList";
+    }
+
+    try {
+        itens = JSON.parse(itens);
+    } catch (error) {
+        console.error("Não foi possível extrair o JSON do campo codList");
+        throw "Não foi possível extrair o JSON do campo codList";
+    }
+
+    var html = "";
+    var counter = 1;
+    for (const item of itens) {
+        html += `<div class="panel panel-primary divItensProdutos" style="margin-top: 20px" id="divItensProdutos${ordem}">
+            ${htmlHeader(counter, item)}
+            ${htmlBody(counter, item)}
+        </div>`;
+        counter++;
+    }
+
+    $("#tabItens").html(html);
+    $("[id^='icon-green']").hide();
+
+    function htmlHeader(ordem, item) {
+        var html = `<div class="panel-heading" style="border: 1px solid #000; padding: 10px; display: flex; justify-content: space-between; align-items: flex-start;">
+            <div style="width: 15%; display: flex; align-items: center;">
+                <div class="details detailsShow"></div>
+                <div class="icon-green" id="icon-green${ordem}" onclick="MostraDivItem(${ordem})" style="margin-right: 10px;">+</div>
+                <div class="icon-red" id="icon-red${ordem}" onclick="MostraDivItem(${ordem})"><span>-</span></div>
+                <h3 class="panel-title countItem" style="margin: 0 10px;">Item ${ordem}</h3>
+            </div>
+            <div style="width: 70%; display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between;">
+                    <div style="width: 70%;">
+                        <b>Fornecedor/Prestador: </b><p id="descricaoAtual${ordem}" style="display: inline;">${item.fornecedor}</p>
+                    </div>
+                    <div style="width: 30%; text-align: left;">
+                        <b>Quantidade:</b> <span id="inputQuantidadeItem${ordem}">${item.quantidade}</span> UN 
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                    <div style="width: 70%;">
+                        <b>Valor Unitário:</b> <span id="valorUnitEdicao${ordem}">${item.valorUnitario}</span>
+                    </div>
+                    <div style="width: 30%; text-align: left;">
+                        <b>Valor Total:</b> <input type="text" readonly class="valorTotal" id="valorTotal${ordem}" value="${item.valor}" style="background: transparent; border: none; width: 50%;">
+                    </div>
+                </div>
+            </div>
+             <div style="width: 15%; display: flex; justify-content: flex-end;">
+                <button class="btn btn-danger btnRemoverItem${ordem} btnRemoverItem" id="btnRemoverItem${ordem}" onclick="RemoveDivItem(${ordem})">
+                    <i class="flaticon flaticon-trash icon-sm" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>`;
+
+        return html;
+    }
+    function htmlBody(ordem, item) {
+        var html = `<div class="panel-body divCorpoTabela" id="divCorpoTabela${ordem}">
+            <div id="tabInformacoesProduto${ordem}" style="width: 100%">
+                <div class="row">
+                    <div class="col-md-6 col-lg-6">
+                        <label class="labelFullWidth" style="width: 100%"
+                            >Produto:
+                            <input name="ProdutoItem" type="text" class="form-control produto" readonly id="produto${ordem}" value="${item.nomeFantasia}" />
+                        </label>
+                        <br />
+                    </div>
+                    <div class="col-md-6 col-lg-6" id="divInfoProdutos${ordem}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="labelFullWidth" style="width: 100%"
+                                    >Quantidade:
+                                    <div class="with-suffix" suffix="UN">
+                                        <input
+                                            type="text"
+                                            readonly
+                                            class="form-control QuantidadeItem"
+                                            id="QuantidadeItemEdicao${ordem}"
+                                            oninput="AlteraQuantidadeEdicao(this, ${ordem}); atualizarValorTotal(${ordem}); atualizarValorTotalFFCX();"
+                                            id="inputQuantidadeItem${ordem}"
+                                            name="QuantidadeItem"
+                                            value="${item.quantidade}"
+                                        />
+                                    </div>
+                                </label>
+                                <br />
+                            </div>
+                            <div class="col-md-6" id="produtosInfo${ordem}">
+                                <label class="labelFullWidth" style="width: 100%"
+                                    >Valor Unitário:
+                                    <input
+                                        type="text"
+                                        name="ValorUnitItem"
+                                        readonly
+                                        class="form-control ValorUnitItem"
+                                        value="${item.valorUnitario}"
+                                        id="inputValorUnitEdicao${ordem}"
+                                        oninput="FormataNumeros(this); atualizarValorTotalFFCX(); atualizarValorTotal(${ordem}); 
+                                                            ${FormataValorInserir(this.val)}; AtualizaValorCampoValorUnitEdicao(${ordem})"
+                                    />
+                                </label>
+                                <br />
+                                <input type="hidden" name="codigo" id="codigo${ordem}" class="codigo" />
+                                <input type="hidden" name="unidade" id="unidade${ordem}" class="unidade" />
+                                <input type="hidden" name="codigoProduto" id="codigoProduto${ordem}" class="codigoProduto" />
+                                <input type="hidden" name="CodTb1Fat" id="CodTb1Fat${ordem}" class="CodTb1Fat" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top: 10px">
+                        <label class="labelFullWidth" style="width: 100%"
+                            >Prestador/Fornecedor:
+                            <textarea
+                                name="fornecedor"
+                                type="text"
+                                readonly
+                                oninput="AlteraDescricao(this, ${ordem})"
+                                class="form-control fornecedor"
+                                id="fornecedor"
+                                value=""
+                            >${item.fornecedor}</textarea>
+                        </label>
+                        <br />
+                    </div>
+                    <div class="col-md-6" style="margin-top: 10px">
+                        <label class="labelFullWidth" style="width: 100%"
+                            >Centro de Custo:
+                            <select class="form-control codCC" id="selectCentroDeCustoEdicao${ordem}" readonly value="${
+            item.codCC
+        }" style="width: 100%; height: 32px">
+                                <option selected>${item.codCC}</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="col-md-6 departamentoDiv" style="margin-top: 10px">
+                        <label class="labelFullWidth" style="width: 100%"
+                            >Departamento:
+                            <select class="form-control departamento" id="departamentoHtmlEdicao${ordem}" readonly style="width: 100%; height: 32px">
+                                <option selected>${item.depart[0].departamento}</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+                <br />
+            </div>
+        </div>`;
+        return html;
+    }
+}
+
+// Validate
+function validateJsonInfos() {
+    var tipo = $("#tipo").val();
+    var atividadeDto = activity;
+    enviaHistoricoCurtoData();
+
+    if ($("#campoFundoFixoDto").val() == "000557") {
+        atividadeDto = 6;
+        $("#aprovacao").val("sim");
+    }
+
+    try {
+        if (atividadeDto == ATIVIDADES.APROVACAO_CONTABILIDADE) {
+            if ($("#aprovacao").val() == "sim") {
+                listJson1207 = [];
+                $("#tabelaDeRecebimentos tbody tr").each(function () {
+                    var p1 = DatasetFactory.createConstraint("IDMOV", $(this).find(".Idmov1207").val(), $(this).find(".Idmov1207").val(), ConstraintType.MUST);
+                    if (tipo == "Fundo Fixo") {
+                        p2 = DatasetFactory.createConstraint("OPERACAO", "GeraXML1207", "GeraXML1207", ConstraintType.MUST);
+                    } else if (tipo == "R.D.O") {
+                        p2 = DatasetFactory.createConstraint("OPERACAO", "GeraXMLRDO", "GeraXMLRDO", ConstraintType.MUST);
+                    }
+                    var DatasetDadosMov1207 = DatasetFactory.getDataset("DatasetFFCXprod", null, [p1, p2], null);
+                    for (k = 0; k < DatasetDadosMov1207.values.length; k++) {
+                        var json = {
+                            values: DatasetDadosMov1207.values[k],
+                        };
+                        var convertido1207 = json;
+                        listJson1207.push(convertido1207);
+                    }
+                });
+
+                $("#DataEmail").val(getDataHoje("DD/MM/AAAA"));
+                // A condição (atividadeDto == ATIVIDADES.APROVACAO_CONTABILIDADE) somente será verdadeira para o Recebimento
+                // Pois a Provisão é encerrada logo após o Inicio, sem passar pela Aprovação Contabilidade
+                // Sendo assim, é errado chamar o handleProvisao para o Recebimento
+                // E essa chamada estava dando erro quando os Itens do Movimento estava expandidos, pois a função não encontrava os campos necessários
+                // handleProvisao();
+                $("#valuesRecebimento").val(JSON.stringify(listJson1207));
+
+                if ($("#campoFundoFixoDto").val() != "000557") {
+                    if (!$("#decisaoFaturamentoSim").prop("checked") && !$("#decisaoFaturamentoNao").prop("checked")) {
+                        FLUIGC.toast({
+                            message: "Selecione uma opção",
+                            type: "warning",
+                        });
+                        $("label[for='decisaoFaturamentoSim'], label[for='decisaoFaturamentoNao']").css("border", "1px solid red");
+                        return false;
+                    } else {
+                        $("label[for='decisaoFaturamentoSim'], label[for='decisaoFaturamentoNao']").css("border", "");
+                    }
+                }
+            } else {
+                // var qtdAnexos = parent.ECM.attachmentTable.getData().length;
+                // for (d = 0; d < qtdAnexos; d++) {
+                //   parent.WKFViewAttachment.removeAttach([0]);
+                // }
+
+                $("#DataEmailRetorno").val(getDataHoje("DD/MM/AAAA"));
+            }
+        }
+
+        if (atividadeDto == 0) {
+            if ($("#modalidade").val() == "Recebimento") {
+                if ($(".CentroDeCusto1207").length === 0) {
+                    FLUIGC.toast({
+                        message: "Não é possível incluir movimento sem itens",
+                        type: "warning",
+                    });
+                    return false;
+                }
+                if ($(".divItensProdutos").is(":visible")) {
+                    $(".details-control").click();
+                }
+                const select = document.getElementById("formaPagamento");
+                const selectedOption = select.options[select.selectedIndex];
+                const textoSelecionado = selectedOption.text;
+                $("#formaDePagamentoPlaceHolder").val(textoSelecionado);
+                handleRecebimento();
+                return true;
+            }
+        }
+
+        if ($("#modalidade").val() == "Provisao") {
+            if ($("#tipo").val() == "R.D.O") {
+                $(".codCC").each(function (index) {
+                    let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
+
+                    if ($(this).val().trim() === "") {
+                        showErrorMessage("Centro de Custo", itemNumber);
+                        return false;
+                    }
+                });
+
+                if (!validateCamposProvisao()) {
+                    return false;
+                }
+                handleProvisao();
+                ChecaBotoes();
+
+                if (!$("#familiar").is(":checked") && !$("#corporativa").is(":checked")) {
+                    FLUIGC.toast({
+                        message: "Selecione o Motivo do Reembolso de Despesa!",
+                        type: "warning",
+                    });
+                    return false;
+                }
+
+                if (document.querySelectorAll(".divNovosItens").length === 0) {
+                    FLUIGC.toast({
+                        message: "Insira pelo menos um item!",
+                        type: "warning",
+                    });
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                handleProvisao();
+            }
+        }
+
+        if ($("#modalidade").val() == "Recebimento") {
+            if ($("#tipo").val() == "R.D.O") {
+                if (!$("#motivoReembolsoTitulo").is(":visible")) {
+                    if (!$("#familiar").prop("checked") && !$("#corporativa").prop("checked") && (atividadeDto == ATIVIDADES.INICIO || atividadeDto == ATIVIDADES.INICIO_0 )) {
+                        FLUIGC.toast({
+                            message: "Escolha o motivo do reembolso da despesa!",
+                            type: "warning",
+                        });
+                        $("#familiar, #corporativa").css("border", "1px solid red");
+                        return false;
+                    } else {
+                        $("#familiar, #corporativa").css("border", "");
+                    }
+                    ChecaBotoes();
+                }
+            }
+        }
+
+        return true;
+    } catch (err) {
+        console.log("error: " + err);
+        return false;
+    }
+}
+function validateCamposProvisao() {
+    let isValid = true;
+
+    $(".QuantidadeItem").each(function (index) {
+        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
+
+        if ($(this).val().trim() === "") {
+            isValid = false;
+            showErrorMessage("Quantidade", itemNumber);
+            return false;
+        }
+    });
+
+    $(".ValorUnitItem").each(function (index) {
+        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
+
+        if ($(this).val().trim() === "") {
+            isValid = false;
+            showErrorMessage("Valor Unit", itemNumber);
+            return false;
+        }
+    });
+
+    $(".fornecedor").each(function (index) {
+        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
+
+        if ($(this).val().trim() === "") {
+            isValid = false;
+            showErrorMessage("Prestador/Fornecedor", itemNumber);
+            return false;
+        }
+    });
+
+    $(".departamento").each(function (index) {
+        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
+
+        if ($(this).val().trim() === "") {
+            isValid = false;
+            showErrorMessage("Departamento", itemNumber);
+            return false;
+        }
+    });
+
+    return isValid;
+}
+
+// Utils
+function showErrorMessage(fieldName, itemNumber) {
+    FLUIGC.toast({
+        title: "",
+        message: `Preencha o campo "${fieldName}" do ${itemNumber}`,
+        type: "warning",
+    });
+}
+function FormataValor(valor) {
+    var numero = parseFloat(valor);
+    numero = numero.toFixed(2).split(".");
+    numero[0] = "R$" + numero[0].split(/(?=(?:...)*$)/).join(".");
+    return numero.join(",");
+}
+function FormataValorParaMoeda(element, decimais, reais = true) {
+    let valor = $(element)
+        .val()
+        .replace(/[^0-9,.]/g, "");
+
+    if (isNaN(valor)) {
+        return " - ";
+    }
+
+    if (valor) {
+        valor = parseFloat(valor.replace(",", "."));
+    }
+
+    if (isNaN(decimais)) {
+        decimais = 6;
+    }
+
+    $(element).val(
+        (reais ? "R$ " : "") +
+            valor.toLocaleString("pt-br", {
+                minimumFractionDigits: decimais,
+                maximumFractionDigits: decimais,
+            })
+    );
+}
+function removeDivsByClass(className) {
+    const divs = document.querySelectorAll("div." + className);
+    for (let i = 0; i < divs.length; i++) {
+        divs[i].parentNode.removeChild(divs[i]);
+    }
+}
+function formatarValor(input) {
+    var valor = input.value.replace(/\D/g, "");
+    valor = (valor / 100).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+    });
+    input.value = valor;
+}
+function formatarPercentual(input) {
+    input.value = input.value.replace(/\D/g, "") + "%";
+}
+function FormataValorInserir(valor) {
+    if (!valor) {
+        valor = "0";
+    }
+
+    var numero = parseFloat(valor.replace(/[^\d.-]/g, "").replace(",", "."));
+    if (isNaN(numero)) numero = 0;
+
+    return numero.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function getDataHoje(format) {
+    var date = new Date();
+
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+
+    if (day < 10) {
+        day = "0" + day;
+    }
+    if (month < 10) {
+        month = "0" + month;
+    }
+
+    if (format.toUpperCase() == "DD/MM/AAAA") {
+        return [day, month, year].join("/");
+    } else if (format.toUpperCase() == "AAAA-MM-DD") {
+        return [year, month, day].join("-");
+    } else {
+        console.error("Formato da Data inválido (" + format.toUpperCase() + ")");
+        throw "Formato da Data inválido (" + format.toUpperCase() + ")";
+    }
 }
