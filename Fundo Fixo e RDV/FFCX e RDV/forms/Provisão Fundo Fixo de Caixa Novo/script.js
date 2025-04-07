@@ -1397,7 +1397,7 @@ function buscaProdutos() {
     }
 
     return new Promise((resolve, reject) => {
-        DatasetFactory.getDataset("BuscaProdutosRM", null, constraints, null, {
+        DatasetFactory.getDataset("BuscaProdutosRMRDO", null, constraints, null, {
             success: (produtos) => {
                 var mappedProdutos = produtos.values.map((produto) => ({
                     IDPRD: produto.IDPRD,
