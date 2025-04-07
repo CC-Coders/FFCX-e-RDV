@@ -1,0 +1,1686 @@
+<list>
+  <ProcessDefinition>
+    <processDefinitionPK>
+      <companyId>1</companyId>
+      <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+    </processDefinitionPK>
+    <processDescription>Provisão Fundo Fixo/RDO</processDescription>
+    <instruction></instruction>
+    <active>true</active>
+    <publicProcess>false</publicProcess>
+    <volumeId>Default</volumeId>
+    <categoryId>Compras e Serviços</categoryId>
+    <managerEngineAllocationId>Grupo</managerEngineAllocationId>
+    <managerEngineAllocationConfiguration>&lt;AssignmentController&gt;&lt;Group&gt;RH&lt;/Group&gt;&lt;/AssignmentController&gt;</managerEngineAllocationConfiguration>
+    <snapshotFrequency>0</snapshotFrequency>
+    <baseDay>0</baseDay>
+    <baseMonth>0</baseMonth>
+    <periodId>Default</periodId>
+    <uniqueCardVersion>true</uniqueCardVersion>
+    <keyWord></keyWord>
+    <complementsLevel>1</complementsLevel>
+    <notifyRequisitionerComplements>true</notifyRequisitionerComplements>
+    <notifyManagerComplements>false</notifyManagerComplements>
+    <deadlineTime>0</deadlineTime>
+    <warningDeadlineTime>0</warningDeadlineTime>
+    <notifyAuthorityComplements>true</notifyAuthorityComplements>
+  </ProcessDefinition>
+  <ProcessDefinitionVersion>
+    <processDefinitionVersionPK>
+      <companyId>1</companyId>
+      <processId>Provisão Fundo Fixo/RDO</processId>
+      <version>5</version>
+    </processDefinitionVersionPK>
+    <versionDescription></versionDescription>
+    <formId>1515068</formId>
+    <editionMode>true</editionMode>
+    <updateAttachmentsVersion>false</updateAttachmentsVersion>
+    <controlsAttachmentsSecurity>false</controlsAttachmentsSecurity>
+    <active>true</active>
+    <blockedVersion>false</blockedVersion>
+    <counterSign>false</counterSign>
+    <openInstances>0</openInstances>
+    <bpmnVersion>2</bpmnVersion>
+    <processStates/>
+    <favorito>false</favorito>
+    <inheritFormSecurity>true</inheritFormSecurity>
+    <mobileReady>false</mobileReady>
+  </ProcessDefinitionVersion>
+  <list>
+    <ProcessState>
+      <processStatePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <sequence>7</sequence>
+      </processStatePK>
+      <stateName>Início</stateName>
+      <stateDescription>Início</stateDescription>
+      <instruction></instruction>
+      <deadlineTime>0</deadlineTime>
+      <joint>false</joint>
+      <agreementPercentage>0</agreementPercentage>
+      <engineAllocationId>Grupo</engineAllocationId>
+      <engineAllocationConfiguration>&lt;AssignmentController&gt;&lt;Group&gt;Contabilidade&lt;/Group&gt;&lt;/AssignmentController&gt;</engineAllocationConfiguration>
+      <selectColleague>1</selectColleague>
+      <initialState>true</initialState>
+      <notifyAuthorityDelay>true</notifyAuthorityDelay>
+      <notifyRequisitionerDelay>false</notifyRequisitionerDelay>
+      <allowanceAuthorityTime>3600</allowanceAuthorityTime>
+      <frequenceAuthorityTime>3600</frequenceAuthorityTime>
+      <allowanceRequisitionerTime>0</allowanceRequisitionerTime>
+      <frequenceRequisitionerTime>0</frequenceRequisitionerTime>
+      <transferAttachments>false</transferAttachments>
+      <subProcessId></subProcessId>
+      <formFolder>0</formFolder>
+      <notifyAuthorityFollowUp>false</notifyAuthorityFollowUp>
+      <notifyRequisitionerFollowUp>false</notifyRequisitionerFollowUp>
+      <automatic>false</automatic>
+      <positionX>250</positionX>
+      <positionY>95</positionY>
+      <forecastedEffortType>0</forecastedEffortType>
+      <forecastedEffort>0</forecastedEffort>
+      <notifyManagerFollowUp>false</notifyManagerFollowUp>
+      <notifyManagerDelay>false</notifyManagerDelay>
+      <allowanceManagerTime>0</allowanceManagerTime>
+      <frequenceManagerTime>0</frequenceManagerTime>
+      <inhibitTransfer>false</inhibitTransfer>
+      <periodId></periodId>
+      <stateType>0</stateType>
+      <bpmnType>10</bpmnType>
+      <signalId>0</signalId>
+      <counterSign>false</counterSign>
+      <openInstances>0</openInstances>
+      <noticeExpirationAuthorityTime>0</noticeExpirationAuthorityTime>
+      <noticeExpirationRequisitionerTime>0</noticeExpirationRequisitionerTime>
+      <noticeExpirationManagerTime>0</noticeExpirationManagerTime>
+      <destinationStates/>
+      <digitalSignature>false</digitalSignature>
+    </ProcessState>
+    <ProcessState>
+      <processStatePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <sequence>6</sequence>
+      </processStatePK>
+      <stateName>Aprovação Contabilidade</stateName>
+      <stateDescription>Aprovação Contabilidade</stateDescription>
+      <instruction></instruction>
+      <deadlineTime>0</deadlineTime>
+      <deadlineFieldName></deadlineFieldName>
+      <joint>false</joint>
+      <agreementPercentage>0</agreementPercentage>
+      <engineAllocationId>Pool Grupo</engineAllocationId>
+      <engineAllocationConfiguration>&lt;AssignmentController&gt;&lt;Group&gt;Contabilidade&lt;/Group&gt;&lt;/AssignmentController&gt;</engineAllocationConfiguration>
+      <selectColleague>1</selectColleague>
+      <initialState>false</initialState>
+      <notifyAuthorityDelay>true</notifyAuthorityDelay>
+      <notifyRequisitionerDelay>false</notifyRequisitionerDelay>
+      <allowanceAuthorityTime>3600</allowanceAuthorityTime>
+      <frequenceAuthorityTime>3600</frequenceAuthorityTime>
+      <allowanceRequisitionerTime>0</allowanceRequisitionerTime>
+      <frequenceRequisitionerTime>0</frequenceRequisitionerTime>
+      <transferAttachments>false</transferAttachments>
+      <subProcessId></subProcessId>
+      <formFolder>0</formFolder>
+      <notifyAuthorityFollowUp>true</notifyAuthorityFollowUp>
+      <notifyRequisitionerFollowUp>false</notifyRequisitionerFollowUp>
+      <automatic>false</automatic>
+      <positionX>630</positionX>
+      <positionY>214</positionY>
+      <forecastedEffortType>0</forecastedEffortType>
+      <forecastedEffort>0</forecastedEffort>
+      <notifyManagerFollowUp>false</notifyManagerFollowUp>
+      <notifyManagerDelay>false</notifyManagerDelay>
+      <allowanceManagerTime>0</allowanceManagerTime>
+      <frequenceManagerTime>0</frequenceManagerTime>
+      <inhibitTransfer>false</inhibitTransfer>
+      <periodId></periodId>
+      <stateType>0</stateType>
+      <bpmnType>80</bpmnType>
+      <signalId>0</signalId>
+      <counterSign>false</counterSign>
+      <openInstances>0</openInstances>
+      <noticeExpirationAuthorityTime>0</noticeExpirationAuthorityTime>
+      <noticeExpirationRequisitionerTime>0</noticeExpirationRequisitionerTime>
+      <noticeExpirationManagerTime>0</noticeExpirationManagerTime>
+      <destinationStates/>
+      <digitalSignature>false</digitalSignature>
+      <executionType>0</executionType>
+    </ProcessState>
+    <ProcessState>
+      <processStatePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <sequence>8</sequence>
+      </processStatePK>
+      <stateName>Aprovação Engenheiro</stateName>
+      <stateDescription>Aprovação Engenheiro</stateDescription>
+      <instruction></instruction>
+      <deadlineTime>0</deadlineTime>
+      <deadlineFieldName></deadlineFieldName>
+      <joint>false</joint>
+      <agreementPercentage>0</agreementPercentage>
+      <engineAllocationId>AprovEngProvisao</engineAllocationId>
+      <selectColleague>1</selectColleague>
+      <initialState>false</initialState>
+      <notifyAuthorityDelay>true</notifyAuthorityDelay>
+      <notifyRequisitionerDelay>false</notifyRequisitionerDelay>
+      <allowanceAuthorityTime>3600</allowanceAuthorityTime>
+      <frequenceAuthorityTime>3600</frequenceAuthorityTime>
+      <allowanceRequisitionerTime>0</allowanceRequisitionerTime>
+      <frequenceRequisitionerTime>0</frequenceRequisitionerTime>
+      <transferAttachments>false</transferAttachments>
+      <subProcessId></subProcessId>
+      <formFolder>0</formFolder>
+      <notifyAuthorityFollowUp>true</notifyAuthorityFollowUp>
+      <notifyRequisitionerFollowUp>false</notifyRequisitionerFollowUp>
+      <automatic>false</automatic>
+      <positionX>360</positionX>
+      <positionY>214</positionY>
+      <forecastedEffortType>0</forecastedEffortType>
+      <forecastedEffort>0</forecastedEffort>
+      <notifyManagerFollowUp>false</notifyManagerFollowUp>
+      <notifyManagerDelay>false</notifyManagerDelay>
+      <allowanceManagerTime>0</allowanceManagerTime>
+      <frequenceManagerTime>0</frequenceManagerTime>
+      <inhibitTransfer>false</inhibitTransfer>
+      <periodId></periodId>
+      <stateType>0</stateType>
+      <bpmnType>80</bpmnType>
+      <signalId>0</signalId>
+      <counterSign>false</counterSign>
+      <openInstances>0</openInstances>
+      <noticeExpirationAuthorityTime>0</noticeExpirationAuthorityTime>
+      <noticeExpirationRequisitionerTime>0</noticeExpirationRequisitionerTime>
+      <noticeExpirationManagerTime>0</noticeExpirationManagerTime>
+      <destinationStates/>
+      <digitalSignature>false</digitalSignature>
+      <executionType>0</executionType>
+    </ProcessState>
+    <ProcessState>
+      <processStatePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <sequence>5</sequence>
+      </processStatePK>
+      <stateName>Decisao</stateName>
+      <stateDescription>Decisao</stateDescription>
+      <joint>false</joint>
+      <initialState>false</initialState>
+      <transferAttachments>false</transferAttachments>
+      <subProcessId></subProcessId>
+      <formFolder>0</formFolder>
+      <automatic>true</automatic>
+      <positionX>510</positionX>
+      <positionY>205</positionY>
+      <inhibitTransfer>false</inhibitTransfer>
+      <stateType>1</stateType>
+      <bpmnType>120</bpmnType>
+      <signalId>0</signalId>
+      <openInstances>0</openInstances>
+      <destinationStates/>
+      <digitalSignature>false</digitalSignature>
+    </ProcessState>
+    <ProcessState>
+      <processStatePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <sequence>10</sequence>
+      </processStatePK>
+      <stateName>Fim/Aprov</stateName>
+      <stateDescription>Fim/Aprov</stateDescription>
+      <joint>false</joint>
+      <initialState>false</initialState>
+      <transferAttachments>false</transferAttachments>
+      <subProcessId></subProcessId>
+      <formFolder>0</formFolder>
+      <automatic>true</automatic>
+      <positionX>240</positionX>
+      <positionY>210</positionY>
+      <inhibitTransfer>false</inhibitTransfer>
+      <stateType>1</stateType>
+      <bpmnType>120</bpmnType>
+      <signalId>0</signalId>
+      <openInstances>0</openInstances>
+      <destinationStates/>
+      <digitalSignature>false</digitalSignature>
+    </ProcessState>
+    <ProcessState>
+      <processStatePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <sequence>11</sequence>
+      </processStatePK>
+      <stateName>S/N</stateName>
+      <stateDescription>S/N</stateDescription>
+      <joint>false</joint>
+      <initialState>false</initialState>
+      <transferAttachments>false</transferAttachments>
+      <subProcessId></subProcessId>
+      <formFolder>0</formFolder>
+      <automatic>true</automatic>
+      <positionX>800</positionX>
+      <positionY>205</positionY>
+      <inhibitTransfer>false</inhibitTransfer>
+      <stateType>1</stateType>
+      <bpmnType>120</bpmnType>
+      <signalId>0</signalId>
+      <openInstances>0</openInstances>
+      <destinationStates/>
+      <digitalSignature>false</digitalSignature>
+    </ProcessState>
+    <ProcessState>
+      <processStatePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <sequence>9</sequence>
+      </processStatePK>
+      <stateName>Fim</stateName>
+      <stateDescription>Fim</stateDescription>
+      <instruction>Atividade final do processo</instruction>
+      <deadlineTime>0</deadlineTime>
+      <joint>false</joint>
+      <agreementPercentage>0</agreementPercentage>
+      <engineAllocationId></engineAllocationId>
+      <engineAllocationConfiguration></engineAllocationConfiguration>
+      <selectColleague>0</selectColleague>
+      <initialState>false</initialState>
+      <notifyAuthorityDelay>true</notifyAuthorityDelay>
+      <notifyRequisitionerDelay>false</notifyRequisitionerDelay>
+      <allowanceAuthorityTime>0</allowanceAuthorityTime>
+      <frequenceAuthorityTime>1</frequenceAuthorityTime>
+      <allowanceRequisitionerTime>0</allowanceRequisitionerTime>
+      <frequenceRequisitionerTime>0</frequenceRequisitionerTime>
+      <transferAttachments>false</transferAttachments>
+      <subProcessId></subProcessId>
+      <formFolder>0</formFolder>
+      <notifyAuthorityFollowUp>false</notifyAuthorityFollowUp>
+      <notifyRequisitionerFollowUp>false</notifyRequisitionerFollowUp>
+      <automatic>false</automatic>
+      <positionX>820</positionX>
+      <positionY>347</positionY>
+      <forecastedEffortType>0</forecastedEffortType>
+      <forecastedEffort>0</forecastedEffort>
+      <notifyManagerFollowUp>false</notifyManagerFollowUp>
+      <notifyManagerDelay>false</notifyManagerDelay>
+      <allowanceManagerTime>0</allowanceManagerTime>
+      <frequenceManagerTime>0</frequenceManagerTime>
+      <inhibitTransfer>false</inhibitTransfer>
+      <periodId></periodId>
+      <stateType>6</stateType>
+      <bpmnType>60</bpmnType>
+      <signalId>0</signalId>
+      <counterSign>false</counterSign>
+      <openInstances>0</openInstances>
+      <destinationStates/>
+      <digitalSignature>false</digitalSignature>
+    </ProcessState>
+  </list>
+  <list>
+    <ConditionProcessState>
+      <conditionProcessStatePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <expressionOrder>1</expressionOrder>
+        <version>5</version>
+        <sequence>5</sequence>
+      </conditionProcessStatePK>
+      <condition>false</condition>
+      <destinationSequenceId>7</destinationSequenceId>
+      <engineAllocationConfiguration>&lt;AssignmentController&gt;&lt;BaseActivity&gt;7&lt;/BaseActivity&gt;&lt;Returns&gt;Last&lt;/Returns&gt;&lt;/AssignmentController&gt;</engineAllocationConfiguration>
+      <engineAllocationId>Executor Atividade</engineAllocationId>
+      <conditionType>1</conditionType>
+    </ConditionProcessState>
+    <ConditionProcessState>
+      <conditionProcessStatePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <expressionOrder>2</expressionOrder>
+        <version>5</version>
+        <sequence>5</sequence>
+      </conditionProcessStatePK>
+      <condition>false</condition>
+      <destinationSequenceId>6</destinationSequenceId>
+      <engineAllocationConfiguration>&lt;AssignmentController&gt;&lt;Group&gt;Contabilidade&lt;/Group&gt;&lt;/AssignmentController&gt;</engineAllocationConfiguration>
+      <engineAllocationId>Pool Grupo</engineAllocationId>
+      <conditionType>1</conditionType>
+    </ConditionProcessState>
+    <ConditionProcessState>
+      <conditionProcessStatePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <expressionOrder>3</expressionOrder>
+        <version>5</version>
+        <sequence>5</sequence>
+      </conditionProcessStatePK>
+      <condition>false</condition>
+      <destinationSequenceId>9</destinationSequenceId>
+      <conditionType>1</conditionType>
+    </ConditionProcessState>
+    <ConditionProcessState>
+      <conditionProcessStatePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <expressionOrder>1</expressionOrder>
+        <version>5</version>
+        <sequence>10</sequence>
+      </conditionProcessStatePK>
+      <condition>false</condition>
+      <destinationSequenceId>9</destinationSequenceId>
+      <conditionType>1</conditionType>
+    </ConditionProcessState>
+    <ConditionProcessState>
+      <conditionProcessStatePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <expressionOrder>2</expressionOrder>
+        <version>5</version>
+        <sequence>10</sequence>
+      </conditionProcessStatePK>
+      <condition>false</condition>
+      <destinationSequenceId>8</destinationSequenceId>
+      <engineAllocationId>AprovEngProvisao</engineAllocationId>
+      <conditionType>1</conditionType>
+    </ConditionProcessState>
+    <ConditionProcessState>
+      <conditionProcessStatePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <expressionOrder>1</expressionOrder>
+        <version>5</version>
+        <sequence>11</sequence>
+      </conditionProcessStatePK>
+      <condition>false</condition>
+      <destinationSequenceId>7</destinationSequenceId>
+      <engineAllocationConfiguration>&lt;AssignmentController&gt;&lt;BaseActivity&gt;7&lt;/BaseActivity&gt;&lt;Returns&gt;Last&lt;/Returns&gt;&lt;/AssignmentController&gt;</engineAllocationConfiguration>
+      <engineAllocationId>Executor Atividade</engineAllocationId>
+      <conditionType>1</conditionType>
+    </ConditionProcessState>
+    <ConditionProcessState>
+      <conditionProcessStatePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <expressionOrder>2</expressionOrder>
+        <version>5</version>
+        <sequence>11</sequence>
+      </conditionProcessStatePK>
+      <condition>false</condition>
+      <destinationSequenceId>9</destinationSequenceId>
+      <conditionType>1</conditionType>
+    </ConditionProcessState>
+  </list>
+  <list>
+    <ProcessLink>
+      <processLinkPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <linkSequence>12</linkSequence>
+      </processLinkPK>
+      <actionLabel></actionLabel>
+      <returnPermited>false</returnPermited>
+      <initialStateSequence>5</initialStateSequence>
+      <finalStateSequence>6</finalStateSequence>
+      <returnLabel></returnLabel>
+      <name></name>
+      <automaticLink>false</automaticLink>
+      <defaultLink>false</defaultLink>
+      <type>0</type>
+    </ProcessLink>
+    <ProcessLink>
+      <processLinkPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <linkSequence>13</linkSequence>
+      </processLinkPK>
+      <actionLabel></actionLabel>
+      <returnPermited>false</returnPermited>
+      <initialStateSequence>5</initialStateSequence>
+      <finalStateSequence>7</finalStateSequence>
+      <returnLabel></returnLabel>
+      <name></name>
+      <automaticLink>false</automaticLink>
+      <defaultLink>false</defaultLink>
+      <type>0</type>
+    </ProcessLink>
+    <ProcessLink>
+      <processLinkPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <linkSequence>14</linkSequence>
+      </processLinkPK>
+      <actionLabel></actionLabel>
+      <returnPermited>false</returnPermited>
+      <initialStateSequence>5</initialStateSequence>
+      <finalStateSequence>9</finalStateSequence>
+      <returnLabel></returnLabel>
+      <name></name>
+      <automaticLink>false</automaticLink>
+      <defaultLink>false</defaultLink>
+      <type>0</type>
+    </ProcessLink>
+    <ProcessLink>
+      <processLinkPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <linkSequence>15</linkSequence>
+      </processLinkPK>
+      <actionLabel></actionLabel>
+      <returnPermited>false</returnPermited>
+      <initialStateSequence>6</initialStateSequence>
+      <finalStateSequence>11</finalStateSequence>
+      <returnLabel></returnLabel>
+      <name></name>
+      <automaticLink>false</automaticLink>
+      <defaultLink>false</defaultLink>
+      <type>0</type>
+    </ProcessLink>
+    <ProcessLink>
+      <processLinkPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <linkSequence>16</linkSequence>
+      </processLinkPK>
+      <actionLabel></actionLabel>
+      <returnPermited>false</returnPermited>
+      <initialStateSequence>7</initialStateSequence>
+      <finalStateSequence>10</finalStateSequence>
+      <returnLabel></returnLabel>
+      <name></name>
+      <automaticLink>false</automaticLink>
+      <defaultLink>false</defaultLink>
+      <type>0</type>
+    </ProcessLink>
+    <ProcessLink>
+      <processLinkPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <linkSequence>17</linkSequence>
+      </processLinkPK>
+      <actionLabel></actionLabel>
+      <returnPermited>false</returnPermited>
+      <initialStateSequence>8</initialStateSequence>
+      <finalStateSequence>5</finalStateSequence>
+      <returnLabel></returnLabel>
+      <name></name>
+      <automaticLink>false</automaticLink>
+      <defaultLink>false</defaultLink>
+      <type>0</type>
+    </ProcessLink>
+    <ProcessLink>
+      <processLinkPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <linkSequence>18</linkSequence>
+      </processLinkPK>
+      <actionLabel></actionLabel>
+      <returnPermited>false</returnPermited>
+      <initialStateSequence>10</initialStateSequence>
+      <finalStateSequence>9</finalStateSequence>
+      <returnLabel></returnLabel>
+      <name></name>
+      <automaticLink>false</automaticLink>
+      <defaultLink>false</defaultLink>
+      <type>0</type>
+    </ProcessLink>
+    <ProcessLink>
+      <processLinkPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <linkSequence>19</linkSequence>
+      </processLinkPK>
+      <actionLabel></actionLabel>
+      <returnPermited>false</returnPermited>
+      <initialStateSequence>10</initialStateSequence>
+      <finalStateSequence>8</finalStateSequence>
+      <returnLabel></returnLabel>
+      <name></name>
+      <automaticLink>false</automaticLink>
+      <defaultLink>false</defaultLink>
+      <type>0</type>
+    </ProcessLink>
+    <ProcessLink>
+      <processLinkPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <linkSequence>20</linkSequence>
+      </processLinkPK>
+      <actionLabel></actionLabel>
+      <returnPermited>false</returnPermited>
+      <initialStateSequence>11</initialStateSequence>
+      <finalStateSequence>7</finalStateSequence>
+      <returnLabel></returnLabel>
+      <name></name>
+      <automaticLink>false</automaticLink>
+      <defaultLink>false</defaultLink>
+      <type>0</type>
+    </ProcessLink>
+    <ProcessLink>
+      <processLinkPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <linkSequence>21</linkSequence>
+      </processLinkPK>
+      <actionLabel></actionLabel>
+      <returnPermited>false</returnPermited>
+      <initialStateSequence>11</initialStateSequence>
+      <finalStateSequence>9</finalStateSequence>
+      <returnLabel></returnLabel>
+      <name></name>
+      <automaticLink>false</automaticLink>
+      <defaultLink>false</defaultLink>
+      <type>0</type>
+    </ProcessLink>
+  </list>
+  <list/>
+  <list>
+    <WorkflowProcessEvent>
+      <workflowProcessEventPK>
+        <companyId>1</companyId>
+        <eventId>beforeTaskSave</eventId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+      </workflowProcessEventPK>
+      <eventDescription>var ATIVIDADES = {&#xd;
+    INICIO: 7,&#xd;
+    INICIO_0: 0,&#xd;
+    APROVACAO_ENGENHEIRO: 8,&#xd;
+    APROVACAO_CONTABILIDADE: 6,&#xd;
+};&#xd;
+&#xd;
+function beforeTaskSave(colleagueId, nextSequenceId, userList) {&#xd;
+    var atividade = getValue(&quot;WKCurrentState&quot;);&#xd;
+    var FundoFixo = hAPI.getCardValue(&quot;campoFundoFixoDto&quot;);&#xd;
+    var modalidade = hAPI.getCardValue(&quot;modalidade&quot;);&#xd;
+    var tipo = hAPI.getCardValue(&quot;tipo&quot;);&#xd;
+    var attachments = hAPI.listAttachments();&#xd;
+    var decisaoAprovar = hAPI.getCardValue(&quot;aprovacao&quot;);&#xd;
+    var codigoFFCXCuritiba = &quot;000557&quot;;&#xd;
+&#xd;
+    if (atividade == ATIVIDADES.INICIO_0 || atividade == ATIVIDADES.INICIO) {&#xd;
+        if (modalidade == &quot;Provisao&quot;) {&#xd;
+            insereProvisao();&#xd;
+        }&#xd;
+        if (modalidade == &quot;Recebimento&quot;) {&#xd;
+            if (attachments.size() &lt; 1 &amp;&amp; FundoFixo != codigoFFCXCuritiba) {&#xd;
+                //Para a Modalidade Recebimento, é necessário anexar a NF na aba Anexos para os casos que o FFCX não seja a Matriz&#xd;
+                throw &quot;&lt;b&gt;Favor anexar Notas Fiscais&lt;/b&gt;&quot;;&#xd;
+            }&#xd;
+&#xd;
+            var obj = buscaIdmovNumeroSerieChaveAcessoDoMovimento(tipo);&#xd;
+            var wsReport = geraRelatorioNoRM(obj);&#xd;
+&#xd;
+            if (wsReport.values[0][0] == true) {&#xd;
+                var resultado = wsReport.values[0][1];&#xd;
+                CriaDocumentoNoGED_AnexaDocumentoDoGEDnoProcesso(resultado, obj.IDMOV);&#xd;
+            }&#xd;
+        }&#xd;
+    }&#xd;
+&#xd;
+    if (FundoFixo == codigoFFCXCuritiba &amp;&amp; atividade == ATIVIDADES.INICIO) {&#xd;
+        /*&#xd;
+         * Caso o fundo fixo seja Matriz Curitiba, define as variáveis para que realize a integração com o RM no inicío da solicitação&#xd;
+         * Sem precisar passar pela aprovação do Engenheiro e da Contabilidade&#xd;
+         */&#xd;
+        atividade = ATIVIDADES.APROVACAO_CONTABILIDADE;&#xd;
+        decisaoAprovar = &quot;sim&quot;;&#xd;
+    }&#xd;
+&#xd;
+    if (modalidade == &quot;Recebimento&quot; &amp;&amp; decisaoAprovar != &quot;sim&quot;) {&#xd;
+        enviaEmailReprovacao();&#xd;
+    }&#xd;
+&#xd;
+    if (modalidade == &quot;Recebimento&quot; &amp;&amp; atividade == ATIVIDADES.APROVACAO_CONTABILIDADE &amp;&amp; decisaoAprovar == &quot;sim&quot;) {&#xd;
+        var formaPgtoAntigo = &quot;&quot;;&#xd;
+        var formaPgtoAtual = hAPI.getCardValue(&quot;formaPagamento&quot;);&#xd;
+        log.error(&quot;A forma de pagamento eh: &quot; + formaPgtoAntigo + &quot;e a atual eh: &quot; + formaPgtoAtual);&#xd;
+        if (formaPgtoAntigo != formaPgtoAtual) {&#xd;
+        }&#xd;
+        alteraFormaDePagamento();&#xd;
+&#xd;
+        faturaMovimento();&#xd;
+        enviaEmailAprovacao();&#xd;
+    }&#xd;
+}&#xd;
+&#xd;
+function montaXMLatualizaMovimento() {&#xd;
+    var formaPgto = hAPI.getCardValue(&quot;formaPagamento&quot;);&#xd;
+    var condicaoPag = hAPI.getCardValue(&quot;condicaoPagamento&quot;);&#xd;
+&#xd;
+    var newXml = &quot;&quot;;&#xd;
+    var arrMovs = hAPI.getCardValue(&quot;valuesRecebimento&quot;);&#xd;
+    log.error(&quot;o valor de arrMovs: &quot; + arrMovs);&#xd;
+&#xd;
+    try {&#xd;
+        var jsonExportarRm1207 = JSON.parse(arrMovs);&#xd;
+        log.error(&quot;o valor de jsonExportarRm1207: &quot; + JSON.stringify(jsonExportarRm1207));&#xd;
+    } catch (e) {&#xd;
+        log.error(&quot;Erro ao fazer parse de arrMovs: &quot; + e.message);&#xd;
+        return null;&#xd;
+    }&#xd;
+&#xd;
+    var coligada = hAPI.getCardValue(&quot;coligada&quot;);&#xd;
+    var tipo = hAPI.getCardValue(&quot;tipo&quot;);&#xd;
+    var motivoReembolso = hAPI.getCardValue(&quot;motivoReembolsoDto&quot;);&#xd;
+&#xd;
+    newXml = &quot;&quot;;&#xd;
+    newXml += &quot;&lt;MovMovimento&gt;&quot;;&#xd;
+&#xd;
+    for (var i = 0; i &lt; jsonExportarRm1207.length; i++) {&#xd;
+        if (i == 0) {&#xd;
+            newXml += &quot;&lt;TMOV&gt;&quot;;&#xd;
+            newXml += &quot;&lt;CODCOLIGADA&gt;&quot; + coligada + &quot;&lt;/CODCOLIGADA&gt;&quot;;&#xd;
+            newXml += &quot;&lt;IDMOV&gt;&quot; + jsonExportarRm1207[i].values.IDMOV + &quot;&lt;/IDMOV&gt;&quot;;&#xd;
+            if (coligada == 12 &amp;&amp; tipo == &quot;R.D.O&quot;) {&#xd;
+                newXml += &quot;&lt;CODTB1FLX&gt;009&lt;/CODTB1FLX&gt;&quot;;&#xd;
+            } else {&#xd;
+                newXml += &quot;&lt;CODTB1FLX&gt;&quot; + formaPgto + &quot;&lt;/CODTB1FLX&gt;&quot;;&#xd;
+            }&#xd;
+            newXml += &quot;&lt;CODCPG&gt;&quot; + condicaoPag + &quot;&lt;/CODCPG&gt;&quot;;&#xd;
+            newXml += &quot;&lt;HISTORICOCURTO&gt;&quot; + motivoReembolso + &quot;&lt;/HISTORICOCURTO&gt;&quot;;&#xd;
+            newXml += &quot;&lt;/TMOV&gt;&quot;;&#xd;
+        }&#xd;
+    }&#xd;
+    newXml += &quot;&lt;/MovMovimento&gt;&quot;;&#xd;
+    log.info(&quot;atualiza movimento valor de newxml: &quot; + newXml);&#xd;
+    return newXml;&#xd;
+}&#xd;
+&#xd;
+function createInsertXML(codtmv, motivoReembolso) {&#xd;
+    var IdMovVerif = hAPI.getCardValue(&quot;IdMovimento&quot;);&#xd;
+    var NumeroMovVerif = hAPI.getCardValue(&quot;NumeroMovimento&quot;);&#xd;
+    var FundoFixoVerif = hAPI.getCardValue(&quot;campoFundoFixoDto&quot;);&#xd;
+    var Filial = hAPI.getCardValue(&quot;campoFilialDto&quot;);&#xd;
+    var codLocalEstoque = hAPI.getCardValue(&quot;selectLocalEstoque&quot;);&#xd;
+    var jsonExportarRm = hAPI.getCardValue(&quot;codList&quot;);&#xd;
+    var tipo = hAPI.getCardValue(&quot;tipo&quot;);&#xd;
+    var modalidade = hAPI.getCardValue(&quot;modalidade&quot;);&#xd;
+    jsonExportarRm = JSON.parse(jsonExportarRm);&#xd;
+    var coligadaXML = hAPI.getCardValue(&quot;coligada&quot;);&#xd;
+    var motivoReembolsoDto = hAPI.getCardValue(&quot;motivoReembolsoDto&quot;);&#xd;
+&#xd;
+    var xml =&#xd;
+        &quot;&lt;MovRM&gt;\&#xd;
+            &lt;TMOV&gt;\&#xd;
+            &lt;CODCOLIGADA&gt;&quot; +&#xd;
+        coligadaXML +&#xd;
+        &quot;&lt;/CODCOLIGADA&gt;\&#xd;
+            &quot;;&#xd;
+&#xd;
+    if (IdMovVerif == &quot;&quot;) {&#xd;
+        xml +=&#xd;
+            &quot;&lt;IDMOV&gt;-1&lt;/IDMOV&gt;\&#xd;
+	            &lt;NUMEROMOV&gt;-1&lt;/NUMEROMOV&gt;&quot;;&#xd;
+    } else {&#xd;
+        xml +=&#xd;
+            &quot;&lt;IDMOV&gt;&quot; +&#xd;
+            IdMovVerif +&#xd;
+            &quot;&lt;/IDMOV&gt;\&#xd;
+	            &lt;NUMEROMOV&gt;&quot; +&#xd;
+            NumeroMovVerif +&#xd;
+            &quot;&lt;/NUMEROMOV&gt;&quot;;&#xd;
+    }&#xd;
+    if (motivoReembolso != &quot;&quot;) {&#xd;
+        xml += &quot;&lt;HISTORICOCURTO&gt;&quot; + motivoReembolso + &quot;&lt;/HISTORICOCURTO&gt;&quot;;&#xd;
+    } else {&#xd;
+        xml += &quot;&lt;HISTORICOCURTO&gt;&quot; + motivoReembolsoDto + &quot;&lt;/HISTORICOCURTO&gt;&quot;;&#xd;
+    }&#xd;
+    xml +=&#xd;
+        &quot;\&#xd;
+                &lt;CODFILIAL&gt;&quot; +&#xd;
+        Filial +&#xd;
+        &quot;&lt;/CODFILIAL&gt;\&#xd;
+                &lt;CODCFO&gt;&quot; +&#xd;
+        FundoFixoVerif +&#xd;
+        &quot;&lt;/CODCFO&gt;\&#xd;
+                &lt;CODTMV&gt;&quot; +&#xd;
+        codtmv +&#xd;
+        &quot;&lt;/CODTMV&gt;\&#xd;
+                &lt;TIPO&gt;A&lt;/TIPO&gt;\&#xd;
+                &lt;STATUS&gt;A&lt;/STATUS&gt;\&#xd;
+                &lt;CODMOEVALORLIQUIDO&gt;R$&lt;/CODMOEVALORLIQUIDO&gt;\&#xd;
+                &lt;CODCFOAUX&gt;&quot; +&#xd;
+        FundoFixoVerif +&#xd;
+        &quot;&lt;/CODCFOAUX&gt;\&#xd;
+                &lt;CODCOLCFO&gt;0&lt;/CODCOLCFO&gt;\&#xd;
+                &lt;INTEGRAAPLICACAO&gt;T&lt;/INTEGRAAPLICACAO&gt;\&#xd;
+                &lt;CODCOLIGADA1&gt;&quot; +&#xd;
+        coligadaXML +&#xd;
+        &quot;&lt;/CODCOLIGADA1&gt;\&#xd;
+                &lt;CODCPG&gt;&quot; +&#xd;
+        (coligadaXML == 12 &amp;&amp; tipo == &quot;R.D.O&quot; ? &quot;009&quot; : coligadaXML == 2 &amp;&amp; tipo == &quot;Fundo Fixo&quot; ? &quot;002&quot; : &quot;001&quot;) +&#xd;
+        &quot;&lt;/CODCPG&gt;\&#xd;
+                &lt;CODLOC&gt;&quot; +&#xd;
+        codLocalEstoque +&#xd;
+        &quot;&lt;/CODLOC&gt;\&#xd;
+            &lt;/TMOV&gt;\&#xd;
+            &quot;;&#xd;
+&#xd;
+    for (i = 0; i &lt; jsonExportarRm.length; i++) {&#xd;
+        var Fornecedor = jsonExportarRm[i].fornecedor.trim();&#xd;
+        log.info(&quot;valor de fornecedor: &quot; + Fornecedor);&#xd;
+        if (Fornecedor.indexOf(&quot;&amp;&quot;) !== -1) {&#xd;
+            Fornecedor = Fornecedor.split(&quot;&amp;&quot;).join(&quot;&amp;amp;&quot;);&#xd;
+        }&#xd;
+        xml +=&#xd;
+            &quot;\&#xd;
+            &lt;TITMMOV&gt;\&#xd;
+	            &lt;CODCOLIGADA&gt;&quot; +&#xd;
+            coligadaXML +&#xd;
+            &quot;&lt;/CODCOLIGADA&gt;\&#xd;
+	            &lt;NSEQITMMOV&gt;&quot; +&#xd;
+            (i + 1) +&#xd;
+            &quot;&lt;/NSEQITMMOV&gt;&quot;;&#xd;
+        if (IdMovVerif == &quot;&quot;) {&#xd;
+            xml += &quot;&lt;IDMOV&gt;-1&lt;/IDMOV&gt;&quot;;&#xd;
+        } else {&#xd;
+            xml += &quot;&lt;IDMOV&gt;&quot; + IdMovVerif + &quot;&lt;/IDMOV&gt;&quot;;&#xd;
+        }&#xd;
+        xml +=&#xd;
+            &quot;\&#xd;
+	            &lt;HISTORICOCURTO&gt; &quot; +&#xd;
+            Fornecedor +&#xd;
+            &quot;&lt;/HISTORICOCURTO&gt;\&#xd;
+	            &lt;IDPRD&gt;&quot; +&#xd;
+            jsonExportarRm[i].codigoProduto +&#xd;
+            &quot;&lt;/IDPRD&gt;\&#xd;
+	            &lt;CODIGOPRD&gt;&quot; +&#xd;
+            jsonExportarRm[i].idProduto +&#xd;
+            &quot;&lt;/CODIGOPRD&gt;\&#xd;
+	            &lt;NOMEFANTASIA&gt;&quot; +&#xd;
+            jsonExportarRm[i].nomeFantasia +&#xd;
+            &quot;&lt;/NOMEFANTASIA&gt;\&#xd;
+	            &lt;QUANTIDADE&gt;1&lt;/QUANTIDADE&gt;\&#xd;
+	            &lt;CODTB1FLX&gt;&quot; +&#xd;
+            hAPI.getCardValue(&quot;formaPagamento&quot;) +&#xd;
+            &quot;&lt;/CODTB1FLX&gt;\&#xd;
+	            &lt;PRECOUNITARIO&gt;&quot; +&#xd;
+            jsonExportarRm[i].valor +&#xd;
+            &quot;&lt;/PRECOUNITARIO&gt;\&#xd;
+	            &lt;CODUND&gt;&quot; +&#xd;
+            jsonExportarRm[i].unidade +&#xd;
+            &quot;&lt;/CODUND&gt;\&#xd;
+	            &lt;CODCCUSTO&gt; &quot; +&#xd;
+            jsonExportarRm[i].codCC +&#xd;
+            &quot;&lt;/CODCCUSTO&gt;\&#xd;
+	            &lt;CODLOC&gt;&quot; +&#xd;
+            codLocalEstoque +&#xd;
+            &quot;&lt;/CODLOC&gt;\&#xd;
+	            &lt;VALORUNITARIO&gt;&quot; +&#xd;
+            jsonExportarRm[i].valor +&#xd;
+            &quot;&lt;/VALORUNITARIO&gt;\&#xd;
+	            &lt;CODTB1FAT&gt;&quot; +&#xd;
+            jsonExportarRm[i].codTb1Fat +&#xd;
+            &quot;&lt;/CODTB1FAT&gt;\&#xd;
+            &lt;/TITMMOV&gt;\&#xd;
+            &lt;TITMMOVRATCCU&gt;\&#xd;
+            &quot;;&#xd;
+        if (IdMovVerif == &quot;&quot;) {&#xd;
+            xml += &quot;&lt;IDMOV&gt;-1&lt;/IDMOV&gt;&quot;;&#xd;
+        } else {&#xd;
+            xml += &quot;&lt;IDMOV&gt;&quot; + IdMovVerif + &quot;&lt;/IDMOV&gt;&quot;;&#xd;
+        }&#xd;
+        xml +=&#xd;
+            &quot;&lt;CODCOLIGADA&gt;&quot; +&#xd;
+            coligadaXML +&#xd;
+            &quot;&lt;/CODCOLIGADA&gt;\&#xd;
+	            &lt;NSEQITMMOV&gt;&quot; +&#xd;
+            (i + 1) +&#xd;
+            &quot;&lt;/NSEQITMMOV&gt;\&#xd;
+	            &lt;CODCCUSTO&gt;&quot; +&#xd;
+            jsonExportarRm[i].codCC +&#xd;
+            &quot;&lt;/CODCCUSTO&gt;\&#xd;
+	            &lt;VALOR&gt;&quot; +&#xd;
+            jsonExportarRm[i].valor +&#xd;
+            &quot;&lt;/VALOR&gt;\&#xd;
+	            &lt;IDMOVRATCCU&gt;-1&lt;/IDMOVRATCCU&gt;\&#xd;
+            &lt;/TITMMOVRATCCU&gt;\&#xd;
+	            &quot;;&#xd;
+        for (j = 0; j &lt; jsonExportarRm[i].depart.length; j++) {&#xd;
+            xml +=&#xd;
+                &quot;\&#xd;
+                &lt;TITMMOVRATDEP&gt;\&#xd;
+	                &lt;CODCOLIGADA&gt;&quot; +&#xd;
+                coligadaXML +&#xd;
+                &quot;&lt;/CODCOLIGADA&gt;&quot;;&#xd;
+            if (IdMovVerif == &quot;&quot;) {&#xd;
+                xml += &quot;&lt;IDMOV&gt;-1&lt;/IDMOV&gt;&quot;;&#xd;
+            } else {&#xd;
+                xml += &quot;&lt;IDMOV&gt;&quot; + IdMovVerif + &quot;&lt;/IDMOV&gt;&quot;;&#xd;
+            }&#xd;
+            xml +=&#xd;
+                &quot;\&#xd;
+	                &lt;CODFILIAL&gt;&quot; +&#xd;
+                Filial +&#xd;
+                &quot;&lt;/CODFILIAL&gt;\&#xd;
+	                &lt;NSEQITMMOV&gt;&quot; +&#xd;
+                (i + 1) +&#xd;
+                &quot;&lt;/NSEQITMMOV&gt;\&#xd;
+	                &lt;CODDEPARTAMENTO&gt;&quot; +&#xd;
+                jsonExportarRm[i].depart[j].departamento +&#xd;
+                &quot;&lt;/CODDEPARTAMENTO&gt;\&#xd;
+	                &lt;VALOR&gt;&quot; +&#xd;
+                jsonExportarRm[i].depart[j].valorDepartamento +&#xd;
+                &quot;&lt;/VALOR&gt;\&#xd;
+                &lt;/TITMMOVRATDEP&gt;\&#xd;
+                &quot;;&#xd;
+        }&#xd;
+    }&#xd;
+    xml += &quot;&lt;/MovRM&gt;&quot;;&#xd;
+&#xd;
+    log.info(&quot;tester XML MOV: &quot; + xml);&#xd;
+    return xml;&#xd;
+}&#xd;
+&#xd;
+function createReceiptXML(codtmv, codtmvDestiny) {&#xd;
+    var usuario = hAPI.getCardValue(&quot;usuarioInicial&quot;);&#xd;
+    if (usuario == &quot;ademir.rodrigues&quot;) {&#xd;
+        usuario = &quot;Ademir&quot;;&#xd;
+    }&#xd;
+&#xd;
+    usuario = &quot;fluig.financeiro&quot;;&#xd;
+    var jsonExportarRm = hAPI.getCardValue(&quot;valuesRecebimento&quot;);&#xd;
+    jsonExportarRm = JSON.parse(jsonExportarRm);&#xd;
+&#xd;
+    var dataAtual;&#xd;
+    var aprovacaoContabilidade = hAPI.getCardValue(&quot;aprovacaoContabilidade&quot;);&#xd;
+    var decisaoFaturamentoSim = hAPI.getCardValue(&quot;decisaoFaturamentoSim&quot;);&#xd;
+&#xd;
+    var coligada = hAPI.getCardValue(&quot;coligada&quot;);&#xd;
+&#xd;
+    if (decisaoFaturamentoSim == &quot;sim&quot;) {&#xd;
+        var dataAtual = hAPI.getCardValue(&quot;dataFaturamento&quot;);&#xd;
+    } else if (aprovacaoContabilidade == &quot;sim&quot;) {&#xd;
+        var dataAtual = hAPI.getCardValue(&quot;DataMovFaturado&quot;);&#xd;
+    }&#xd;
+&#xd;
+    log.error(&quot;a data que ta eh&quot; + dataAtual + &quot;!!&quot;);&#xd;
+&#xd;
+    var newXml = &quot;&quot;;&#xd;
+    if (jsonExportarRm.length &gt; 0) {&#xd;
+        newXml =&#xd;
+            &quot;&lt;MovFaturamentoProcParams&gt;\&#xd;
+            &lt;movCopiaFatPar&gt;\&#xd;
+            &lt;CodColigada&gt;&quot; +&#xd;
+            coligada +&#xd;
+            &quot;&lt;/CodColigada&gt;\&#xd;
+            &lt;CodSistema&gt;T&lt;/CodSistema&gt;\&#xd;
+            &lt;CodTmvDestino&gt;&quot; +&#xd;
+            codtmvDestiny +&#xd;
+            &quot;&lt;/CodTmvDestino&gt;\&#xd;
+            &lt;CodTmvOrigem&gt;&quot; +&#xd;
+            codtmv +&#xd;
+            &quot;&lt;/CodTmvOrigem&gt;\&#xd;
+            &lt;CodUsuario&gt;&quot; +&#xd;
+            usuario +&#xd;
+            &quot;&lt;/CodUsuario&gt;\&#xd;
+            &lt;IdMov&gt;\&#xd;
+                &lt;int&gt;&quot; +&#xd;
+            jsonExportarRm[0].values.IDMOV +&#xd;
+            &quot;&lt;/int&gt;\&#xd;
+            &lt;/IdMov&gt;\&#xd;
+            &lt;dataBase&gt;&quot; +&#xd;
+            dataAtual +&#xd;
+            &quot;&lt;/dataBase&gt;\&#xd;
+            &lt;dataEmissao&gt;&quot; +&#xd;
+            dataAtual +&#xd;
+            &quot;&lt;/dataEmissao&gt;\&#xd;
+            &lt;dataExtra1&gt;&quot; +&#xd;
+            dataAtual +&#xd;
+            &quot;&lt;/dataExtra1&gt;\&#xd;
+            &lt;TipoFaturamento&gt;1&lt;/TipoFaturamento&gt;\&#xd;
+            &lt;efeitoPedidoFatAutomatico&gt;2&lt;/efeitoPedidoFatAutomatico&gt;\&#xd;
+            &lt;listaMovItemFatAutomatico&gt;&quot;;&#xd;
+    }&#xd;
+&#xd;
+    for (z = 0; z &lt; jsonExportarRm.length; z++) {&#xd;
+        var idMovimento = jsonExportarRm[z].values.IDMOV;&#xd;
+        var numSequencia = jsonExportarRm[z].values.NSEQITMMOV;&#xd;
+&#xd;
+        newXml +=&#xd;
+            &quot;&lt;MovItemFatAutomatico&gt;\&#xd;
+            &lt;CodColigada&gt;&quot; +&#xd;
+            coligada +&#xd;
+            &quot;&lt;/CodColigada&gt;\&#xd;
+            &lt;Checked&gt;1&lt;/Checked&gt;\&#xd;
+            &lt;IdMov&gt;&quot; +&#xd;
+            idMovimento +&#xd;
+            &quot;&lt;/IdMov&gt;\&#xd;
+            &lt;NSeqItmMov&gt;&quot; +&#xd;
+            numSequencia +&#xd;
+            &quot;&lt;/NSeqItmMov&gt;\&#xd;
+            &lt;Quantidade&gt;1&lt;/Quantidade&gt;\&#xd;
+            &lt;/MovItemFatAutomatico&gt;&quot;;&#xd;
+    }&#xd;
+&#xd;
+    if (jsonExportarRm.length &gt; 0) {&#xd;
+        newXml +=&#xd;
+            &quot;&lt;/listaMovItemFatAutomatico&gt;\&#xd;
+            &lt;serie&gt;1&lt;/serie&gt;\&#xd;
+            &lt;numeroMov&gt;&quot; +&#xd;
+            jsonExportarRm[0].values.NUMEROMOV +&#xd;
+            &quot;&lt;/numeroMov&gt;\&#xd;
+            &lt;realizaBaixaPedido&gt;true&lt;/realizaBaixaPedido&gt;\&#xd;
+        &lt;/movCopiaFatPar&gt;\&#xd;
+        &lt;/MovFaturamentoProcParams&gt;&quot;;&#xd;
+    }&#xd;
+    return newXml;&#xd;
+}&#xd;
+&#xd;
+function insereProvisao() {&#xd;
+    try {&#xd;
+        var motivoReembolso;&#xd;
+        var viagemCorporativa = hAPI.getCardValue(&quot;corporativaDto&quot;) == &quot;sim&quot; ? true : false;&#xd;
+        var viagemFamiliar = hAPI.getCardValue(&quot;familiarDto&quot;) == &quot;sim&quot; ? true : false;&#xd;
+        &#xd;
+        if (viagemCorporativa == true) {&#xd;
+            motivoReembolso = &quot;Viagem Corporativa&quot;;&#xd;
+        } else if (viagemFamiliar == true) {&#xd;
+            motivoReembolso = &quot;Visita Familiar&quot;;&#xd;
+        } else {&#xd;
+            motivoReembolso = &quot;&quot;;&#xd;
+        }&#xd;
+&#xd;
+        var tipo = hAPI.getCardValue(&quot;tipo&quot;);&#xd;
+        var coligada = hAPI.getCardValue(&quot;coligada&quot;);&#xd;
+&#xd;
+        if (tipo == &quot;R.D.O&quot;) {&#xd;
+            var codtmv = &quot;1.1.09&quot;;&#xd;
+            var xmlStructure = createInsertXML(codtmv, motivoReembolso);&#xd;
+&#xd;
+            var responseData = DatasetFactory.getDataset(&#xd;
+                &quot;ImportaMovRM&quot;,&#xd;
+                null,&#xd;
+                [&#xd;
+                    DatasetFactory.createConstraint(&quot;xmlMov&quot;, xmlStructure, null, ConstraintType.MUST),&#xd;
+                    DatasetFactory.createConstraint(&quot;codColigada&quot;, coligada, null, ConstraintType.MUST),&#xd;
+                ],&#xd;
+                null&#xd;
+            );&#xd;
+&#xd;
+            if (!responseData || responseData == &quot;&quot; || responseData == null) {&#xd;
+                throw &quot;Houve um erro na comunicação com o webservice. Tente novamente!&quot;;&#xd;
+            } else {&#xd;
+                if (responseData.values[0][0] == &quot;false&quot;) {&#xd;
+                    throw &quot;Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: &quot; + responseData.values[0][1];&#xd;
+                } else if (responseData.values[0][0] == &quot;true&quot;) {&#xd;
+                    responseData.values[0][2];&#xd;
+                }&#xd;
+            }&#xd;
+        } else if (tipo == &quot;Fundo Fixo&quot;) {&#xd;
+            var codtmv = &quot;1.1.03&quot;;&#xd;
+            var xmlStructure = createInsertXML(codtmv, motivoReembolso);&#xd;
+&#xd;
+            var responseData = DatasetFactory.getDataset(&#xd;
+                &quot;ImportaMovRM&quot;,&#xd;
+                null,&#xd;
+                [&#xd;
+                    DatasetFactory.createConstraint(&quot;xmlMov&quot;, xmlStructure, null, ConstraintType.MUST),&#xd;
+                    DatasetFactory.createConstraint(&quot;codColigada&quot;, coligada, null, ConstraintType.MUST),&#xd;
+                ],&#xd;
+                null&#xd;
+            );&#xd;
+&#xd;
+            if (!responseData || responseData == &quot;&quot; || responseData == null) {&#xd;
+                throw &quot;Houve um erro na comunicação com o webservice. Tente novamente!&quot;;&#xd;
+            } else {&#xd;
+                if (responseData.values[0][0] == &quot;false&quot;) {&#xd;
+                    throw &quot;Erro ao gerar movimento. Favor entrar em contato com o administrador do sistema. Mensagem: &quot; + responseData.values[0][1];&#xd;
+                } else if (responseData.values[0][0] == &quot;true&quot;) {&#xd;
+                    responseData.values[0][2];&#xd;
+                }&#xd;
+            }&#xd;
+        }&#xd;
+    } catch (error) {&#xd;
+        throw error;&#xd;
+    }&#xd;
+}&#xd;
+&#xd;
+function buscaIdmovNumeroSerieChaveAcessoDoMovimento(tipo) {&#xd;
+    try {&#xd;
+        var OPERACAO = tipo == &quot;Fundo Fixo&quot; ? &quot;ShowMovAprovacao&quot; : &quot;ShowMovAprovacaoRDO&quot;;&#xd;
+        var IdMovimento = hAPI.getCardValue(&quot;IdMovimento&quot;);&#xd;
+&#xd;
+        var dsInformacoesDoMovimento = DatasetFactory.getDataset(&#xd;
+            &quot;DatasetFFCXprod&quot;,&#xd;
+            null,&#xd;
+            [&#xd;
+                DatasetFactory.createConstraint(&quot;IDMOV&quot;, IdMovimento, IdMovimento, ConstraintType.MUST),&#xd;
+                DatasetFactory.createConstraint(&quot;OPERACAO&quot;, OPERACAO, OPERACAO, ConstraintType.MUST),&#xd;
+            ],&#xd;
+            null&#xd;
+        );&#xd;
+&#xd;
+        var parametroIdmov = dsInformacoesDoMovimento.values[0][0];&#xd;
+        var numeroSerie = dsInformacoesDoMovimento.values[0][4];&#xd;
+        var chaveAcesso = dsInformacoesDoMovimento.values[0][5];&#xd;
+&#xd;
+        return {&#xd;
+            IDMOV: parametroIdmov,&#xd;
+            NUMEROSERIE: numeroSerie,&#xd;
+            CHAVEACESSO: chaveAcesso,&#xd;
+        };&#xd;
+    } catch (error) {&#xd;
+        throw error;&#xd;
+    }&#xd;
+}&#xd;
+&#xd;
+function geraRelatorioNoRM(obj) {&#xd;
+    try {&#xd;
+        var coligada = hAPI.getCardValue(&quot;coligada&quot;);&#xd;
+        var tipo = hAPI.getCardValue(&quot;tipo&quot;);&#xd;
+&#xd;
+        // TODO - Verificar como está buscando e o uso do numeroMov&#xd;
+        // Não encontrei no código original a definição da variável&#xd;
+        var numeroMov;&#xd;
+&#xd;
+        var datasetReport = tipo == &quot;Fundo Fixo&quot; ? &quot;GerarRelatorioProvisao&quot; : &quot;GerarRelatorioRDO&quot;;&#xd;
+        var wsReport = DatasetFactory.getDataset(&#xd;
+            datasetReport,&#xd;
+            null,&#xd;
+            [&#xd;
+                DatasetFactory.createConstraint(&quot;IDMOV&quot;, obj.IDMOV, obj.IDMOV, ConstraintType.MUST),&#xd;
+                DatasetFactory.createConstraint(&quot;CODCOLIGADA&quot;, coligada, coligada, ConstraintType.MUST),&#xd;
+                DatasetFactory.createConstraint(&quot;NUMEROMOV&quot;, numeroMov, numeroMov, ConstraintType.MUST),&#xd;
+                DatasetFactory.createConstraint(&quot;SERIE&quot;, obj.NUMEROSERIE, obj.NUMEROSERIE, ConstraintType.MUST),&#xd;
+                DatasetFactory.createConstraint(&quot;CHAVEACESSONFE&quot;, obj.CHAVEACESSO, obj.CHAVEACESSO, ConstraintType.MUST),&#xd;
+            ],&#xd;
+            null&#xd;
+        );&#xd;
+&#xd;
+        return wsReport;&#xd;
+    } catch (error) {&#xd;
+        throw error;&#xd;
+    }&#xd;
+}&#xd;
+&#xd;
+function CriaDocumentoNoGED_AnexaDocumentoDoGEDnoProcesso(conteudo, IDMOV) {&#xd;
+    try {&#xd;
+        var processo = parseInt(getValue(&quot;WKNumProces&quot;));&#xd;
+&#xd;
+        var dataset = DatasetFactory.getDataset(&#xd;
+            &quot;CriacaoDocumentosFluig&quot;,&#xd;
+            null,&#xd;
+            [&#xd;
+                DatasetFactory.createConstraint(&quot;processo&quot;, processo, processo, ConstraintType.MUST),&#xd;
+                DatasetFactory.createConstraint(&quot;idRM&quot;, IDMOV, IDMOV, ConstraintType.MUST),&#xd;
+                DatasetFactory.createConstraint(&quot;conteudo&quot;, conteudo, conteudo, ConstraintType.MUST),&#xd;
+            ],&#xd;
+            null&#xd;
+        );&#xd;
+&#xd;
+        if (!dataset || dataset == &quot;&quot; || dataset == null) {&#xd;
+            throw &quot;Houve um erro na comunicação com o webservice de criação de documentos. Tente novamente!&quot;;&#xd;
+        } else {&#xd;
+            if (dataset.values[0][0] == &quot;false&quot;) {&#xd;
+                throw &quot;Erro ao criar arquivo. Favor entrar em contato com o administrador do sistema. Mensagem: &quot; + dataset.values[0][1];&#xd;
+            } else {&#xd;
+                hAPI.attachDocument(dataset.values[0][1]);&#xd;
+            }&#xd;
+        }&#xd;
+    } catch (error) {&#xd;
+        throw error;&#xd;
+    }&#xd;
+}&#xd;
+&#xd;
+function alteraFormaDePagamento() {&#xd;
+    try {&#xd;
+        var coligada = hAPI.getCardValue(&quot;coligada&quot;);&#xd;
+&#xd;
+        var xmlAtualizaMov = montaXMLatualizaMovimento();&#xd;
+&#xd;
+        var retornoAtualizaMovimento = DatasetFactory.getDataset(&#xd;
+            &quot;AtualizaMovimento&quot;,&#xd;
+            null,&#xd;
+            [&#xd;
+                DatasetFactory.createConstraint(&quot;pCodcoligada&quot;, coligada, coligada, ConstraintType.MUST),&#xd;
+                DatasetFactory.createConstraint(&quot;pXML&quot;, xmlAtualizaMov, null, ConstraintType.MUST),&#xd;
+            ],&#xd;
+            null&#xd;
+        );&#xd;
+&#xd;
+        if (!retornoAtualizaMovimento || retornoAtualizaMovimento == &quot;&quot; || retornoAtualizaMovimento == null) {&#xd;
+            throw &quot;Houve um erro na comunicação com o webservice. Tente novamente!&quot;;&#xd;
+        }&#xd;
+&#xd;
+        var FundoFixo = hAPI.getCardValue(&quot;campoFundoFixoDto&quot;);&#xd;
+        if (retornoAtualizaMovimento.values[0][0] == &quot;false&quot; &amp;&amp; FundoFixo != &quot;000557&quot;) {&#xd;
+            throw (&#xd;
+                &quot;Não foi possível atualizar o movimento. Motivo: &quot; +&#xd;
+                retornoAtualizaMovimento.values[0][1] +&#xd;
+                &quot;. Favor verificar as informações ou entrar em contato com o administrador do sistema.&quot;&#xd;
+            );&#xd;
+        }&#xd;
+&#xd;
+        return true;&#xd;
+    } catch (error) {&#xd;
+        throw error;&#xd;
+    }&#xd;
+}&#xd;
+&#xd;
+function faturaMovimento() {&#xd;
+    try {&#xd;
+        var tipo = hAPI.getCardValue(&quot;tipo&quot;);&#xd;
+        var coligada = hAPI.getCardValue(&quot;coligada&quot;);&#xd;
+&#xd;
+        var tiposDeMovimento = {&#xd;
+            &quot;R.D.O&quot;:{&#xd;
+                codigoTipoMovimentoOrigem:&quot;1.1.09&quot;,&#xd;
+                codigoTipoMovimentoDestino:&quot;1.2.10&quot;,&#xd;
+            },&#xd;
+            &quot;Fundo Fixo&quot;:{&#xd;
+                codigoTipoMovimentoOrigem:&quot;1.1.03&quot;,&#xd;
+                codigoTipoMovimentoDestino:&quot;1.2.07&quot;,&#xd;
+            },&#xd;
+        }&#xd;
+&#xd;
+        var codigoTipoMovimentoOrigem = tiposDeMovimento[tipo].codigoTipoMovimentoOrigem;&#xd;
+        var codigoTipoMovimentoDestino = tiposDeMovimento[tipo].codigoTipoMovimentoDestino;&#xd;
+        var xmlFaturaMovimento = createReceiptXML(codigoTipoMovimentoOrigem, codigoTipoMovimentoDestino);&#xd;
+&#xd;
+        var retorno = DatasetFactory.getDataset(&quot;FaturaMovimento&quot;,null,[&#xd;
+                DatasetFactory.createConstraint(&quot;pCodcoligada&quot;, coligada, coligada, ConstraintType.MUST),&#xd;
+                DatasetFactory.createConstraint(&quot;pXML&quot;, xmlFaturaMovimento, xmlFaturaMovimento, ConstraintType.MUST),&#xd;
+            ],null);&#xd;
+&#xd;
+        var FundoFixo = hAPI.getCardValue(&quot;campoFundoFixoDto&quot;);&#xd;
+        if (FundoFixo == &quot;000557&quot;) {&#xd;
+            // Se o FFCX for Matriz, não verifica o retorno do faturamento&#xd;
+            // Necessário verificar a regra de negocio&#xd;
+            return true;&#xd;
+        }&#xd;
+&#xd;
+        if (!retorno || retorno == &quot;&quot; || retorno == null) {&#xd;
+            throw &quot;Houve um erro na comunicação com o webservice. Tente novamente!&quot;;&#xd;
+        } else if (retorno.values[0][0] == &quot;false&quot;) {&#xd;
+            throw (&#xd;
+                &quot;Não foi possível baixar a NF. Motivo: &quot; + retorno.values[0][1] + &quot;. Favor verificar as informações ou entrar em contato com o administrador do sistema.&quot;&#xd;
+            );&#xd;
+        }&#xd;
+    } catch (error) {&#xd;
+        throw error;&#xd;
+    }&#xd;
+}&#xd;
+&#xd;
+// Mail&#xd;
+function enviaEmailAprovacao() {&#xd;
+    try {&#xd;
+        var processo = parseInt(getValue(&quot;WKNumProces&quot;));&#xd;
+        var processoUrl = getServerURL() + &quot;/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=&quot; + processo;&#xd;
+&#xd;
+        var mailAprovado = hAPI.getCardValue(&quot;mail&quot;);&#xd;
+        var engenheiroEmail = hAPI.getCardValue(&quot;emailEngenheiro&quot;);&#xd;
+&#xd;
+        var filial = hAPI.getCardValue(&quot;campoFilialDto&quot;);&#xd;
+        var dataFormatada = hAPI.getCardValue(&quot;DataEmail&quot;);&#xd;
+        var tipo = hAPI.getCardValue(&quot;tipo&quot;);&#xd;
+        var localDeEstoque = hAPI.getCardValue(&quot;selectLocalEstoque&quot;);&#xd;
+        var IdMovimento = hAPI.getCardValue(&quot;IdMovimento&quot;);&#xd;
+&#xd;
+        var jsonExportarRm1207 = hAPI.getCardValue(&quot;valuesRecebimento&quot;);&#xd;
+        jsonExportarRm1207 = JSON.parse(jsonExportarRm1207);&#xd;
+        var valor_total = parseFloat(jsonExportarRm1207[0].values.VALORBRUTO);&#xd;
+&#xd;
+        if (tipo == &quot;Fundo Fixo&quot;) {&#xd;
+            var htmlTemplate1 = &quot;&quot;;&#xd;
+            htmlTemplate1 += &quot;&lt;p class=&apos;DescrMsgForum&apos;&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;   Provisão de Fundo Fixo de Caixa aprovada, Nº &lt;a href=&apos;&quot; + processoUrl + &quot;&apos;target=&apos;_blank&apos;&gt;&quot; + processo + &quot;&lt;/a&gt;.&quot;;&#xd;
+            htmlTemplate1 += &quot;&lt;/p&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;&lt;div class=&apos;DescrMsgForum actions&apos; style=&apos;display:block&apos;&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;   &lt;br /&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;   &lt;div&gt;&lt;b&gt;Tipo:&lt;/b&gt; &quot; + tipo + &quot;&lt;/div&gt;&lt;/br&gt;&lt;/br&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;   &lt;div&gt;&lt;b&gt;Valor:&lt;/b&gt; &quot; + FormataValor(valor_total) + &quot;&lt;/div&gt;&lt;/br&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;   &lt;div&gt;&lt;b&gt;Data:&lt;/b&gt; &quot; + dataFormatada + &quot;&lt;/div&gt;&lt;/br&gt;&lt;/br&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;   &lt;div&gt;&lt;b&gt;Local de Estoque:&lt;/b&gt; &quot; + localDeEstoque + &quot;&lt;/div&gt;&lt;/br&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;   &lt;div&gt;&lt;b&gt;Filial: &lt;/b&gt; &quot; + filial + &quot;&lt;/div&gt; &lt;/br&gt;&lt;/br&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;   &lt;div&gt;&lt;b&gt;Id Movimento: &lt;/b&gt; &quot; + IdMovimento + &quot;&lt;/div&gt;&lt;/br&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;   &lt;div&gt;&lt;b&gt;Nº: &lt;/b&gt; &quot; + hAPI.getCardValue(&quot;NumeroMovimento&quot;) + &quot;&lt;/div&gt;&lt;/br&gt;&lt;/br&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;&lt;/div&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;&lt;br&gt;&quot;;&#xd;
+&#xd;
+            var anexos1 = BuscaAnexosTemplate2();&#xd;
+            if (anexos1 != false &amp;&amp; anexos1 != &quot;&quot;) {&#xd;
+                htmlTemplate1 += &quot;&lt;div&gt;&quot;;&#xd;
+                htmlTemplate1 += &quot;  &lt;p&gt;&quot;;&#xd;
+                htmlTemplate1 += &quot;    &lt;b&gt;Anexos:&lt;/b&gt;&quot;;&#xd;
+                htmlTemplate1 += &quot;    &lt;ul&gt;&quot;;&#xd;
+                htmlTemplate1 += &quot;      &quot; + anexos1;&#xd;
+                htmlTemplate1 += &quot;      &lt;br&gt;&quot;;&#xd;
+                htmlTemplate1 += &quot;    &lt;/ul&gt;&quot;;&#xd;
+                htmlTemplate1 += &quot;  &lt;/p&gt;&quot;;&#xd;
+                htmlTemplate1 += &quot;&lt;/div&gt;&quot;;&#xd;
+            }&#xd;
+&#xd;
+            sendCustomEmail(mailAprovado, engenheiroEmail, &quot;[FLUIG] PROVISÃO Aprovada  &quot; + processo, htmlTemplate1);&#xd;
+            sendCustomEmail(mailAprovado, &quot;contabilidade@castilho.com.br&quot;, &quot;[FLUIG] PROVISÃO Aprovada  &quot; + processo, htmlTemplate1);&#xd;
+        } else if (tipo == &quot;R.D.O&quot;) {&#xd;
+            var motivoreembolso = hAPI.getCardValue(&quot;motivoReembolsoDto&quot;);&#xd;
+            var htmlTemplate1 = &quot;&quot;;&#xd;
+            htmlTemplate1 += &quot;&lt;p class=&apos;DescrMsgForum&apos;&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;   R.D.O aprovada, Nº &lt;a href=&apos;&quot; + processoUrl + &quot;&apos;target=&apos;_blank&apos;&gt;&quot; + processo + &quot;&lt;/a&gt;.&quot;;&#xd;
+            htmlTemplate1 += &quot;&lt;/p&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;&lt;div class=&apos;DescrMsgForum actions&apos; style=&apos;display:block&apos;&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;  &lt;br /&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;  &lt;div&gt;&lt;b&gt;Tipo:&lt;/b&gt; &quot; + tipo + &quot;&lt;/div&gt;&lt;/br&gt;&lt;/br&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;  &lt;div&gt;&lt;b&gt;Valor:&lt;/b&gt; &quot; + FormataValor(valor_total) + &quot;&lt;/div&gt;&lt;/br&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;  &lt;div&gt;&lt;b&gt;Data:&lt;/b&gt; &quot; + dataFormatada + &quot;&lt;/div&gt;&lt;/br&gt;&lt;/br&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;  &lt;div&gt;&lt;b&gt;Local de Estoque:&lt;/b&gt; &quot; + localDeEstoque + &quot;&lt;/div&gt;&lt;/br&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;  &lt;div&gt;&lt;b&gt;Filial: &lt;/b&gt; &quot; + filial + &quot;&lt;/div&gt;&lt;/br&gt;&lt;/br&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;  &lt;div&gt;&lt;b&gt;Id Movimento: &lt;/b&gt; &quot; + IdMovimento + &quot;&lt;/div&gt;&lt;/br&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;  &lt;div&gt;&lt;b&gt;Nº: &lt;/b&gt; &quot; + hAPI.getCardValue(&quot;NumeroMovimento&quot;) + &quot;&lt;/div&gt;&lt;/br&gt;&lt;/br&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;  &lt;div&gt;&lt;b&gt;Motivo do reembolso da despesa: &lt;/b&gt; &quot; + motivoreembolso + &quot;&lt;/div&gt;&lt;/br&gt;&lt;/br&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;&lt;/div&gt;&quot;;&#xd;
+            htmlTemplate1 += &quot;&lt;br&gt;&quot;;&#xd;
+&#xd;
+            var anexos1 = BuscaAnexosTemplate2();&#xd;
+            if (anexos1 != false &amp;&amp; anexos1 != &quot;&quot;) {&#xd;
+                htmlTemplate1 += &quot;&lt;div&gt;&quot;;&#xd;
+                htmlTemplate1 += &quot;  &lt;p&gt;&quot;;&#xd;
+                htmlTemplate1 += &quot;      &lt;b&gt;Anexos:&lt;/b&gt;&quot;;&#xd;
+                htmlTemplate1 += &quot;      &lt;ul&gt;&quot;;&#xd;
+                htmlTemplate1 += &quot;          &quot; + anexos1;&#xd;
+                htmlTemplate1 += &quot;          &lt;br&gt;&quot;;&#xd;
+                htmlTemplate1 += &quot;      &lt;/ul&gt;&quot;;&#xd;
+                htmlTemplate1 += &quot;  &lt;/p&gt;&quot;;&#xd;
+                htmlTemplate1 += &quot;&lt;/div&gt;&quot;;&#xd;
+            }&#xd;
+&#xd;
+            sendCustomEmail(mailAprovado, engenheiroEmail, &quot;[FLUIG] PROVISÃO Aprovada  &quot; + processo, htmlTemplate1);&#xd;
+            sendCustomEmail(mailAprovado, &quot;contabilidade@castilho.com.br&quot;, &quot;[FLUIG] PROVISÃO Aprovada  &quot; + processo, htmlTemplate1);&#xd;
+        }&#xd;
+    } catch (error) {&#xd;
+        throw error;&#xd;
+    }&#xd;
+}&#xd;
+function enviaEmailReprovacao() {&#xd;
+    var atividade = getValue(&quot;WKCurrentState&quot;);&#xd;
+    var tipo = hAPI.getCardValue(&quot;tipo&quot;);&#xd;
+    var userEmail = hAPI.getCardValue(&quot;mail&quot;);&#xd;
+    var mailAprovado = hAPI.getCardValue(&quot;mail&quot;);&#xd;
+    var engenheiroEmail = hAPI.getCardValue(&quot;emailEngenheiro&quot;);&#xd;
+    var processo = parseInt(getValue(&quot;WKNumProces&quot;));&#xd;
+    var processoUrl = getServerURL() + &quot;/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=&quot; + processo;&#xd;
+&#xd;
+    if (atividade == ATIVIDADES.APROVACAO_ENGENHEIRO) {&#xd;
+        //Recusado Engenheiro&#xd;
+        if (tipo == &quot;Fundo Fixo&quot;) {&#xd;
+            var htmlTemplateNaoAprovacao =&#xd;
+                &quot;&lt;p class=&apos;DescrMsgForum&apos;&gt;&quot; +&#xd;
+                &quot;Provisão Fundo Fixo de Caixa &lt;b&gt;REPROVADO&lt;/b&gt; pelo(a) Engenheiro(a), &quot; +&#xd;
+                &quot;Nº &lt;a href=&apos;&quot; +&#xd;
+                processoUrl +&#xd;
+                &quot;&apos;target=&apos;_blank&apos;&gt;&quot; +&#xd;
+                processo +&#xd;
+                &quot;&lt;/a&gt;.&quot; +&#xd;
+                &quot;&lt;/p&gt;&quot; +&#xd;
+                &quot;&lt;div class=&apos;DescrMsgForum actions&apos; style=&apos;display:block&apos;&gt;&quot; +&#xd;
+                &quot;&lt;br /&gt;&quot; +&#xd;
+                &quot;&lt;b&gt;Acessar o chamado e verificar as correções a serem efetuados&lt;/b&gt;&lt;/br&gt;&lt;/br&gt;&quot;;&#xd;
+&#xd;
+            sendCustomEmail(mailAprovado, userEmail, &quot;[FLUIG] Provisão RECUSADA  &quot; + processo, htmlTemplateNaoAprovacao);&#xd;
+        } else if (tipo == &quot;R.D.O&quot;) {&#xd;
+            var htmlTemplateNaoAprovacao =&#xd;
+                &quot;&lt;p class=&apos;DescrMsgForum&apos;&gt;&quot; +&#xd;
+                &quot;Despesas de R.D.O &lt;b&gt;REPROVADO&lt;/b&gt; pelo(a) Engenheiro(a),&quot; +&#xd;
+                &quot;Solicitação Nº &lt;a href=&apos;&quot; +&#xd;
+                processoUrl +&#xd;
+                &quot;&apos;target=&apos;_blank&apos;&gt;&quot; +&#xd;
+                processo +&#xd;
+                &quot;&lt;/a&gt;.&quot; +&#xd;
+                &quot;&lt;/p&gt;&quot; +&#xd;
+                &quot;&lt;div class=&apos;DescrMsgForum actions&apos; style=&apos;display:block&apos;&gt;&quot; +&#xd;
+                &quot;&lt;br /&gt;&quot; +&#xd;
+                &quot;&lt;b&gt;Acessar o chamado e verificar as correções a serem efetuadas&lt;/b&gt;&lt;/br&gt;&lt;br/&gt;&lt;/br&gt;&quot;;&#xd;
+&#xd;
+            sendCustomEmail(mailAprovado, userEmail, &quot;[FLUIG] Despesas de R.D.O RECUSADA &quot; + processo, htmlTemplateNaoAprovacao);&#xd;
+        }&#xd;
+    } else if (atividade == ATIVIDADES.APROVACAO_CONTABILIDADE) {&#xd;
+        //Recusado Contabilidade&#xd;
+        if (tipo == &quot;Fundo Fixo&quot;) {&#xd;
+            var htmlTemplateNaoAprovacao =&#xd;
+                &quot;&lt;p class=&apos;DescrMsgForum&apos;&gt;&quot; +&#xd;
+                &quot;Provisão de Fundo Fixo de Caixa &lt;b&gt;REPROVADO&lt;/b&gt; pelo setor Contabilidade,&quot; +&#xd;
+                &quot;Nº &lt;a href=&apos;&quot; +&#xd;
+                processoUrl +&#xd;
+                &quot;&apos;target=&apos;_blank&apos;&gt;&quot; +&#xd;
+                processo +&#xd;
+                &quot;&lt;/a&gt;.&quot; +&#xd;
+                &quot;&lt;/p&gt;&quot; +&#xd;
+                &quot;&lt;div class=&apos;DescrMsgForum actions&apos; style=&apos;display:block&apos;&gt;&quot; +&#xd;
+                &quot;&lt;br /&gt;&quot; +&#xd;
+                &quot;&lt;b&gt;Acessar o chamado e verificar as correções a serem efetuados&lt;/b&gt;&lt;/br&gt;&lt;/br&gt;&quot;;&#xd;
+&#xd;
+            sendCustomEmail(mailAprovado, engenheiroEmail, &quot;[FLUIG] Provisão RECUSADA  &quot; + processo, htmlTemplateNaoAprovacao);&#xd;
+            sendCustomEmail(mailAprovado, userEmail, &quot;[FLUIG] Provisão RECUSADA  &quot; + processo, htmlTemplateNaoAprovacao);&#xd;
+        } else if (tipo == &quot;R.D.O&quot;) {&#xd;
+            var htmlTemplateNaoAprovacao =&#xd;
+                &quot;&lt;p class=&apos;DescrMsgForum&apos;&gt;&quot; +&#xd;
+                &quot;Despesas de R.D.O &lt;b&gt;REPROVADO&lt;/b&gt; pelo setor Contabilidade,&quot; +&#xd;
+                &quot;Solicitação Nº &lt;a href=&apos;&quot; +&#xd;
+                processoUrl +&#xd;
+                &quot;&apos;target=&apos;_blank&apos;&gt;&quot; +&#xd;
+                processo +&#xd;
+                &quot;&lt;/a&gt;.&quot; +&#xd;
+                &quot;&lt;/p&gt;&quot; +&#xd;
+                &quot;&lt;div class=&apos;DescrMsgForum actions&apos; style=&apos;display:block&apos;&gt;&quot; +&#xd;
+                &quot;&lt;br /&gt;&quot; +&#xd;
+                &quot;&lt;b&gt;Acessar o chamado e verificar as correções a serem efetuados&lt;/b&gt;&lt;/br&gt;&lt;/br&gt;&quot;;&#xd;
+&#xd;
+            sendCustomEmail(mailAprovado, engenheiroEmail, &quot;[FLUIG] Despesas de R.D.O RECUSADA  &quot; + processo, htmlTemplateNaoAprovacao);&#xd;
+            sendCustomEmail(mailAprovado, userEmail, &quot;[FLUIG] Despesas de R.D.O RECUSADA  &quot; + processo, htmlTemplateNaoAprovacao);&#xd;
+        }&#xd;
+    }&#xd;
+}&#xd;
+function sendCustomEmail(to, from, subject, htmlBody) {&#xd;
+    var processo = parseInt(getValue(&quot;WKNumProces&quot;));&#xd;
+    var url = getServerURL();&#xd;
+&#xd;
+    log.info(&quot;html envio: &quot; + htmlBody);&#xd;
+    var data = {&#xd;
+        companyId: getValue(&quot;WKCompany&quot;).toString(),&#xd;
+        serviceCode: &quot;ServicoFluig&quot;,&#xd;
+        endpoint: &quot;/api/public/alert/customEmailSender&quot;,&#xd;
+        method: &quot;post&quot;,&#xd;
+        timeoutService: &quot;100&quot;,&#xd;
+        params: {&#xd;
+            to: to,&#xd;
+            from: from,&#xd;
+            subject: subject,&#xd;
+            templateId: &quot;TPL_SUPORTE_TI2&quot;,&#xd;
+            dialectId: &quot;pt_BR&quot;,&#xd;
+            param: {&#xd;
+                CORPO_EMAIL: htmlBody,&#xd;
+                SERVER_URL: url,&#xd;
+                TENANT_ID: &quot;1&quot;,&#xd;
+            },&#xd;
+        },&#xd;
+    };&#xd;
+&#xd;
+    var clientService = fluigAPI.getAuthorizeClientService();&#xd;
+    var vo = clientService.invoke(JSONUtil.toJSON(data));&#xd;
+&#xd;
+    if (vo.getResult() == null || vo.getResult().isEmpty()) {&#xd;
+        throw &quot;Retorno esta vazio&quot;;&#xd;
+    } else {&#xd;
+        log.info(vo.getResult());&#xd;
+    }&#xd;
+}&#xd;
+&#xd;
+// Utils&#xd;
+function getServerURL() {&#xd;
+    return fluigAPI.getPageService();&#xd;
+}&#xd;
+function FormataValor(valor_total) {&#xd;
+    var numero = parseFloat(valor_total);&#xd;
+    numero = numero.toFixed(2).split(&quot;.&quot;);&#xd;
+    numero[0] = &quot;R$&quot; + numero[0].split(/(?=(?:...)*$)/).join(&quot;.&quot;);&#xd;
+    return numero.join(&quot;,&quot;);&#xd;
+}&#xd;
+function BuscaEmailUsuario(usuario) {&#xd;
+    var ds = DatasetFactory.getDataset(&quot;colleague&quot;, null, [DatasetFactory.createConstraint(&quot;colleagueId&quot;, usuario, usuario, ConstraintType.MUST)], null);&#xd;
+    if (ds.values.length &gt; 0) {&#xd;
+        var userEmail = ds.getValue(0, &quot;mail&quot;);&#xd;
+        return userEmail;&#xd;
+    } else {&#xd;
+        return &quot;&quot;;&#xd;
+    }&#xd;
+}&#xd;
+function BuscaAnexosTemplate2() {&#xd;
+    var retorno = &quot;&quot;;&#xd;
+    var docs = hAPI.listAttachments();&#xd;
+&#xd;
+    for (var i = 0; i &lt; docs.size(); i++) {&#xd;
+        var doc = docs.get(i);&#xd;
+        retorno += &quot;&lt;li&gt;&lt;a href=&apos;&quot; + fluigAPI.getDocumentService().getDownloadURL(doc.getDocumentId()) + &quot;&apos;&gt;&quot; + doc.getDocumentDescription() + &quot;&lt;/a&gt;&lt;/li&gt;&quot;;&#xd;
+    }&#xd;
+&#xd;
+    return retorno;&#xd;
+}</eventDescription>
+    </WorkflowProcessEvent>
+  </list>
+  <list/>
+  <list>
+    <SwimLane>
+      <color>FFFFFF</color>
+      <height>346</height>
+      <width>831</width>
+      <positionX>110</positionX>
+      <positionY>75</positionY>
+      <stateName>Fundo Fixo</stateName>
+      <type>1</type>
+      <parentSequence>0</parentSequence>
+      <swimLanePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <sequence>1</sequence>
+      </swimLanePK>
+    </SwimLane>
+    <SwimLane>
+      <color>FFFFA6</color>
+      <height>115</height>
+      <width>801</width>
+      <positionX>140</positionX>
+      <positionY>75</positionY>
+      <stateName>Obra</stateName>
+      <type>2</type>
+      <parentSequence>1</parentSequence>
+      <swimLanePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <sequence>2</sequence>
+      </swimLanePK>
+    </SwimLane>
+    <SwimLane>
+      <color>8AC5FF</color>
+      <height>115</height>
+      <width>801</width>
+      <positionX>140</positionX>
+      <positionY>190</positionY>
+      <stateName>Contabilidade</stateName>
+      <type>2</type>
+      <parentSequence>1</parentSequence>
+      <swimLanePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <sequence>3</sequence>
+      </swimLanePK>
+    </SwimLane>
+    <SwimLane>
+      <color>82b0b7</color>
+      <height>116</height>
+      <width>801</width>
+      <positionX>140</positionX>
+      <positionY>305</positionY>
+      <stateName>Fim</stateName>
+      <type>2</type>
+      <parentSequence>1</parentSequence>
+      <swimLanePK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>1</version>
+        <sequence>4</sequence>
+      </swimLanePK>
+    </SwimLane>
+  </list>
+  <list/>
+  <list/>
+  <list>
+    <ProcessLinkBend>
+      <processLinkBendPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>5</version>
+        <linkSequence>13</linkSequence>
+        <bendSequence>1</bendSequence>
+      </processLinkBendPK>
+      <positionX>540</positionX>
+      <positionY>112</positionY>
+    </ProcessLinkBend>
+    <ProcessLinkBend>
+      <processLinkBendPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>5</version>
+        <linkSequence>14</linkSequence>
+        <bendSequence>1</bendSequence>
+      </processLinkBendPK>
+      <positionX>539</positionX>
+      <positionY>364</positionY>
+    </ProcessLinkBend>
+    <ProcessLinkBend>
+      <processLinkBendPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>5</version>
+        <linkSequence>16</linkSequence>
+        <bendSequence>1</bendSequence>
+      </processLinkBendPK>
+      <positionX>269</positionX>
+      <positionY>129</positionY>
+    </ProcessLinkBend>
+    <ProcessLinkBend>
+      <processLinkBendPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>5</version>
+        <linkSequence>18</linkSequence>
+        <bendSequence>1</bendSequence>
+      </processLinkBendPK>
+      <positionX>269</positionX>
+      <positionY>364</positionY>
+    </ProcessLinkBend>
+    <ProcessLinkBend>
+      <processLinkBendPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>5</version>
+        <linkSequence>19</linkSequence>
+        <bendSequence>1</bendSequence>
+      </processLinkBendPK>
+      <positionX>300</positionX>
+      <positionY>249</positionY>
+    </ProcessLinkBend>
+    <ProcessLinkBend>
+      <processLinkBendPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>5</version>
+        <linkSequence>20</linkSequence>
+        <bendSequence>1</bendSequence>
+      </processLinkBendPK>
+      <positionX>830</positionX>
+      <positionY>112</positionY>
+    </ProcessLinkBend>
+    <ProcessLinkBend>
+      <processLinkBendPK>
+        <companyId>1</companyId>
+        <processId>ProvisaoFundoFixodeCaixaNovo</processId>
+        <version>5</version>
+        <linkSequence>21</linkSequence>
+        <bendSequence>1</bendSequence>
+      </processLinkBendPK>
+      <positionX>837</positionX>
+      <positionY>293</positionY>
+    </ProcessLinkBend>
+  </list>
+  <list/>
+  <list/>
+  <list/>
+  <list/>
+  <list/>
+  <list/>
+  <list/>
+  <list>
+    <ConditionProcessAutomaticRules>
+      <sequence>5</sequence>
+      <expressionOrder>1</expressionOrder>
+      <ruleOrder>1</ruleOrder>
+      <field>aprovacao</field>
+      <value>nao</value>
+      <operator>1</operator>
+      <valueType>1</valueType>
+    </ConditionProcessAutomaticRules>
+    <ConditionProcessAutomaticRules>
+      <sequence>5</sequence>
+      <expressionOrder>2</expressionOrder>
+      <ruleOrder>1</ruleOrder>
+      <field>aprovacao</field>
+      <value>sim</value>
+      <operator>1</operator>
+      <valueType>1</valueType>
+    </ConditionProcessAutomaticRules>
+    <ConditionProcessAutomaticRules>
+      <sequence>5</sequence>
+      <expressionOrder>2</expressionOrder>
+      <ruleOrder>2</ruleOrder>
+      <field>valorCampoComplemento</field>
+      <value>1</value>
+      <operator>1</operator>
+      <valueType>1</valueType>
+    </ConditionProcessAutomaticRules>
+    <ConditionProcessAutomaticRules>
+      <sequence>5</sequence>
+      <expressionOrder>3</expressionOrder>
+      <ruleOrder>1</ruleOrder>
+      <field>valorCampoComplemento</field>
+      <value>0</value>
+      <operator>1</operator>
+      <valueType>1</valueType>
+    </ConditionProcessAutomaticRules>
+    <ConditionProcessAutomaticRules>
+      <sequence>10</sequence>
+      <expressionOrder>1</expressionOrder>
+      <ruleOrder>1</ruleOrder>
+      <field>modalidade</field>
+      <value>Provisao</value>
+      <operator>1</operator>
+      <valueType>1</valueType>
+    </ConditionProcessAutomaticRules>
+    <ConditionProcessAutomaticRules>
+      <sequence>10</sequence>
+      <expressionOrder>2</expressionOrder>
+      <ruleOrder>1</ruleOrder>
+      <field>modalidade</field>
+      <value>Recebimento</value>
+      <operator>1</operator>
+      <valueType>1</valueType>
+    </ConditionProcessAutomaticRules>
+    <ConditionProcessAutomaticRules>
+      <sequence>11</sequence>
+      <expressionOrder>1</expressionOrder>
+      <ruleOrder>1</ruleOrder>
+      <field>aprovacao</field>
+      <value>nao</value>
+      <operator>1</operator>
+      <valueType>1</valueType>
+    </ConditionProcessAutomaticRules>
+    <ConditionProcessAutomaticRules>
+      <sequence>11</sequence>
+      <expressionOrder>2</expressionOrder>
+      <ruleOrder>1</ruleOrder>
+      <field>aprovacao</field>
+      <value>sim</value>
+      <operator>1</operator>
+      <valueType>1</valueType>
+    </ConditionProcessAutomaticRules>
+  </list>
+</list>
