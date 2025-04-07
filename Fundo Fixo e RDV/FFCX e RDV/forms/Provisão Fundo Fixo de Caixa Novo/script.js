@@ -582,13 +582,9 @@ function atualizarValorTotalFFCX() {
 }
 
 function valorTotalRecebimento() {
-    const inputs = document.querySelectorAll(".ValorMov1207");
-    let total = 0;
-
-    inputs.forEach((input) => {
-        let valor = input.value.replace(/\./g, "").replace(",", ".");
-        valor = parseFloat(valor) || 0;
-        total += valor;
+    var total = 0;
+    $(".ValorMov1207").each(function(){
+        total += formataMoneyToFloat($(this).val());
     });
 
     document.getElementById("valorTotalFFCX").innerText =
@@ -597,6 +593,8 @@ function valorTotalRecebimento() {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
         });
+    $("#hiddenValorTotalFFCX").val(total);
+
 }
 
 function AtualizaValorCampoValorUnitEdicao(ordem) {
@@ -1136,7 +1134,12 @@ function puxaFormaPgto() {
                     }
                 },
                 2:{
-                    "018115":"002"//Carteira
+                    fundoFixo:{
+                        "018115":"002"//Carteira
+                    }
+                },
+                12:{
+                    fundoFixo:{}
                 }
             }
         };
@@ -3011,4 +3014,10 @@ function getDataHoje(format) {
         console.error("Formato da Data inválido (" + format.toUpperCase() + ")");
         throw "Formato da Data inválido (" + format.toUpperCase() + ")";
     }
+}
+function formataMoneyToFloat(valor){
+    valor = valor.replace("R$","");
+    valor = valor.split(".").join("");
+    valor = valor.split(",").join(".");
+    return parseFloat(valor);
 }
