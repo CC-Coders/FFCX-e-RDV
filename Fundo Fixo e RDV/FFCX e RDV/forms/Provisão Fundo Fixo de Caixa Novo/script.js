@@ -1072,94 +1072,83 @@ function BuscaLocalDeEstoque() {
 }
 
 function puxaFormaPgto() {
-    var fundoFixo = $("#campoFundoFixoDto").val();
-    var tipo = $("#tipo").val();
-    var modalidade = $("#modalidade").val();
+    var formaDePagto = buscaFormaDePagamentoPorFundoFixo();
 
-    var p1 = DatasetFactory.createConstraint("CODCOLIGADA", $("#coligada").val(), $("#coligada").val(), ConstraintType.MUST);
-    var p2 = DatasetFactory.createConstraint("OPERACAO", "puxaFormaPagamentoFFCXRDO", "puxaFormaPagamentoFFCXRDO", ConstraintType.MUST);
-
-    if (tipo == "R.D.O" && modalidade == "Recebimento") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "009", "009", ConstraintType.MUST);
-    } else if (fundoFixo == "020181") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "002", "002", ConstraintType.MUST);
-    } else if (fundoFixo == "000604") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "007", "007", ConstraintType.MUST);
-    } else if (fundoFixo == "025894") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "002", "002", ConstraintType.MUST);
-    } else if (fundoFixo == "000606") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "003", "003", ConstraintType.MUST);
-    } else if (fundoFixo == "025895") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "055", "055", ConstraintType.MUST);
-    } else if (fundoFixo == "005784") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "027", "027", ConstraintType.MUST);
-    } else if (fundoFixo == "010915") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "040", "040", ConstraintType.MUST);
-    } else if (fundoFixo == "012230") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "044", "044", ConstraintType.MUST);
-    } else if (fundoFixo == "018384") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "047", "047", ConstraintType.MUST);
-    } else if (fundoFixo == "014914") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "050", "050", ConstraintType.MUST);
-    } else if (fundoFixo == "016392") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "052", "052", ConstraintType.MUST);
-    } else if (fundoFixo == "016391") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "053", "053", ConstraintType.MUST);
-    } else if (fundoFixo == "024767") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "054", "054", ConstraintType.MUST);
-    } else if (fundoFixo == "018115") {
-        if ($("#coligada").val() == 1) {
-            var p3 = DatasetFactory.createConstraint("CODTB1FLX", "055", "055", ConstraintType.MUST);
-        }
-        if ($("#coligada").val() == 2) {
-            var p3 = DatasetFactory.createConstraint("CODTB1FLX", "002", "002", ConstraintType.MUST);
-        }
-    } else if (fundoFixo == "018596") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "056", "056", ConstraintType.MUST);
-    } else if (fundoFixo == "019453") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "057", "057", ConstraintType.MUST);
-    } else if (fundoFixo == "020115") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "058", "058", ConstraintType.MUST);
-    } else if (fundoFixo == "019610") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "060", "060", ConstraintType.MUST);
-    } else if (fundoFixo == "020811") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "061", "061", ConstraintType.MUST);
-    } else if (fundoFixo == "022155") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "062", "062", ConstraintType.MUST);
-    } else if (fundoFixo == "023133") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "063", "063", ConstraintType.MUST);
-    } else if (fundoFixo == "024747") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "064", "064", ConstraintType.MUST);
-    } else if (fundoFixo == "026909") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "065", "065", ConstraintType.MUST);
-    } else if (fundoFixo == "026911") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "066", "066", ConstraintType.MUST);
-    } else if (fundoFixo == "027157") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "067", "067", ConstraintType.MUST);
-    } else if (fundoFixo == "026910") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "068", "068", ConstraintType.MUST);
-    } else if (fundoFixo == "028418") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "069", "069", ConstraintType.MUST);
-    } else if (fundoFixo == "029190") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "070", "070", ConstraintType.MUST);
-    } else if (fundoFixo == "029191") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "071", "071", ConstraintType.MUST);
-    } else if (fundoFixo == "029534") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "072", "072", ConstraintType.MUST);
-    } else if (fundoFixo == "028452") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "073", "073", ConstraintType.MUST);
-    } else if (fundoFixo == "031519") {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "076", "076", ConstraintType.MUST);
-    } else {
-        var p3 = DatasetFactory.createConstraint("CODTB1FLX", "1", "1", ConstraintType.MUST);
-    }
-    var dataset = DatasetFactory.getDataset("DatasetFFCXprod", null, [p1, p2, p3], null);
+    var dataset = DatasetFactory.getDataset("DatasetFFCXprod", null, [
+        DatasetFactory.createConstraint("CODCOLIGADA", $("#coligada").val(), $("#coligada").val(), ConstraintType.MUST),
+        DatasetFactory.createConstraint("OPERACAO", "puxaFormaPagamentoFFCXRDO", "puxaFormaPagamentoFFCXRDO", ConstraintType.MUST),
+        DatasetFactory.createConstraint("CODTB1FLX", formaDePagto, formaDePagto, ConstraintType.MUST),
+    ], null);
 
     dsFinal = dataset.values;
     if (dsFinal.length > 0) {
         for (var i = 0; i < dataset.values.length; i++) {
             $("#formaPagamento").append("<option value='" + dsFinal[i].CODTB1FLX + "'>" + dsFinal[i].DESCRICAO + "</option>");
         }
+    }
+
+    function buscaFormaDePagamentoPorFundoFixo(){
+        var tipo = $("#tipo").val();
+        var modalidade = $("#modalidade").val();
+        var fundoFixo = $("#campoFundoFixoDto").val();
+        var coligada = $("#coligada").val();
+
+        if (tipo == "R.D.O" && modalidade == "Recebimento") {
+            return "009";
+        } 
+        
+        const formasDePagamento = {
+            COLIGADAS:{
+                1:{
+                    fundoFixo:{
+                        '020181':"002",//Carteira
+                        '000604':"007",//Cheque Central Sul
+                        '025894':"002",//Carteira
+                        '000606':"003",//Cheque Regional Norte
+                        '025895':"055",//Cheque Petrolina
+                        '005784':"027",//Cheque Toledo II
+                        '010915':"040",//Cheque Bonfim
+                        '012230':"044",//Cheque Bom Jesus
+                        '018384':"047",//Cheque Marco Rondon
+                        '014914':"050",//Cheque Boiadeira
+                        '016392':"052",//Cheque Bandeirantes
+                        '016391':"053",//Cheque Eldorado
+                        '024767':"054",//Cheque Oriente
+                        '018115':"055",//Cheque Petrolina
+                        '018596':"056",//Cheque Umuarama
+                        '019453':"057",//Cheque Ipubi
+                        '020115':"058",//Cheque MRS
+                        '019610':"060",//Cheque Alagoas
+                        '020811':"061",//Cheque Caarapó
+                        "022155":"062",//Cheque Rodovia do Boi
+                        "023133":"063",//Cheque Bujari
+                        "024747":"064",//Cheque Guaíra
+                        "026909":"065",//Cheque Três Pinheiros
+                        "026911":"066",//Cheque Itaberaba
+                        "027157":"067",//Cheque Inter 2
+                        "026910":"068",//Cheque Três Meninas
+                        "028418":"069",//Cheque VLI
+                        "029190":"070",//Cheque Obras Iniciais A, C e D
+                        "029191":"071",//Cheque Itabaiana
+                        "029534":"072",//Cheque MRS Remodelação
+                        "028452":"073",//Cheque COFCO
+                        "031519":"076",//Cheque Palotina
+                    }
+                },
+                2:{
+                    "018115":"002"//Carteira
+                }
+            }
+        };
+
+
+        var codFormaPagamento = formasDePagamento.COLIGADAS[coligada].fundoFixo[fundoFixo];
+        if (!codFormaPagamento) {
+            // Se nenhuma Forma de Pagamento for encontrada retorna 1
+            codFormaPagamento = "1";
+        }
+
+        return codFormaPagamento;
     }
 }
 
