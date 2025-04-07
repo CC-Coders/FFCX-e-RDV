@@ -1093,7 +1093,7 @@ function puxaFormaPgto() {
         var fundoFixo = $("#campoFundoFixoDto").val();
         var coligada = $("#coligada").val();
 
-        if (tipo == "R.D.O" && modalidade == "Recebimento") {
+        if (tipo == "R.D.O") {
             return "009";
         } 
         
