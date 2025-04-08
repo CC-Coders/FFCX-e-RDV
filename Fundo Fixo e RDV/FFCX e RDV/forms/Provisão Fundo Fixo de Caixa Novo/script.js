@@ -1138,6 +1138,9 @@ function puxaFormaPgto() {
                         "018115":"002"//Carteira
                     }
                 },
+                6:{
+                    fundoFixo:{}
+                },
                 12:{
                     fundoFixo:{}
                 }
@@ -2464,7 +2467,8 @@ function atribuiValorDataFaturamento() {
 }
 
 function setaTipoFundoFixo() {
-    if ($("#coligada").val() == 2) {
+    var coligada = $("#coligada").val()
+    if (coligada == 2) {
         const selectElement = document.getElementById("tipo");
         const optionRDO = selectElement.querySelector('option[value="R.D.O"]');
         const optionFundoFixo = selectElement.querySelector('option[value="Fundo Fixo"]');
@@ -2479,7 +2483,11 @@ function setaTipoFundoFixo() {
             newOption.text = "R.D.O";
             selectElement.appendChild(newOption);
         }
-    } else {
+    } 
+    else if(coligada == 6){
+        $("#tipo").html("<option></option><option value='R.D.O'>R.D.O</option>")
+    }
+    else {
         const selectElement = document.getElementById("tipo");
         const optionRDO = selectElement.querySelector('option[value="R.D.O"]');
 
