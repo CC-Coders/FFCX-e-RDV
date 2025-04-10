@@ -170,6 +170,9 @@ function createInsertXML(codtmv, motivoReembolso) {
                 <CODLOC>" +
         codLocalEstoque +
         "</CODLOC>\
+         <CODTB1FLX>" +
+            hAPI.getCardValue("formaPagamento") +
+            "</CODTB1FLX>\
             </TMOV>\
             ";
 
