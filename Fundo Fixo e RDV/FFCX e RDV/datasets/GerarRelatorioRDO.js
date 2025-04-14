@@ -54,14 +54,22 @@ function createDataset(fields, constraints, sortFields) {
 			// dados de cadastro relatório
 			var CodigoColigadaRel = pCodColigada;
 
-			// CONSTRUTORA CASTILHO
-			if (CodigoColigadaRel == "1" || CodigoColigadaRel == 1) {
-				// HOMOLOGACAO
-				var IdRelatorio = 9212; // NU003.01 - RDO
-			} else if (CodigoColigadaRel == "12" || CodigoColigadaRel == 12) {
-				var IdRelatorio = 10026; // NU003.01 - RDO
+			var ambiente = getServerURL() == "http://fluig.castilho.com.br:1010" ? "PRODUCAO" : "HOMOLOGACAO";
+			var idsRelatorios = {
+				PRODUCAO:{
+					COLIGADA_1:9212,
+					COLIGADA_6:12033,
+					COLIGADA_12:10026,
+				},
+				HOMOLOGACAO:{
+					COLIGADA_1:9212,
+					COLIGADA_6:12033,
+					COLIGADA_12:10026,
+				}
+			};
 
-			}
+			var IdRelatorio = idsRelatorios[ambiente]["COLIGADA_" + CodigoColigadaRel];
+
 			// solicita a geração do realtório e armazena o identificador único
 			var guid = authIwsDataServer.generateReport(parseInt(CodigoColigadaRel), IdRelatorio, filtros, parametros, NomeRelatorio); //contexto
 
@@ -126,4 +134,8 @@ function getDatasetError(exception) {
 
 }; function onMobileSync(user) {
 
+}
+
+function getServerURL() {
+    return fluigAPI.getPageService();
 }
