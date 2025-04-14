@@ -1469,7 +1469,7 @@ function RemoveDivItem(idBotaoRemover) {
         }
     }
 
-    ordem = divs.length;
+    ordem = parseInt($(".produto:last").attr("id").split("produto")[1]); 
     atualizarValorTotalFFCX();
 }
 
