@@ -2850,7 +2850,7 @@ function validateJsonInfos() {
                     return false;
                 }
 
-                if (document.querySelectorAll(".divNovosItens").length === 0) {
+                if (document.querySelectorAll(".divNovosItens").length === 0 && $(".divItensProdutos").length === 0) {
                     FLUIGC.toast({
                         message: "Insira pelo menos um item!",
                         type: "warning",
