@@ -29,7 +29,7 @@
     <processDefinitionVersionPK>
       <companyId>1</companyId>
       <processId>Provisão Fundo Fixo/RDO</processId>
-      <version>5</version>
+      <version>11</version>
     </processDefinitionVersionPK>
     <versionDescription></versionDescription>
     <formId>1515068</formId>
@@ -60,8 +60,8 @@
       <deadlineTime>0</deadlineTime>
       <joint>false</joint>
       <agreementPercentage>0</agreementPercentage>
-      <engineAllocationId>Grupo</engineAllocationId>
-      <engineAllocationConfiguration>&lt;AssignmentController&gt;&lt;Group&gt;Contabilidade&lt;/Group&gt;&lt;/AssignmentController&gt;</engineAllocationConfiguration>
+      <engineAllocationId></engineAllocationId>
+      <engineAllocationConfiguration></engineAllocationConfiguration>
       <selectColleague>1</selectColleague>
       <initialState>true</initialState>
       <notifyAuthorityDelay>true</notifyAuthorityDelay>
@@ -329,7 +329,7 @@
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
         <expressionOrder>1</expressionOrder>
-        <version>5</version>
+        <version>11</version>
         <sequence>5</sequence>
       </conditionProcessStatePK>
       <condition>false</condition>
@@ -343,7 +343,7 @@
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
         <expressionOrder>2</expressionOrder>
-        <version>5</version>
+        <version>11</version>
         <sequence>5</sequence>
       </conditionProcessStatePK>
       <condition>false</condition>
@@ -357,7 +357,7 @@
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
         <expressionOrder>3</expressionOrder>
-        <version>5</version>
+        <version>11</version>
         <sequence>5</sequence>
       </conditionProcessStatePK>
       <condition>false</condition>
@@ -369,7 +369,7 @@
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
         <expressionOrder>1</expressionOrder>
-        <version>5</version>
+        <version>11</version>
         <sequence>10</sequence>
       </conditionProcessStatePK>
       <condition>false</condition>
@@ -381,7 +381,7 @@
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
         <expressionOrder>2</expressionOrder>
-        <version>5</version>
+        <version>11</version>
         <sequence>10</sequence>
       </conditionProcessStatePK>
       <condition>false</condition>
@@ -394,7 +394,7 @@
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
         <expressionOrder>1</expressionOrder>
-        <version>5</version>
+        <version>11</version>
         <sequence>11</sequence>
       </conditionProcessStatePK>
       <condition>false</condition>
@@ -408,7 +408,7 @@
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
         <expressionOrder>2</expressionOrder>
-        <version>5</version>
+        <version>11</version>
         <sequence>11</sequence>
       </conditionProcessStatePK>
       <condition>false</condition>
@@ -651,8 +651,8 @@ function beforeTaskSave(colleagueId, nextSequenceId, userList) {&#xd;
         var formaPgtoAtual = hAPI.getCardValue(&quot;formaPagamento&quot;);&#xd;
         log.error(&quot;A forma de pagamento eh: &quot; + formaPgtoAntigo + &quot;e a atual eh: &quot; + formaPgtoAtual);&#xd;
         if (formaPgtoAntigo != formaPgtoAtual) {&#xd;
+            alteraFormaDePagamento();&#xd;
         }&#xd;
-        alteraFormaDePagamento();&#xd;
 &#xd;
         faturaMovimento();&#xd;
         enviaEmailAprovacao();&#xd;
@@ -769,6 +769,9 @@ function createInsertXML(codtmv, motivoReembolso) {&#xd;
                 &lt;CODLOC&gt;&quot; +&#xd;
         codLocalEstoque +&#xd;
         &quot;&lt;/CODLOC&gt;\&#xd;
+         &lt;CODTB1FLX&gt;&quot; +&#xd;
+            hAPI.getCardValue(&quot;formaPagamento&quot;) +&#xd;
+            &quot;&lt;/CODTB1FLX&gt;\&#xd;
             &lt;/TMOV&gt;\&#xd;
             &quot;;&#xd;
 &#xd;
@@ -806,7 +809,7 @@ function createInsertXML(codtmv, motivoReembolso) {&#xd;
 	            &lt;NOMEFANTASIA&gt;&quot; +&#xd;
             jsonExportarRm[i].nomeFantasia +&#xd;
             &quot;&lt;/NOMEFANTASIA&gt;\&#xd;
-	            &lt;QUANTIDADE&gt;1&lt;/QUANTIDADE&gt;\&#xd;
+	            &lt;QUANTIDADE&gt;&quot; + jsonExportarRm[i].quantidade + &quot;&lt;/QUANTIDADE&gt;\&#xd;
 	            &lt;CODTB1FLX&gt;&quot; +&#xd;
             hAPI.getCardValue(&quot;formaPagamento&quot;) +&#xd;
             &quot;&lt;/CODTB1FLX&gt;\&#xd;
@@ -823,7 +826,7 @@ function createInsertXML(codtmv, motivoReembolso) {&#xd;
             codLocalEstoque +&#xd;
             &quot;&lt;/CODLOC&gt;\&#xd;
 	            &lt;VALORUNITARIO&gt;&quot; +&#xd;
-            jsonExportarRm[i].valor +&#xd;
+            jsonExportarRm[i].valorUnitario +&#xd;
             &quot;&lt;/VALORUNITARIO&gt;\&#xd;
 	            &lt;CODTB1FAT&gt;&quot; +&#xd;
             jsonExportarRm[i].codTb1Fat +&#xd;
@@ -1528,7 +1531,7 @@ function BuscaAnexosTemplate2() {&#xd;
       <processLinkBendPK>
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
-        <version>5</version>
+        <version>11</version>
         <linkSequence>13</linkSequence>
         <bendSequence>1</bendSequence>
       </processLinkBendPK>
@@ -1539,7 +1542,7 @@ function BuscaAnexosTemplate2() {&#xd;
       <processLinkBendPK>
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
-        <version>5</version>
+        <version>11</version>
         <linkSequence>14</linkSequence>
         <bendSequence>1</bendSequence>
       </processLinkBendPK>
@@ -1550,7 +1553,7 @@ function BuscaAnexosTemplate2() {&#xd;
       <processLinkBendPK>
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
-        <version>5</version>
+        <version>11</version>
         <linkSequence>16</linkSequence>
         <bendSequence>1</bendSequence>
       </processLinkBendPK>
@@ -1561,7 +1564,7 @@ function BuscaAnexosTemplate2() {&#xd;
       <processLinkBendPK>
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
-        <version>5</version>
+        <version>11</version>
         <linkSequence>18</linkSequence>
         <bendSequence>1</bendSequence>
       </processLinkBendPK>
@@ -1572,7 +1575,7 @@ function BuscaAnexosTemplate2() {&#xd;
       <processLinkBendPK>
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
-        <version>5</version>
+        <version>11</version>
         <linkSequence>19</linkSequence>
         <bendSequence>1</bendSequence>
       </processLinkBendPK>
@@ -1583,7 +1586,7 @@ function BuscaAnexosTemplate2() {&#xd;
       <processLinkBendPK>
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
-        <version>5</version>
+        <version>11</version>
         <linkSequence>20</linkSequence>
         <bendSequence>1</bendSequence>
       </processLinkBendPK>
@@ -1594,7 +1597,7 @@ function BuscaAnexosTemplate2() {&#xd;
       <processLinkBendPK>
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
-        <version>5</version>
+        <version>11</version>
         <linkSequence>21</linkSequence>
         <bendSequence>1</bendSequence>
       </processLinkBendPK>
