@@ -170,6 +170,9 @@ function createInsertXML(codtmv, motivoReembolso) {
                 <CODLOC>" +
         codLocalEstoque +
         "</CODLOC>\
+         <CODTB1FLX>" +
+            hAPI.getCardValue("formaPagamento") +
+            "</CODTB1FLX>\
             </TMOV>\
             ";
 
@@ -207,7 +210,7 @@ function createInsertXML(codtmv, motivoReembolso) {
 	            <NOMEFANTASIA>" +
             jsonExportarRm[i].nomeFantasia +
             "</NOMEFANTASIA>\
-	            <QUANTIDADE>1</QUANTIDADE>\
+	            <QUANTIDADE>" + jsonExportarRm[i].quantidade + "</QUANTIDADE>\
 	            <CODTB1FLX>" +
             hAPI.getCardValue("formaPagamento") +
             "</CODTB1FLX>\
@@ -224,7 +227,7 @@ function createInsertXML(codtmv, motivoReembolso) {
             codLocalEstoque +
             "</CODLOC>\
 	            <VALORUNITARIO>" +
-            jsonExportarRm[i].valor +
+            jsonExportarRm[i].valorUnitario +
             "</VALORUNITARIO>\
 	            <CODTB1FAT>" +
             jsonExportarRm[i].codTb1Fat +
