@@ -44,7 +44,7 @@
     <processStates/>
     <favorito>false</favorito>
     <inheritFormSecurity>true</inheritFormSecurity>
-    <mobileReady>false</mobileReady>
+    <mobileReady>true</mobileReady>
   </ProcessDefinitionVersion>
   <list>
     <ProcessState>
