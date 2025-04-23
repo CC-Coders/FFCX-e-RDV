@@ -107,6 +107,7 @@ function createInsertXML(codtmv, motivoReembolso) {
     var IdMovVerif = hAPI.getCardValue("IdMovimento");
     var NumeroMovVerif = hAPI.getCardValue("NumeroMovimento");
     var FundoFixoVerif = hAPI.getCardValue("campoFundoFixoDto");
+    var codColCFO = hAPI.getCardValue("codColFcoDto");
     var Filial = hAPI.getCardValue("campoFilialDto");
     var codLocalEstoque = hAPI.getCardValue("selectLocalEstoque");
     var jsonExportarRm = hAPI.getCardValue("codList");
@@ -148,8 +149,9 @@ function createInsertXML(codtmv, motivoReembolso) {
         Filial +
         "</CODFILIAL>\
                 <CODCFO>" +
-        FundoFixoVerif +
-        "</CODCFO>\
+                    FundoFixoVerif +
+                "</CODCFO>\
+                <CODCOLCFO>" + codColCFO+ "</CODCOLCFO>\
                 <CODTMV>" +
         codtmv +
         "</CODTMV>\
@@ -159,7 +161,6 @@ function createInsertXML(codtmv, motivoReembolso) {
                 <CODCFOAUX>" +
         FundoFixoVerif +
         "</CODCFOAUX>\
-                <CODCOLCFO>0</CODCOLCFO>\
                 <INTEGRAAPLICACAO>T</INTEGRAAPLICACAO>\
                 <CODCOLIGADA1>" +
         coligadaXML +
@@ -215,7 +216,7 @@ function createInsertXML(codtmv, motivoReembolso) {
             hAPI.getCardValue("formaPagamento") +
             "</CODTB1FLX>\
 	            <PRECOUNITARIO>" +
-            jsonExportarRm[i].valor +
+            jsonExportarRm[i].valorUnitario +
             "</PRECOUNITARIO>\
 	            <CODUND>" +
             jsonExportarRm[i].unidade +
@@ -356,6 +357,7 @@ function createReceiptXML(codtmv, codtmvDestiny) {
     for (z = 0; z < jsonExportarRm.length; z++) {
         var idMovimento = jsonExportarRm[z].values.IDMOV;
         var numSequencia = jsonExportarRm[z].values.NSEQITMMOV;
+        var QUANTIDADE = jsonExportarRm[z].values.QUANTIDADE.replace(".",",");
 
         newXml +=
             "<MovItemFatAutomatico>\
@@ -369,7 +371,7 @@ function createReceiptXML(codtmv, codtmvDestiny) {
             <NSeqItmMov>" +
             numSequencia +
             "</NSeqItmMov>\
-            <Quantidade>1</Quantidade>\
+            <Quantidade>" + QUANTIDADE + "</Quantidade>\
             </MovItemFatAutomatico>";
     }
 
@@ -467,6 +469,8 @@ function buscaIdmovNumeroSerieChaveAcessoDoMovimento(tipo) {
             [
                 DatasetFactory.createConstraint("IDMOV", IdMovimento, IdMovimento, ConstraintType.MUST),
                 DatasetFactory.createConstraint("OPERACAO", OPERACAO, OPERACAO, ConstraintType.MUST),
+                DatasetFactory.createConstraint("CODCOLIGADA", OPERACAO, OPERACAO, ConstraintType.MUST),
+                DatasetFactory.createConstraint("CODCOLCFO", hAPI.getCardValue("codColFcoDto"), hAPI.getCardValue("codColFcoDto"), ConstraintType.MUST)
             ],
             null
         );

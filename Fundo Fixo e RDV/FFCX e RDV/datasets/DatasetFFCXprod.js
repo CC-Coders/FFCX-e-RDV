@@ -10,6 +10,7 @@ function createDataset(fields, constraints, sortFields) {
     var myQuery = null;
     var CODTB1FLX = null;
     var CODLOC = null;
+    var CODCOLCFO = 0;
 
 
     if (constraints != null) {
@@ -43,6 +44,9 @@ function createDataset(fields, constraints, sortFields) {
             }
             else if (constraints[i].fieldName == 'CODLOC') {
                 CODLOC = constraints[i].initialValue;
+            }
+            else if (constraints[i].fieldName == 'CODCOLCFO') {
+                CODCOLCFO = constraints[i].initialValue;
             }
         }
     }
@@ -142,7 +146,7 @@ function createDataset(fields, constraints, sortFields) {
                 TMOV.CODLOC\
             FROM\
                 TMOV\
-                INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = 0\
+                INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = " + CODCOLCFO + "\
                 INNER JOIN TLOC ON TLOC.CODCOLIGADA = TMOV.CODCOLIGADA AND TMOV.CODFILIAL = TLOC.CODFILIAL AND TLOC.CODLOC = TMOV.CODLOC\
             WHERE\
                 TMOV.CODTMV = '1.1.03'\
@@ -167,7 +171,7 @@ function createDataset(fields, constraints, sortFields) {
                     TMOVHISTORICO.HISTORICOCURTO\
                 FROM\
                     TMOV\
-                    INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = 0\
+                    INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = " + CODCOLCFO + "\
                     INNER JOIN TLOC ON TLOC.CODCOLIGADA = TMOV.CODCOLIGADA AND TMOV.CODFILIAL = TLOC.CODFILIAL AND TLOC.CODLOC = TMOV.CODLOC\
                     INNER JOIN TMOVHISTORICO ON TMOV.IDMOV = TMOVHISTORICO.IDMOV AND TMOVHISTORICO.CODCOLIGADA = TMOV.CODCOLIGADA\
                 WHERE\
@@ -189,7 +193,7 @@ function createDataset(fields, constraints, sortFields) {
         TLOC.NOME  AS NOMECENTRODECUSTO\
     FROM\
         TMOV\
-        INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = 0\
+        INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = " + CODCOLCFO + "\
         INNER JOIN TLOC ON TLOC.CODCOLIGADA = TMOV.CODCOLIGADA AND TMOV.CODFILIAL = TLOC.CODFILIAL AND TLOC.CODLOC = TMOV.CODLOC\
     WHERE\
         TMOV.STATUS = 'A'\
@@ -203,6 +207,7 @@ function createDataset(fields, constraints, sortFields) {
         myQuery =
             "SELECT\
             TITMMOV.PRECOUNITARIO,\
+            TITMMOV.QUANTIDADE,\
             TPRODUTO.NOMEFANTASIA,\
             TPRODUTO.CODIGOPRD,\
             TPRODUTO.IDPRD,\
@@ -284,6 +289,7 @@ function createDataset(fields, constraints, sortFields) {
 		TMOV.SERIE,\
 		TMOV.NUMEROMOV,\
 		TITMMOV.NSEQITMMOV,\
+		TITMMOV.QUANTIDADE,\
         TMOV.DATAEMISSAO,\
         TLOC.NOME AS NOMECENTRODECUSTO\
     FROM\
@@ -304,6 +310,7 @@ function createDataset(fields, constraints, sortFields) {
 		TMOV.SERIE,\
 		TMOV.NUMEROMOV,\
 		TITMMOV.NSEQITMMOV,\
+		TITMMOV.QUANTIDADE,\
         TMOV.DATAEMISSAO,\
         TLOC.NOME  AS NOMECENTRODECUSTO\
     FROM\
@@ -369,7 +376,7 @@ function createDataset(fields, constraints, sortFields) {
                 TMOV.NUMEROMOV\
             FROM\
                 TMOV\
-                INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = 0\
+                INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = " + CODCOLCFO + "\
                 INNER JOIN TLOC ON TLOC.CODCOLIGADA = TMOV.CODCOLIGADA AND TMOV.CODFILIAL = TLOC.CODFILIAL AND TLOC.CODLOC = TMOV.CODLOC\
             WHERE\
                 TMOV.CODTMV = '1.1.03'\
@@ -385,7 +392,7 @@ function createDataset(fields, constraints, sortFields) {
                 TMOV.NUMEROMOV\
             FROM\
                 TMOV\
-                INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = 0\
+                INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = " + CODCOLCFO + "\
                 INNER JOIN TLOC ON TLOC.CODCOLIGADA = TMOV.CODCOLIGADA AND TMOV.CODFILIAL = TLOC.CODFILIAL AND TLOC.CODLOC = TMOV.CODLOC\
             WHERE\
                 TMOV.CODTMV = '1.1.03'\
@@ -407,7 +414,7 @@ function createDataset(fields, constraints, sortFields) {
                 TMOV.CHAVEACESSONFE AS CHAVEACESSO\
             FROM\
                 TMOV\
-                INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = 0\
+                INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = " + CODCOLCFO + "\
                 INNER JOIN TLOC ON TLOC.CODCOLIGADA = TMOV.CODCOLIGADA AND TMOV.CODFILIAL = TLOC.CODFILIAL AND TLOC.CODLOC = TMOV.CODLOC\
             WHERE\
                 TMOV.CODTMV = '1.1.09'\
@@ -426,7 +433,7 @@ function createDataset(fields, constraints, sortFields) {
                 TMOV.CHAVEACESSONFE AS CHAVEACESSO\
                 FROM\
                     TMOV\
-                    INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = 0\
+                    INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = " + CODCOLCFO + "\
                     INNER JOIN TLOC ON TLOC.CODCOLIGADA = TMOV.CODCOLIGADA AND TMOV.CODFILIAL = TLOC.CODFILIAL AND TLOC.CODLOC = TMOV.CODLOC\
                 WHERE\
                     TMOV.CODTMV = '1.1.09'\
@@ -450,7 +457,7 @@ function createDataset(fields, constraints, sortFields) {
         TLOC.NOME  AS NOMECENTRODECUSTO\
     FROM\
         TMOV\
-        INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = 0\
+        INNER JOIN FCFO ON FCFO.CODCFO = TMOV.CODCFO AND FCFO.CODCOLIGADA = " + CODCOLCFO + "\
         INNER JOIN TLOC ON TLOC.CODCOLIGADA = TMOV.CODCOLIGADA AND TMOV.CODFILIAL = TLOC.CODFILIAL AND TLOC.CODLOC = TMOV.CODLOC\
     WHERE\
         TMOV.CODTMV = '1.2.07'\
@@ -461,6 +468,7 @@ function createDataset(fields, constraints, sortFields) {
 
     if (operacao == "PuxarFundosFixos") {
         myQuery = "SELECT\
+        CODCOLIGADA,\
         CODCFO,\
         NOME,\
         DATAULTMOVIMENTO\
@@ -474,6 +482,7 @@ function createDataset(fields, constraints, sortFields) {
 
     if (operacao == "PuxarRDO") {
         myQuery = "SELECT\
+        CODCOLIGADA,\
         CODCFO,\
         NOME,\
         DATAULTMOVIMENTO\
