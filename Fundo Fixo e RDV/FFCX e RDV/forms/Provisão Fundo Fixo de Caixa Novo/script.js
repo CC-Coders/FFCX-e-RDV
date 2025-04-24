@@ -265,9 +265,10 @@ function bindings() {
         $(this).style.display = "flex";
     });
     $("#fundoFixo").on("change", function () {
-        var fundoFixo = $("#fundoFixo").val();
+        var [codcolfco, fundoFixo] = $("#fundoFixo").val().split(" - ");
         $("#campoFundoFixoDto").val(fundoFixo);
-        $("#fundoFixo").val($("#campoFundoFixoDto").val());
+        $("#codColFcoDto").val(codcolfco);
+        // $("#fundoFixo").val($("#campoFundoFixoDto").val());
         $("#formaPagamento").empty().trigger("change");
         puxaFormaPgto();
     });
@@ -823,7 +824,7 @@ document.querySelectorAll("ul.nav.nav-tabs.nav-justified.nav-pills a.collapseIte
                     }
                     $("#titleValorTotal, #valorTotalFFCX").show();
                     $("#titleFundoSelecionado").text("Reembolso de Despesas da Obra (R.D.O):");
-                    var fundoFixo = $("#fundoFixo").val();
+                    var fundoFixo = $("#campoFundoFixoDto").val();
                     var numeros = fundoFixo.match(/\d+/);
                     if (numeros !== null && numeros.length > 0) {
                         var fundoFixoSemCodigo = numeros[0];
@@ -916,12 +917,12 @@ document.querySelectorAll("ul.nav.nav-tabs.nav-justified.nav-pills a.collapseIte
                 $("#divbtnAddItens, .divItensProdutos, .divNovosItens, #divValorTotal, #titleValorTotal, #valorTotalFFCX").show();
                 buscaProdutos();
 
-                var fundoFixoValue = $("#fundoFixo").val();
+                var fundoFixoValue = $("#campoFundoFixoDto").val();
                 var filialValue = $("#selectFilial").val();
                 $("#divTabelaDeRecebimentos").hide();
                 $(this).attr("href", "#tabItens");
                 if (fundoFixoVerificacao == null && filialVerificacao == null) {
-                    fundoFixoVerificacao = $("#fundoFixo").val();
+                    fundoFixoVerificacao = $("#campoFundoFixoDto").val();
                     filialVerificacao = $("#selectFilial").val();
                     VerificaRetornoFundoFixo();
                     if (tipo == "R.D.O") {
@@ -939,7 +940,7 @@ document.querySelectorAll("ul.nav.nav-tabs.nav-justified.nav-pills a.collapseIte
 
                 if (fundoFixoVerificacao != fundoFixoValue || filialVerificacao != filialValue) {
                     ordem = 0;
-                    fundoFixoVerificacao = $("#fundoFixo").val();
+                    fundoFixoVerificacao = $("#campoFundoFixoDto").val();
                     filialVerificacao = $("#selectFilial").val();
                     removeDivsByClass("divItensProdutos");
                     VerificaRetornoFundoFixo();
@@ -1189,7 +1190,7 @@ function FiltrarFfUsuario() {
     if (ds.values.length > 0) {
         $("#fundoFixo").html("<option></option>");
         for (var i = 0; i < ds.values.length; i++) {
-            $("#fundoFixo").append("<option value='" + ds.values[i].CODCFO + "'>" + ds.values[i].CODCFO + " - " + ds.values[i].NOME + "</option>");
+            $("#fundoFixo").append("<option value='" + ds.values[i].CODCOLIGADA + " - " + ds.values[i].CODCFO + "'>" + ds.values[i].CODCFO + " - " + ds.values[i].NOME + "</option>");
         }
     }
 }
@@ -1484,14 +1485,15 @@ function preencheTabelaReceber() {
     var c2 = DatasetFactory.createConstraint("CODCFO", codfcoAtt, codfcoAtt, ConstraintType.MUST);
     var c3 = DatasetFactory.createConstraint("FILIAL", $("#campoFilialDto").val(), $("#campoFilialDto").val(), ConstraintType.SHOULD);
     var c4 = DatasetFactory.createConstraint("CODLOC", localDeEstoque, localDeEstoque, ConstraintType.MUST);
+    var c5 = DatasetFactory.createConstraint("CODCOLCFO", $("#codColFcoDto").val(), $("#codColFcoDto").val(), ConstraintType.MUST);
 
     if (tipo == "Fundo Fixo") {
-        var c5 = DatasetFactory.createConstraint("OPERACAO", "SelectMov", "SelectMov", ConstraintType.MUST);
+        var c6 = DatasetFactory.createConstraint("OPERACAO", "SelectMov", "SelectMov", ConstraintType.MUST);
     } else if (tipo == "R.D.O") {
-        var c5 = DatasetFactory.createConstraint("OPERACAO", "SelectMovRDO", "SelectMovRDO", ConstraintType.MUST);
+        var c6 = DatasetFactory.createConstraint("OPERACAO", "SelectMovRDO", "SelectMovRDO", ConstraintType.MUST);
     }
 
-    var dsPreencherTabela = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2, c3, c4, c5], null);
+    var dsPreencherTabela = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2, c3, c4, c5, c6], null);
 
     if (dsPreencherTabela.values && dsPreencherTabela.values.length > 0) {
         let itensStatusA = dsPreencherTabela.values.filter((registro) => registro.STATUS === "A");
@@ -1632,7 +1634,7 @@ function mostrarDetalhes(IDMOV) {
                    readonly=""\
                    style="border: 0; width:75%"\
                    value="' +
-            FormataValor(DatasetShowItems.values[total].PRECOUNITARIO) +
+            FormataValor((DatasetShowItems.values[total].PRECOUNITARIO * DatasetShowItems.values[total].QUANTIDADE).toFixed(2)) +
             '"\
                  />\
                </div>\
@@ -1697,7 +1699,7 @@ function mostrarDetalhes(IDMOV) {
 var ordem = 0;
 
 function enviaHistoricoCurtoData() {
-    var fundoFixo = $("#fundoFixo").val();
+    var fundoFixo = $("#campoFundoFixoDto").val();
     var filial = $("#selectFilial").val();
     var tipo = $("#tipo").val();
     var localDeEstoque = $("#ObraFiltro").val();
@@ -1712,8 +1714,9 @@ function enviaHistoricoCurtoData() {
         var c4 = DatasetFactory.createConstraint("OPERACAO", "SelectMovRDO", "SelectMovRDO", ConstraintType.MUST);
     }
     var c5 = DatasetFactory.createConstraint("CODCOLIGADA", $("#coligada").val(), $("#coligada").val(), ConstraintType.MUST);
+    var c6 = DatasetFactory.createConstraint("CODCOLCFO", $("#codColFcoDto").val(), $("#codColFcoDto").val(), ConstraintType.MUST);
 
-    var dsVerificaFundoFixo = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2, c3, c4, c5], null);
+    var dsVerificaFundoFixo = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2, c3, c4, c5, c6], null);
     dsFinal = dsVerificaFundoFixo.values;
 
     if (dsFinal.length > 0) {
@@ -1734,7 +1737,7 @@ function enviaHistoricoCurtoData() {
 }
 
 function VerificaRetornoFundoFixo() {
-    var fundoFixo = $("#fundoFixo").val();
+    var fundoFixo = $("#campoFundoFixoDto").val();
     var filial = $("#selectFilial").val();
     var tipo = $("#tipo").val();
     var localDeEstoque = $("#ObraFiltro").val();
@@ -1749,8 +1752,9 @@ function VerificaRetornoFundoFixo() {
         var c4 = DatasetFactory.createConstraint("OPERACAO", "SelectMovRDO", "SelectMovRDO", ConstraintType.MUST);
     }
     var c5 = DatasetFactory.createConstraint("CODCOLIGADA", $("#coligada").val(), $("#coligada").val(), ConstraintType.MUST);
+    var c6 = DatasetFactory.createConstraint("CODCOLCFO", $("#codColFcoDto").val(), $("#codColFcoDto").val(), ConstraintType.MUST);
 
-    var dsVerificaFundoFixo = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2, c3, c4, c5], null);
+    var dsVerificaFundoFixo = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2, c3, c4, c5, c6], null);
     dsFinal = dsVerificaFundoFixo.values;
 
     if (dsFinal.length > 0) {
@@ -1787,6 +1791,7 @@ function VerificaRetornoFundoFixo() {
             for (j = 0; j < dsFinalItems.length; j++) {
                 valor = dsFinalRatDep[j].VALORRATEIO;
                 valorItem = dsFinalItems[j].PRECOUNITARIO;
+                quantidade = dsFinalItems[j].QUANTIDADE;
 
                 ordem++;
 
@@ -1805,7 +1810,7 @@ function VerificaRetornoFundoFixo() {
                               <b>Fornecedor/Prestador: </b><p id="descricaoAtual${ordem}" style="display: inline;">${dsFinalItems[j].HISTORICOCURTO}</p>
                           </div>
                           <div style="width: 30%; text-align: left;">
-                              <b>Quantidade:</b> <span id="quantidadeInput${ordem}"></span> UN
+                              <b>Quantidade:</b> <span id="quantidadeInput${ordem}">${FormataValorInserir(quantidade)}</span> UN
                           </div>
                       </div>
                       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
@@ -1844,7 +1849,7 @@ function VerificaRetornoFundoFixo() {
                                   <div class="col-md-6">
                                       <label class="labelFullWidth" style="width: 100%">Quantidade:
                                           <div class="with-suffix" suffix="UN">
-                                              <input type="text" class="form-control QuantidadeItem" oninput="AlteraQuantidade(this, ${ordem}); FormataNumeros(this); atualizarValorTotal(${ordem})" id="inputQuantidadeItem${ordem}" name="QuantidadeItem">
+                                              <input type="text" class="form-control QuantidadeItem" oninput="AlteraQuantidade(this, ${ordem}); FormataNumeros(this); atualizarValorTotal(${ordem})" id="inputQuantidadeItem${ordem}" name="QuantidadeItem" value="${FormataValorInserir(quantidade)}">
                                           </div>
                                       </label>
                                       <br>
@@ -1900,12 +1905,13 @@ function VerificaRetornoFundoFixo() {
                 if ($("#inputQuantidadeItem" + ordem).val() === "" || $("#inputQuantidadeItem" + ordem).val() == undefined) {
                     $("#quantidadeInput" + ordem).text(1);
                     $("#inputQuantidadeItem" + ordem).val(1);
-                    $("#valorTotal" + ordem).val(FormataValorInserir(valorItem));
-                    $("#valorTotal" + ordem).text(FormataValorInserir(valorItem));
                     $("#inputQuantidadeItem" + ordem).prop("readonly", true);
                     $("#inputQuantidadeItem" + ordem).prop("disabled", true);
                 }
 
+                console.log(valorItem, quantidade, valorItem * quantidade)
+                $("#valorTotal" + ordem).val(FormataValorInserir((valorItem * quantidade).toFixed(2)));
+                $("#valorTotal" + ordem).text(FormataValorInserir((valorItem * quantidade).toFixed(2)));
                 $("#inputQuantidadeItem" + ordem).prop("readonly", true);
                 $("#inputQuantidadeItem" + ordem).prop("disabled", true);
                 $("selectCentroDeCusto" + ordem).addClass("form-control");
@@ -2099,7 +2105,8 @@ function procuraProdutos(ordem) {
 function VerificaCondicaoAprovacao() {
     var c1 = DatasetFactory.createConstraint("CODCFO", $("#masterValueFCFO").val(), $("#masterValueFCFO").val(), ConstraintType.MUST);
     var c2 = DatasetFactory.createConstraint("OPERACAO", "VerificaAprovacaoFundoFixo", "VerificaAprovacaoFundoFixo", ConstraintType.MUST);
-    var dsVerificaFundoFixo = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2], null);
+    var c3 = DatasetFactory.createConstraint("CODCOLCFO", $("#codColFcoDto").val(), $("#codColFcoDto").val(), ConstraintType.MUST);
+    var dsVerificaFundoFixo = DatasetFactory.getDataset("DatasetFFCXprod", null, [c1, c2, c3], null);
     $("#valorCampoComplemento").val(dsVerificaFundoFixo.values[0].VALIDAFF);
 }
 

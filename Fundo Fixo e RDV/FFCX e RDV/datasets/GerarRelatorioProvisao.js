@@ -75,7 +75,10 @@ function createDataset(fields, constraints, sortFields) {
 				var IdRelatorio = 11466; // NU003.01 - Fundo Fixo
 			} else if (CodigoColigadaRel == "12" || CodigoColigadaRel == 12) {
 				var IdRelatorio = 10018; // NU003.01 - Fundo Fixo
+			} else{
+				var IdRelatorio = 0;
 			}
+
 			// solicita a geração do realtório e armazena o identificador único
 
 			var guid = authIwsDataServer.generateReport(parseInt(CodigoColigadaRel), IdRelatorio, filtros, parametros, NomeRelatorio); //contexto
