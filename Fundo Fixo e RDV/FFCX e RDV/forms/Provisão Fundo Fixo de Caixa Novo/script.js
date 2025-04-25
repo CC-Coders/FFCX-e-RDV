@@ -2834,14 +2834,7 @@ function validateJsonInfos() {
 
         if ($("#modalidade").val() == "Provisao") {
             if ($("#tipo").val() == "R.D.O") {
-                $(".codCC").each(function (index) {
-                    let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
-
-                    if ($(this).val().trim() === "") {
-                        showErrorMessage("Centro de Custo", itemNumber);
-                        return false;
-                    }
-                });
+          
 
                 if (!validateCamposProvisao()) {
                     return false;
@@ -2867,6 +2860,44 @@ function validateJsonInfos() {
                     return true;
                 }
             } else {
+              $(".divNovosItens").each(function(){
+                    if($(this).find(".QuantidadeItem").val() == ""){
+                        FLUIGC.toast({
+                            message: "Quantidade não informada!",
+                            type: "warning",
+                        });
+                        throw false;
+                    }
+                    if($(this).find(".ValorUnitItem").val() == ""){
+                        FLUIGC.toast({
+                            message: "Valor Unitário não informado!",
+                            type: "warning",
+                        });
+                        throw false;
+                    }
+                    if($(this).find(".fornecedor").val() == ""){
+                        FLUIGC.toast({
+                            message: "Prestador/Fornecedor não informado!",
+                            type: "warning",
+                        });
+                        throw false;
+                    }
+                    if($(this).find(".codCC").val() == null){
+                        FLUIGC.toast({
+                            message: "Centro de Custo não informado!",
+                            type: "warning",
+                        });
+                        throw false;
+                    }
+                    if($(this).find(".departamento").val() == ""){
+                        FLUIGC.toast({
+                            message: "Departamento não informado!",
+                            type: "warning",
+                        });
+                        throw false;
+                    }
+
+              });
                 handleProvisao();
             }
         }
@@ -2934,6 +2965,16 @@ function validateCamposProvisao() {
         if ($(this).val().trim() === "") {
             isValid = false;
             showErrorMessage("Departamento", itemNumber);
+            return false;
+        }
+    });
+
+    $(".codCC").each(function (index) {
+        let itemNumber = $(this).closest(".panel").find(".countItem").text().trim();
+
+        if ($(this).val() === null || $(this).val().trim() === "") {
+            isValid = false;
+            showErrorMessage("Centro de Custo", itemNumber);
             return false;
         }
     });
