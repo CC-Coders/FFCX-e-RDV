@@ -116,6 +116,8 @@ function createInsertXML(codtmv, motivoReembolso) {
     jsonExportarRm = JSON.parse(jsonExportarRm);
     var coligadaXML = hAPI.getCardValue("coligada");
     var motivoReembolsoDto = hAPI.getCardValue("motivoReembolsoDto");
+    var usuario = hAPI.getCardValue("usuarioInicial");
+
 
     var xml =
         "<MovRM>\
@@ -287,6 +289,13 @@ function createInsertXML(codtmv, motivoReembolso) {
                 ";
         }
     }
+
+    xml += "<TMOVCOMPL>";
+    xml += "    <CODCOLIGADA>" + coligadaXML + "</CODCOLIGADA> ";
+    xml += "    <IDMOV>" + (IdMovVerif != "" ? IdMovVerif : "-1") + "</IDMOV>";
+    xml += "    <FLUIG>" + getServerURL() + "/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=" + getValue("WKNumProces") + "</FLUIG>";
+    xml += "    <USUARIO_SOLICITANTE>" + usuario + "</USUARIO_SOLICITANTE>";
+    xml += "</TMOVCOMPL>";
     xml += "</MovRM>";
 
     log.info("tester XML MOV: " + xml);
@@ -832,7 +841,7 @@ function sendCustomEmail(to, from, subject, htmlBody) {
 
 // Utils
 function getServerURL() {
-    return fluigAPI.getPageService();
+    return fluigAPI.getPageService().getServerURL();
 }
 function FormataValor(valor_total) {
     var numero = parseFloat(valor_total);
