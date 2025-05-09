@@ -1,3 +1,10 @@
+var ATIVIDADES = {
+    INICIO_0:0,
+    INICIO:7,
+    ENGENHEIRO:8,
+    CONTABILIDADE:6,
+};
+
 function displayFields(form, customHTML) {
     var usuario = getValue("WKUser");
     form.setValue("atividade", getValue("WKNumState"));
@@ -19,9 +26,14 @@ function displayFields(form, customHTML) {
         form.setValue("emailEngenheiro", mail);
     }
 
+    if (atividade == ATIVIDADES.CONTABILIDADE) {
+        form.setValue("usuarioContabilidade", usuario);
+    }
+
     if (atividade == 0 && adicionar == "ADD") {
         form.setValue("DataMovFaturado", DataEnvio);
     }
+
 
     if (form.getFormMode() == "VIEW") {
         form.setValue("formMode", form.getFormMode());
