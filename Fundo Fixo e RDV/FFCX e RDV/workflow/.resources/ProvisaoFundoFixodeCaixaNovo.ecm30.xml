@@ -11,7 +11,7 @@
     <volumeId>Default</volumeId>
     <categoryId>Compras e Serviços</categoryId>
     <managerEngineAllocationId>Grupo</managerEngineAllocationId>
-    <managerEngineAllocationConfiguration>&lt;AssignmentController&gt;&lt;Group&gt;RH&lt;/Group&gt;&lt;/AssignmentController&gt;</managerEngineAllocationConfiguration>
+    <managerEngineAllocationConfiguration>&lt;AssignmentController&gt;&lt;Group&gt;Contabilidade&lt;/Group&gt;&lt;/AssignmentController&gt;</managerEngineAllocationConfiguration>
     <snapshotFrequency>0</snapshotFrequency>
     <baseDay>0</baseDay>
     <baseMonth>0</baseMonth>
@@ -29,10 +29,10 @@
     <processDefinitionVersionPK>
       <companyId>1</companyId>
       <processId>Provisão Fundo Fixo/RDO</processId>
-      <version>496</version>
+      <version>24</version>
     </processDefinitionVersionPK>
     <versionDescription></versionDescription>
-    <formId>5282</formId>
+    <formId>1515068</formId>
     <editionMode>true</editionMode>
     <updateAttachmentsVersion>false</updateAttachmentsVersion>
     <controlsAttachmentsSecurity>false</controlsAttachmentsSecurity>
@@ -329,7 +329,7 @@
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
         <expressionOrder>1</expressionOrder>
-        <version>496</version>
+        <version>24</version>
         <sequence>5</sequence>
       </conditionProcessStatePK>
       <condition>false</condition>
@@ -343,7 +343,7 @@
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
         <expressionOrder>2</expressionOrder>
-        <version>496</version>
+        <version>24</version>
         <sequence>5</sequence>
       </conditionProcessStatePK>
       <condition>false</condition>
@@ -357,7 +357,7 @@
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
         <expressionOrder>3</expressionOrder>
-        <version>496</version>
+        <version>24</version>
         <sequence>5</sequence>
       </conditionProcessStatePK>
       <condition>false</condition>
@@ -369,7 +369,7 @@
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
         <expressionOrder>1</expressionOrder>
-        <version>496</version>
+        <version>24</version>
         <sequence>10</sequence>
       </conditionProcessStatePK>
       <condition>false</condition>
@@ -381,7 +381,7 @@
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
         <expressionOrder>2</expressionOrder>
-        <version>496</version>
+        <version>24</version>
         <sequence>10</sequence>
       </conditionProcessStatePK>
       <condition>false</condition>
@@ -394,7 +394,7 @@
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
         <expressionOrder>1</expressionOrder>
-        <version>496</version>
+        <version>24</version>
         <sequence>11</sequence>
       </conditionProcessStatePK>
       <condition>false</condition>
@@ -408,7 +408,7 @@
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
         <expressionOrder>2</expressionOrder>
-        <version>496</version>
+        <version>24</version>
         <sequence>11</sequence>
       </conditionProcessStatePK>
       <condition>false</condition>
@@ -715,6 +715,8 @@ function createInsertXML(codtmv, motivoReembolso) {&#xd;
     jsonExportarRm = JSON.parse(jsonExportarRm);&#xd;
     var coligadaXML = hAPI.getCardValue(&quot;coligada&quot;);&#xd;
     var motivoReembolsoDto = hAPI.getCardValue(&quot;motivoReembolsoDto&quot;);&#xd;
+    var usuario = hAPI.getCardValue(&quot;usuarioInicial&quot;);&#xd;
+&#xd;
 &#xd;
     var xml =&#xd;
         &quot;&lt;MovRM&gt;\&#xd;
@@ -886,6 +888,13 @@ function createInsertXML(codtmv, motivoReembolso) {&#xd;
                 &quot;;&#xd;
         }&#xd;
     }&#xd;
+&#xd;
+    xml += &quot;&lt;TMOVCOMPL&gt;&quot;;&#xd;
+    xml += &quot;    &lt;CODCOLIGADA&gt;&quot; + coligadaXML + &quot;&lt;/CODCOLIGADA&gt; &quot;;&#xd;
+    xml += &quot;    &lt;IDMOV&gt;&quot; + (IdMovVerif != &quot;&quot; ? IdMovVerif : &quot;-1&quot;) + &quot;&lt;/IDMOV&gt;&quot;;&#xd;
+    xml += &quot;    &lt;FLUIG&gt;&quot; + getServerURL() + &quot;/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=&quot; + getValue(&quot;WKNumProces&quot;) + &quot;&lt;/FLUIG&gt;&quot;;&#xd;
+    xml += &quot;    &lt;USUARIO_SOLICITANTE&gt;&quot; + usuario + &quot;&lt;/USUARIO_SOLICITANTE&gt;&quot;;&#xd;
+    xml += &quot;&lt;/TMOVCOMPL&gt;&quot;;&#xd;
     xml += &quot;&lt;/MovRM&gt;&quot;;&#xd;
 &#xd;
     log.info(&quot;tester XML MOV: &quot; + xml);&#xd;
@@ -1431,7 +1440,7 @@ function sendCustomEmail(to, from, subject, htmlBody) {&#xd;
 &#xd;
 // Utils&#xd;
 function getServerURL() {&#xd;
-    return fluigAPI.getPageService();&#xd;
+    return fluigAPI.getPageService().getServerURL();&#xd;
 }&#xd;
 function FormataValor(valor_total) {&#xd;
     var numero = parseFloat(valor_total);&#xd;
@@ -1535,7 +1544,7 @@ function BuscaAnexosTemplate2() {&#xd;
       <processLinkBendPK>
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
-        <version>496</version>
+        <version>24</version>
         <linkSequence>13</linkSequence>
         <bendSequence>1</bendSequence>
       </processLinkBendPK>
@@ -1546,7 +1555,7 @@ function BuscaAnexosTemplate2() {&#xd;
       <processLinkBendPK>
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
-        <version>496</version>
+        <version>24</version>
         <linkSequence>14</linkSequence>
         <bendSequence>1</bendSequence>
       </processLinkBendPK>
@@ -1557,7 +1566,7 @@ function BuscaAnexosTemplate2() {&#xd;
       <processLinkBendPK>
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
-        <version>496</version>
+        <version>24</version>
         <linkSequence>16</linkSequence>
         <bendSequence>1</bendSequence>
       </processLinkBendPK>
@@ -1568,7 +1577,7 @@ function BuscaAnexosTemplate2() {&#xd;
       <processLinkBendPK>
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
-        <version>496</version>
+        <version>24</version>
         <linkSequence>18</linkSequence>
         <bendSequence>1</bendSequence>
       </processLinkBendPK>
@@ -1579,7 +1588,7 @@ function BuscaAnexosTemplate2() {&#xd;
       <processLinkBendPK>
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
-        <version>496</version>
+        <version>24</version>
         <linkSequence>19</linkSequence>
         <bendSequence>1</bendSequence>
       </processLinkBendPK>
@@ -1590,7 +1599,7 @@ function BuscaAnexosTemplate2() {&#xd;
       <processLinkBendPK>
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
-        <version>496</version>
+        <version>24</version>
         <linkSequence>20</linkSequence>
         <bendSequence>1</bendSequence>
       </processLinkBendPK>
@@ -1601,7 +1610,7 @@ function BuscaAnexosTemplate2() {&#xd;
       <processLinkBendPK>
         <companyId>1</companyId>
         <processId>ProvisaoFundoFixodeCaixaNovo</processId>
-        <version>496</version>
+        <version>24</version>
         <linkSequence>21</linkSequence>
         <bendSequence>1</bendSequence>
       </processLinkBendPK>
