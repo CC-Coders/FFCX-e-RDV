@@ -3,6 +3,6 @@ on: workflow_dispatch
 
 jobs:
   call-sync:
-    uses: CC-Coders/Projetos-sem-repositorio/.github/workflows/sync-labels.yml@main
+    uses: CC-Coders/Projetos-sem-repositorio/.github/workflows/sync-labels.yml
     with:
       token: ${{ secrets.PERSONAL_TOKEN2 }}
