@@ -3003,8 +3003,7 @@ function verificaSeRecebimentoEmAndamento(){
         }else{
             // Se o Dataset retornou com sucesso
             var result = JSON.parse(ds.values[0].RESULT);
-            console.log(result[0].STATUS)
-            if (result[0].STATUS == "Em andamento") {
+            if (result.length > 0 && result[0].STATUS == "Em andamento") {
                 // Se o recebimento está em andamento
                 FLUIGC.toast({
                     title: "",
