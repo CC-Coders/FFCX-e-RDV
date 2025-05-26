@@ -2813,6 +2813,9 @@ function validateJsonInfos() {
 
         if (atividadeDto == 0) {
             if ($("#modalidade").val() == "Recebimento") {
+                if(verificaSeRecebimentoEmAndamento() == false){
+                    return false;
+                }
                 if ($(".CentroDeCusto1207").length === 0) {
                     FLUIGC.toast({
                         message: "Não é possível incluir movimento sem itens",
@@ -2980,6 +2983,48 @@ function validateCamposProvisao() {
     });
 
     return isValid;
+}
+function verificaSeRecebimentoEmAndamento(){
+    try {
+        // Executa consulta
+        var IDMOV = $("#IdMovimento").val();
+        var ds = DatasetFactory.getDataset("VerificaSeRecebimentoFFCXouRDOemAndamento", null,[
+            DatasetFactory.createConstraint("IDMOV", IDMOV, IDMOV, ConstraintType.MUST),
+        ],null);
+
+        if (ds.values[0].STATUS != "OK") {
+            // Se o Dataset retornou com erro
+            FLUIGC.toast({
+                title: "",
+                message: "Erro ao verificar se o recebimento está em andamento: " + ds.values[0].MENSAGEM,
+                type: "warning",
+            });
+            return false;            
+        }else{
+            // Se o Dataset retornou com sucesso
+            var result = JSON.parse(ds.values[0].RESULT);
+            console.log(result[0].STATUS)
+            if (result[0].STATUS == "Em andamento") {
+                // Se o recebimento está em andamento
+                FLUIGC.toast({
+                    title: "",
+                    message: "Já existe um recebimento em andamento na solicitação #" + result[0].NUM_PROCES,
+                    type: "warning",
+                });
+                return false;
+            } else {
+                return true;
+            }
+        }
+    } catch (error) {
+        console.error("Erro ao verificar se o recebimento está em andamento: ", error);
+        FLUIGC.toast({
+            title: "",
+            message: "Erro ao verificar se o recebimento está em andamento: " + error.message,
+            type: "danger",
+        });
+        return false;
+    }
 }
 
 // Utils
