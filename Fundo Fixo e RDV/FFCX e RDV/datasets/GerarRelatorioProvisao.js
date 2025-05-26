@@ -72,7 +72,7 @@ function createDataset(fields, constraints, sortFields) {
 				//var IdRelatorio = 171; // NU003.01 - Fundo Fixo
 				
 			} else if (CodigoColigadaRel == "2" || CodigoColigadaRel == 2) {
-				var IdRelatorio = 11466; // NU003.01 - Fundo Fixo
+				var IdRelatorio = 319; // NU003.01 - Fundo Fixo
 			} else if (CodigoColigadaRel == "12" || CodigoColigadaRel == 12) {
 				var IdRelatorio = 10018; // NU003.01 - Fundo Fixo
 			} else{

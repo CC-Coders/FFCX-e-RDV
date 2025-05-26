@@ -1,0 +1,9 @@
+name: Org-wide Label Sync
+on: 
+  workflow_dispatch:
+
+jobs:
+  call-sync:
+    uses: CC-Coders/Projetos-sem-repositorio/.github/workflows/sync-labels.yml@main
+    with:
+      token: ${{ secrets.PERSONAL_TOKEN2 }}
