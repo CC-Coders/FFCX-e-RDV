@@ -41,6 +41,8 @@ $(document).ready(function () {
 
     $("#fundoFixo").select2().addClass("form-control");
     $("#fundoFixo").next(".select2-container").find(".select2-selection--single").css("height", "32px");
+    $("#selectLocalEstoque").select2().addClass("form-control");
+    $("#selectLocalEstoque").next(".select2-container").find(".select2-selection--single").css("height", "32px");
 
     $(".js-example-basic-single").select2();
     $(".js-example-basic-single").select2({
@@ -531,12 +533,17 @@ function exibirItensArmazenados() {
         </div>
     </div>
 </div>`;
-            +procuraProdutos(ordem);
+            procuraProdutos(ordem);
             $("#tabItens").append(htmlStructure);
             $("selectCentroDeCustoEdicao" + ordem).addClass("form-control");
             $("#icon-green" + ordem).hide();
             AddDepartamentoHtml("departamentoHtmlEdicao" + ordem);
             AddSelectSubEmpreiteiro(ordem);
+
+            $("#selectCentroDeCustoEdicao" + ordem).select2().addClass("form-control");
+            $("#selectCentroDeCustoEdicao" + ordem).next(".select2-container").find(".select2-selection--single").css("height", "32px");
+            $("#departamentoHtmlEdicao" + ordem).select2().addClass("form-control");
+            $("#departamentoHtmlEdicao" + ordem).next(".select2-container").find(".select2-selection--single").css("height", "32px");
         });
 
         if (tipo == "R.D.O") {
@@ -1143,6 +1150,9 @@ function puxaFormaPgto() {
                     fundoFixo:{}
                 },
                 12:{
+                    fundoFixo:{}
+                },
+                13:{
                     fundoFixo:{}
                 }
             }
@@ -3003,8 +3013,7 @@ function verificaSeRecebimentoEmAndamento(){
         }else{
             // Se o Dataset retornou com sucesso
             var result = JSON.parse(ds.values[0].RESULT);
-            console.log(result[0].STATUS)
-            if (result[0].STATUS == "Em andamento") {
+            if (result.length > 0 && result[0].STATUS == "Em andamento") {
                 // Se o recebimento está em andamento
                 FLUIGC.toast({
                     title: "",
