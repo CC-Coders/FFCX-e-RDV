@@ -75,7 +75,11 @@ function createDataset(fields, constraints, sortFields) {
 				var IdRelatorio = 319; // NU003.01 - Fundo Fixo
 			} else if (CodigoColigadaRel == "12" || CodigoColigadaRel == 12) {
 				var IdRelatorio = 10018; // NU003.01 - Fundo Fixo
-			} else{
+			} 
+			else if (CodigoColigadaRel == "13" || CodigoColigadaRel == 13) {
+				var IdRelatorio = 11925; // NU003.01 - Fundo Fixo
+			}
+			else{
 				var IdRelatorio = 0;
 			}
 

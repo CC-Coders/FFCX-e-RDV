@@ -60,11 +60,13 @@ function createDataset(fields, constraints, sortFields) {
 					COLIGADA_1:9212,
 					COLIGADA_6:12033,
 					COLIGADA_12:10026,
+					COLIGADA_13:11933,
 				},
 				HOMOLOGACAO:{
 					COLIGADA_1:9212,
 					COLIGADA_6:12033,
 					COLIGADA_12:10026,
+					COLIGADA_13:11933,
 				}
 			};
 
