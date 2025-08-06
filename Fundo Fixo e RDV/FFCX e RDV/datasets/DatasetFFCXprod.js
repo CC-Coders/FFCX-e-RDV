@@ -154,6 +154,7 @@ function createDataset(fields, constraints, sortFields) {
                 AND TMOV.CODFILIAL = '"+ FILIAL + "'\
                 AND TMOV.CODCFO = '"+ CODCFO + "'\
                 AND TMOV.CODLOC = '"+ CODLOC + "'\
+                AND TMOV.DATAEMISSAO > '2025-01-01'\
             ORDER BY TMOV.IDMOV DESC\
         ";
     }
@@ -180,6 +181,7 @@ function createDataset(fields, constraints, sortFields) {
                     AND TMOV.CODFILIAL = '"+ FILIAL + "'\
                     AND TMOV.CODCFO = '"+ CODCFO + "'\
                     AND TMOV.CODLOC = '"+ CODLOC + "'\
+                    AND TMOV.DATAEMISSAO > '2025-01-01'\
                 ORDER BY TMOV.IDMOV DESC\
             "
             ;
